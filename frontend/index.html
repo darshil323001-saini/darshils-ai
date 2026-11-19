@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DARSHIL'S AI — Your Mind Matters</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            mm: { 50:'#eef2ff', 100:'#e0e7ff', 200:'#c7d2fe', 300:'#a5b4fc', 400:'#818cf8', 500:'#6366f1', 600:'#4f46e5', 700:'#4338ca', 800:'#1e1b4b', 900:'#0f0d2e', 950:'#080620' }
+          },
+          fontFamily: { sans: ['Inter','system-ui','sans-serif'] }
+        }
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .glass { background: rgba(30,27,75,0.5); backdrop-filter: blur(16px); border: 1px solid rgba(99,102,241,0.15); }
+    .glass-light { background: rgba(255,255,255,0.8); backdrop-filter: blur(16px); border: 1px solid rgba(99,102,241,0.12); }
+    .gradient-text { background: linear-gradient(135deg, #818cf8, #c084fc, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-size: 200% 200%; animation: shimmer 3s ease-in-out infinite; }
+    @keyframes shimmer { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+    @keyframes pulse-ring { 0% { transform: scale(0.9); opacity: 1; } 100% { transform: scale(1.5); opacity: 0; } }
+    .pulse-ring::before { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid #818cf8; animation: pulse-ring 1.5s ease-out infinite; }
+    @keyframes breathe-circle { 0%,100% { transform: scale(1); } 50% { transform: scale(1.6); } }
+    .breathe-anim { animation: breathe-circle var(--duration, 16s) ease-in-out infinite; }
+    @keyframes typing-dot { 0%,60%,100% { opacity: 0.3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-4px); } }
+    .typing-dot { animation: typing-dot 1.4s infinite; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    .fade-in { animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    .slide-up { animation: slideUp 0.5s ease; }
+    @keyframes slideUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(99,102,241,0.3); border-radius: 3px; }
+    .chat-msg a { color: #818cf8; text-decoration: underline; }
+    .chat-msg strong { font-weight: 600; }
+    .chat-msg p { margin-bottom: 0.5rem; }
+    .chat-msg ul, .chat-msg ol { margin-left: 1.25rem; margin-bottom: 0.5rem; }
+    .chat-msg li { margin-bottom: 0.25rem; }
+    /* Light theme overrides */
+    html:not(.dark) body { background: #f8fafc; color: #1e293b; }
+    html:not(.dark) .glass { background: rgba(255,255,255,0.8); border-color: rgba(99,102,241,0.12); }
+  </style>
+</head>
+<body class="bg-mm-950 text-slate-100 min-h-screen">
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- APP CONTAINER                                                         -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<div id="app">
+
+  <!-- ─── NAVBAR ──────────────────────────────────────────────────────── -->
+  <nav class="sticky top-0 z-50 glass border-b border-mm-400/10">
+    <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
+      <div class="flex items-center gap-2 cursor-pointer" onclick="navigate('landing')">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-mm-600 to-purple-500 flex items-center justify-center shadow-lg shadow-mm-500/25">
+          <span class="text-lg">🧠</span>
+        </div>
+        <span class="font-bold text-base tracking-tight gradient-text">DARSHIL'S AI</span>
+      </div>
+      <div class="hidden md:flex items-center gap-4 text-sm font-medium text-slate-300">
+        <button onclick="navigate('chat')" class="hover:text-mm-400 transition">Chat</button>
+        <button onclick="navigate('modules')" class="hover:text-mm-400 transition">Support</button>
+        <button onclick="navigate('mood')" class="hover:text-mm-400 transition">Mood</button>
+        <button onclick="navigate('breathe')" class="hover:text-mm-400 transition">Breathe</button>
+        <button onclick="navigate('reflect')" class="hover:text-mm-400 transition">Reflect</button>
+        <button onclick="navigate('growth')" class="hover:text-mm-400 transition">Growth</button>
+        <button onclick="navigate('safety')" class="hover:text-mm-400 transition">Safety</button>
+      </div>
+      <div class="flex items-center gap-2">
+        <!-- AI Status Badge -->
+        <div id="ai-badge" class="hidden md:flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border border-mm-400/20 bg-mm-900/50">
+          <span id="ai-dot" class="w-2 h-2 rounded-full bg-red-500"></span>
+          <span id="ai-label" class="text-slate-400">Offline</span>
+        </div>
+        <!-- Theme Toggle -->
+        <button onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-mm-800/50 text-slate-400 hover:text-mm-400 transition" title="Toggle theme">
+          <svg id="theme-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646Z"/></svg>
+        </button>
+        <!-- Mobile menu toggle -->
+        <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg hover:bg-mm-800/50 text-slate-400">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden px-4 pb-3 space-y-1">
+      <button onclick="navigate('chat');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-mm-800/50">💬 Chat</button>
+      <button onclick="navigate('modules');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-mm-800/50">📚 Support Modules</button>
+      <button onclick="navigate('mood');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-mm-800/50">😊 Mood Tracker</button>
+      <button onclick="navigate('breathe');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-mm-800/50">🌬️ Breathe</button>
+      <button onclick="navigate('reflect');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-mm-800/50">📝 Reflect</button>
+      <button onclick="navigate('growth');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-mm-800/50">🌱 Growth</button>
+      <button onclick="navigate('settings');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-mm-800/50">⚙️ Settings</button>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PAGE: LANDING                                                       -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <section id="page-landing" class="page">
+    <div class="min-h-[calc(100vh-56px)] flex flex-col items-center justify-center px-4 text-center">
+      <div class="slide-up max-w-3xl">
+        <div class="w-20 h-20 mx-auto mb-6 rounded-2xl bg-gradient-to-tr from-mm-600 to-purple-500 flex items-center justify-center shadow-2xl shadow-mm-500/30">
+          <span class="text-4xl">🧠</span>
+        </div>
+        <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-4">
+          <span class="gradient-text">Your Mind Matters.</span><br>
+          <span class="text-slate-200">Let's Understand It Together.</span>
+        </h1>
+        <p class="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-8">
+          A safe space to understand your thoughts, navigate student life, and find practical ways forward.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center mb-6">
+          <button onclick="navigate('chat')" class="px-8 py-3.5 bg-gradient-to-r from-mm-600 to-purple-600 text-white rounded-xl font-semibold text-lg hover:shadow-lg hover:shadow-mm-500/30 transition-all hover:scale-105">
+            Start Your Conversation
+          </button>
+          <button onclick="navigate('modules')" class="px-8 py-3.5 glass rounded-xl font-medium text-slate-300 hover:text-white hover:border-mm-400/40 transition-all">
+            Explore Support Tools
+          </button>
+        </div>
+        <p class="text-xs text-slate-500 max-w-lg mx-auto">
+          ⚠️ DARSHIL'S AI is an informational wellness companion, not a licensed mental health professional. For clinical concerns or emergencies, please contact qualified professionals or call <strong>112</strong> (India).
+        </p>
+      </div>
+
+      <!-- Feature Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mt-16 w-full">
+        <div class="glass rounded-2xl p-5 text-left hover:border-mm-400/30 transition cursor-pointer" onclick="navigate('chat')">
+          <div class="text-2xl mb-2">💬</div>
+          <h3 class="font-semibold text-sm mb-1">AI Chat</h3>
+          <p class="text-xs text-slate-400">Talk through anything — exams, emotions, relationships, or life.</p>
+        </div>
+        <div class="glass rounded-2xl p-5 text-left hover:border-mm-400/30 transition cursor-pointer" onclick="navigate('breathe')">
+          <div class="text-2xl mb-2">🌬️</div>
+          <h3 class="font-semibold text-sm mb-1">Stress Relief</h3>
+          <p class="text-xs text-slate-400">Guided breathing & grounding exercises for instant calm.</p>
+        </div>
+        <div class="glass rounded-2xl p-5 text-left hover:border-mm-400/30 transition cursor-pointer" onclick="navigate('mood')">
+          <div class="text-2xl mb-2">📊</div>
+          <h3 class="font-semibold text-sm mb-1">Mood Tracker</h3>
+          <p class="text-xs text-slate-400">Track how you feel over time and spot patterns.</p>
+        </div>
+        <div class="glass rounded-2xl p-5 text-left hover:border-mm-400/30 transition cursor-pointer" onclick="navigate('reflect')">
+          <div class="text-2xl mb-2">📝</div>
+          <h3 class="font-semibold text-sm mb-1">Daily Reflection</h3>
+          <p class="text-xs text-slate-400">CBT thought reframer & gratitude journaling.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PAGE: CHAT                                                          -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <section id="page-chat" class="page hidden">
+    <div class="max-w-4xl mx-auto flex flex-col h-[calc(100vh-56px)]">
+      <!-- Chat Header -->
+      <div class="flex items-center justify-between px-4 py-3 border-b border-mm-400/10">
+        <div class="flex items-center gap-3">
+          <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-mm-600 to-purple-500 flex items-center justify-center"><span class="text-sm">🧠</span></div>
+          <div>
+            <h2 class="font-semibold text-sm">DARSHIL'S AI</h2>
+            <p id="chat-status" class="text-xs text-slate-500">Ready to listen</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <select id="lang-select" onchange="setLanguage(this.value)" class="text-xs bg-mm-900 border border-mm-400/20 rounded-lg px-2 py-1 text-slate-300 outline-none">
+            <option value="english">English</option>
+            <option value="hindi">हिंदी</option>
+            <option value="hinglish">Hinglish</option>
+          </select>
+          <button onclick="newChat()" class="text-xs px-3 py-1.5 rounded-lg border border-mm-400/20 text-slate-400 hover:text-white hover:border-mm-400/40 transition" title="New chat">+ New</button>
+          <button onclick="clearChat()" class="text-xs px-3 py-1.5 rounded-lg border border-red-400/20 text-red-400/60 hover:text-red-400 hover:border-red-400/40 transition" title="Clear">Clear</button>
+        </div>
+      </div>
+
+      <!-- Messages Area -->
+      <div id="chat-messages" class="flex-1 overflow-y-auto px-4 py-4 space-y-4">
+        <!-- Welcome -->
+        <div class="fade-in flex gap-3">
+          <div class="w-8 h-8 shrink-0 rounded-lg bg-gradient-to-tr from-mm-600 to-purple-500 flex items-center justify-center mt-1"><span class="text-sm">🧠</span></div>
+          <div class="glass rounded-2xl rounded-tl-md px-4 py-3 max-w-[85%]">
+            <p class="text-sm text-slate-200 mb-3">Hi! I'm <strong>DARSHIL'S AI</strong> — your personal psychology-grounded companion. 💙 I'm here to help you navigate student life, emotions, relationships, and everyday challenges. How are you feeling today?</p>
+            <p class="text-sm text-slate-300 mb-3">I'm not a therapist or doctor — but I can help you think through problems, manage stress, and find practical next steps.</p>
+            <p class="text-xs text-slate-500">Try one of these to get started:</p>
+            <div id="suggested-questions" class="flex flex-wrap gap-2 mt-2">
+              <button onclick="sendSuggested(this.textContent)" class="text-xs px-3 py-1.5 rounded-full border border-mm-400/20 text-mm-300 hover:bg-mm-600/20 transition">Why am I overthinking everything?</button>
+              <button onclick="sendSuggested(this.textContent)" class="text-xs px-3 py-1.5 rounded-full border border-mm-400/20 text-mm-300 hover:bg-mm-600/20 transition">I am stressed about my exams</button>
+              <button onclick="sendSuggested(this.textContent)" class="text-xs px-3 py-1.5 rounded-full border border-mm-400/20 text-mm-300 hover:bg-mm-600/20 transition">I feel lonely in college</button>
+              <button onclick="sendSuggested(this.textContent)" class="text-xs px-3 py-1.5 rounded-full border border-mm-400/20 text-mm-300 hover:bg-mm-600/20 transition">How do I stop procrastinating?</button>
+              <button onclick="sendSuggested(this.textContent)" class="text-xs px-3 py-1.5 rounded-full border border-mm-400/20 text-mm-300 hover:bg-mm-600/20 transition">I'm confused about my relationship</button>
+              <button onclick="sendSuggested(this.textContent)" class="text-xs px-3 py-1.5 rounded-full border border-mm-400/20 text-mm-300 hover:bg-mm-600/20 transition">How can I improve my confidence?</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Typing Indicator -->
+      <div id="typing-indicator" class="hidden px-4 pb-2">
+        <div class="flex gap-3">
+          <div class="w-8 h-8 shrink-0 rounded-lg bg-gradient-to-tr from-mm-600 to-purple-500 flex items-center justify-center"><span class="text-sm">🧠</span></div>
+          <div class="glass rounded-2xl rounded-tl-md px-4 py-3 flex items-center gap-1.5">
+            <span class="typing-dot w-2 h-2 rounded-full bg-mm-400"></span>
+            <span class="typing-dot w-2 h-2 rounded-full bg-mm-400"></span>
+            <span class="typing-dot w-2 h-2 rounded-full bg-mm-400"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input Area -->
+      <div class="px-4 py-3 border-t border-mm-400/10">
+        <div class="flex gap-2">
+          <textarea id="chat-input" rows="1" placeholder="Share what's on your mind…" class="flex-1 bg-mm-900/50 border border-mm-400/20 rounded-xl px-4 py-3 text-sm text-slate-200 placeholder-slate-500 outline-none focus:border-mm-400/50 resize-none transition" onkeydown="handleChatKey(event)" oninput="autoResize(this)"></textarea>
+          <button onclick="sendMessage()" id="send-btn" class="px-4 py-3 bg-gradient-to-r from-mm-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-mm-500/20 transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+          </button>
+        </div>
+        <p class="text-[10px] text-slate-600 mt-1.5 text-center">MindMate AI is an informational companion, not a substitute for professional help. If in crisis, call 112 or Tele-MANAS 14416.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PAGE: MODULES (Support Categories)                                  -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <section id="page-modules" class="page hidden">
+    <div class="max-w-5xl mx-auto px-4 py-8">
+      <h2 class="text-2xl font-bold gradient-text mb-2">Support Modules</h2>
+      <p class="text-sm text-slate-400 mb-8">Choose what you'd like help with, or just start a free conversation.</p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Student Psychology -->
+        <div class="glass rounded-2xl p-6 hover:border-mm-400/30 transition cursor-pointer" onclick="startModuleChat('Student & Career Psychology','I need help with academic or career-related stress')">
+          <div class="text-3xl mb-3">🎓</div>
+          <h3 class="font-semibold text-base mb-2">Student & Career Psychology</h3>
+          <p class="text-sm text-slate-400 mb-3">Exam anxiety, procrastination, fear of failure, study motivation, career confusion, campus adjustment.</p>
+          <span class="text-xs text-mm-400">Start conversation →</span>
+        </div>
+        <!-- Emotional Wellness -->
+        <div class="glass rounded-2xl p-6 hover:border-mm-400/30 transition cursor-pointer" onclick="startModuleChat('Emotional Wellness','I want to talk about how I am feeling emotionally')">
+          <div class="text-3xl mb-3">💙</div>
+          <h3 class="font-semibold text-base mb-2">Emotional Wellness</h3>
+          <p class="text-sm text-slate-400 mb-3">Stress, overthinking, loneliness, low motivation, anger, self-doubt, emotional confusion.</p>
+          <span class="text-xs text-mm-400">Start conversation →</span>
+        </div>
+        <!-- Relationships -->
+        <div class="glass rounded-2xl p-6 hover:border-mm-400/30 transition cursor-pointer" onclick="startModuleChat('Relationships & Social Life','I need help with a relationship or social situation')">
+          <div class="text-3xl mb-3">🤝</div>
+          <h3 class="font-semibold text-base mb-2">Relationships & Social Life</h3>
+          <p class="text-sm text-slate-400 mb-3">Friendship problems, breakups, communication, trust, family misunderstandings, social anxiety.</p>
+          <span class="text-xs text-mm-400">Start conversation →</span>
+        </div>
+        <!-- Personal Growth -->
+        <div class="glass rounded-2xl p-6 hover:border-mm-400/30 transition cursor-pointer" onclick="startModuleChat('Personal Growth & Habits','I want to build better habits and grow as a person')">
+          <div class="text-3xl mb-3">🌱</div>
+          <h3 class="font-semibold text-base mb-2">Personal Growth & Habits</h3>
+          <p class="text-sm text-slate-400 mb-3">Discipline, confidence, decision-making, habit building, self-awareness, goal setting.</p>
+          <span class="text-xs text-mm-400">Start conversation →</span>
+        </div>
+        <!-- Everyday Problems -->
+        <div class="glass rounded-2xl p-6 hover:border-mm-400/30 transition cursor-pointer" onclick="startModuleChat('Everyday Life','I have a problem I want to think through')">
+          <div class="text-3xl mb-3">🧩</div>
+          <h3 class="font-semibold text-base mb-2">Everyday Life Problems</h3>
+          <p class="text-sm text-slate-400 mb-3">Anything else — money worries, decisions, family, health confusion, or any challenge you're facing.</p>
+          <span class="text-xs text-mm-400">Start conversation →</span>
+        </div>
+        <!-- Quick Tools -->
+        <div class="glass rounded-2xl p-6 hover:border-mm-400/30 transition cursor-pointer" onclick="navigate('breathe')">
+          <div class="text-3xl mb-3">🌬️</div>
+          <h3 class="font-semibold text-base mb-2">Quick Relief Tools</h3>
+          <p class="text-sm text-slate-400 mb-3">Breathing exercises, grounding techniques, thought reframing — no AI needed, works offline.</p>
+          <span class="text-xs text-mm-400">Open tools →</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PAGE: MOOD TRACKER                                                  -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <section id="page-mood" class="page hidden">
+    <div class="max-w-3xl mx-auto px-4 py-8">
+      <h2 class="text-2xl font-bold gradient-text mb-2">Mood Check-In</h2>
+      <p class="text-sm text-slate-400 mb-6">How are you feeling right now? Tracking helps you notice patterns over time.</p>
+
+      <!-- Mood Selector -->
+      <div class="glass rounded-2xl p-6 mb-6">
+        <p class="text-sm text-slate-300 mb-4 font-medium">Select your mood:</p>
+        <div class="flex flex-wrap justify-center gap-3 mb-4" id="mood-selector">
+          <button onclick="selectMood(this,'😄','Great')" class="mood-btn flex flex-col items-center gap-1 p-3 rounded-xl border border-mm-400/10 hover:border-mm-400/40 hover:bg-mm-600/10 transition w-20">
+            <span class="text-3xl">😄</span><span class="text-xs text-slate-400">Great</span>
+          </button>
+          <button onclick="selectMood(this,'😊','Good')" class="mood-btn flex flex-col items-center gap-1 p-3 rounded-xl border border-mm-400/10 hover:border-mm-400/40 hover:bg-mm-600/10 transition w-20">
+            <span class="text-3xl">😊</span><span class="text-xs text-slate-400">Good</span>
+          </button>
+          <button onclick="selectMood(this,'😐','Okay')" class="mood-btn flex flex-col items-center gap-1 p-3 rounded-xl border border-mm-400/10 hover:border-mm-400/40 hover:bg-mm-600/10 transition w-20">
+            <span class="text-3xl">😐</span><span class="text-xs text-slate-400">Okay</span>
+          </button>
+          <button onclick="selectMood(this,'😔','Low')" class="mood-btn flex flex-col items-center gap-1 p-3 rounded-xl border border-mm-400/10 hover:border-mm-400/40 hover:bg-mm-600/10 transition w-20">
+            <span class="text-3xl">😔</span><span class="text-xs text-slate-400">Low</span>
+          </button>
+          <button onclick="selectMood(this,'😢','Rough')" class="mood-btn flex flex-col items-center gap-1 p-3 rounded-xl border border-mm-400/10 hover:border-mm-400/40 hover:bg-mm-600/10 transition w-20">
+            <span class="text-3xl">😢</span><span class="text-xs text-slate-400">Rough</span>
+          </button>
+          <button onclick="selectMood(this,'😡','Angry')" class="mood-btn flex flex-col items-center gap-1 p-3 rounded-xl border border-mm-400/10 hover:border-mm-400/40 hover:bg-mm-600/10 transition w-20">
+            <span class="text-3xl">😡</span><span class="text-xs text-slate-400">Angry</span>
+          </button>
+          <button onclick="selectMood(this,'😰','Anxious')" class="mood-btn flex flex-col items-center gap-1 p-3 rounded-xl border border-mm-400/10 hover:border-mm-400/40 hover:bg-mm-600/10 transition w-20">
+            <span class="text-3xl">😰</span><span class="text-xs text-slate-400">Anxious</span>
+          </button>
+        </div>
+
+        <!-- Intensity -->
+        <div id="mood-extra" class="hidden">
+          <label class="text-sm text-slate-300 mb-2 block">Intensity (1–10):</label>
+          <input type="range" id="mood-intensity" min="1" max="10" value="5" class="w-full mb-1 accent-mm-500">
+          <div class="flex justify-between text-xs text-slate-500"><span>Mild</span><span id="intensity-val">5</span><span>Intense</span></div>
+
+          <label class="text-sm text-slate-300 mt-4 mb-2 block">What triggered this? (optional)</label>
+          <input type="text" id="mood-trigger" placeholder="e.g., exam result, argument, loneliness..." class="w-full bg-mm-900/50 border border-mm-400/20 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-500 outline-none focus:border-mm-400/40">
+
+          <button onclick="saveMood()" class="mt-4 w-full py-2.5 bg-gradient-to-r from-mm-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg transition">
+            Save Mood Entry
+          </button>
+        </div>
+      </div>
+
+      <!-- Mood History -->
+      <div class="glass rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-semibold text-sm">Your Mood History</h3>
+          <button onclick="clearMoodHistory()" class="text-xs text-red-400/60 hover:text-red-400 transition">Clear All</button>
+        </div>
+        <div id="mood-history" class="space-y-2 max-h-64 overflow-y-auto">
+          <p class="text-sm text-slate-500 text-center py-4">No entries yet. Record your first mood above!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PAGE: BREATHE & GROUNDING                                          -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <section id="page-breathe" class="page hidden">
+    <div class="max-w-3xl mx-auto px-4 py-8">
+      <h2 class="text-2xl font-bold gradient-text mb-2">Stress Relief Studio</h2>
+      <p class="text-sm text-slate-400 mb-8">Calm your nervous system with guided exercises. Works fully offline — no AI needed.</p>
+
+      <!-- Breathing Exercise -->
+      <div class="glass rounded-2xl p-6 mb-6">
+        <h3 class="font-semibold text-base mb-4">🌬️ Guided Breathing</h3>
+        <div class="flex gap-3 mb-6 flex-wrap">
+          <button onclick="startBreathing('4-7-8')" class="breath-type-btn px-4 py-2 rounded-lg border border-mm-400/20 text-sm text-slate-300 hover:border-mm-400/40 transition">4-7-8 Calm</button>
+          <button onclick="startBreathing('box')" class="breath-type-btn px-4 py-2 rounded-lg border border-mm-400/20 text-sm text-slate-300 hover:border-mm-400/40 transition">Box Breathing</button>
+          <button onclick="startBreathing('simple')" class="breath-type-btn px-4 py-2 rounded-lg border border-mm-400/20 text-sm text-slate-300 hover:border-mm-400/40 transition">Simple Deep Breath</button>
+        </div>
+
+        <!-- Breathing Circle -->
+        <div class="flex flex-col items-center">
+          <div id="breath-circle" class="w-40 h-40 rounded-full bg-gradient-to-tr from-mm-600/30 to-purple-600/30 border-2 border-mm-400/30 flex items-center justify-center mb-4 transition-all duration-1000">
+            <span id="breath-text" class="text-lg font-semibold text-mm-300">Start</span>
+          </div>
+          <p id="breath-instruction" class="text-sm text-slate-400 mb-4">Choose a breathing pattern above to begin</p>
+          <div class="flex gap-3">
+            <button id="breath-start-btn" onclick="toggleBreathing()" class="px-6 py-2 bg-mm-600 text-white rounded-lg font-medium hover:bg-mm-500 transition hidden">Start</button>
+            <button id="breath-stop-btn" onclick="stopBreathing()" class="px-6 py-2 border border-red-400/30 text-red-400 rounded-lg font-medium hover:bg-red-400/10 transition hidden">Stop</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5-4-3-2-1 Grounding -->
+      <div class="glass rounded-2xl p-6">
+        <h3 class="font-semibold text-base mb-3">🌿 5-4-3-2-1 Sensory Grounding</h3>
+        <p class="text-sm text-slate-400 mb-4">When overwhelmed, reconnect with your senses. Fill in each step:</p>
+        <div class="space-y-3" id="grounding-exercise">
+          <div class="flex gap-3 items-start">
+            <span class="text-2xl mt-0.5">👀</span>
+            <div class="flex-1">
+              <label class="text-sm font-medium text-slate-300">5 things you can SEE</label>
+              <input type="text" placeholder="desk, window, pen, book, phone..." class="grounding-input w-full mt-1 bg-mm-900/50 border border-mm-400/20 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-500 outline-none focus:border-mm-400/40">
+            </div>
+          </div>
+          <div class="flex gap-3 items-start">
+            <span class="text-2xl mt-0.5">👂</span>
+            <div class="flex-1">
+              <label class="text-sm font-medium text-slate-300">4 things you can HEAR</label>
+              <input type="text" placeholder="fan, traffic, breathing, birds..." class="grounding-input w-full mt-1 bg-mm-900/50 border border-mm-400/20 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-500 outline-none focus:border-mm-400/40">
+            </div>
+          </div>
+          <div class="flex gap-3 items-start">
+            <span class="text-2xl mt-0.5">✋</span>
+            <div class="flex-1">
+              <label class="text-sm font-medium text-slate-300">3 things you can TOUCH</label>
+              <input type="text" placeholder="chair, table, fabric..." class="grounding-input w-full mt-1 bg-mm-900/50 border border-mm-400/20 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-500 outline-none focus:border-mm-400/40">
+            </div>
+          </div>
+          <div class="flex gap-3 items-start">
+            <span class="text-2xl mt-0.5">👃</span>
+            <div class="flex-1">
+              <label class="text-sm font-medium text-slate-300">2 things you can SMELL</label>
+              <input type="text" placeholder="coffee, fresh air..." class="grounding-input w-full mt-1 bg-mm-900/50 border border-mm-400/20 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-500 outline-none focus:border-mm-400/40">
+            </div>
+          </div>
+          <div class="flex gap-3 items-start">
+            <span class="text-2xl mt-0.5">👅</span>
+            <div class="flex-1">
+              <label class="text-sm font-medium text-slate-300">1 thing you can TASTE</label>
+              <input type="text" placeholder="tea, water..." class="grounding-input w-full mt-1 bg-mm-900/50 border border-mm-400/20 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-500 outline-none focus:border-mm-400/40">
+            </div>
+          </div>
+        </div>
+        <button onclick="completeGrounding()" class="mt-4 w-full py-2.5 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-xl font-medium hover:shadow-lg transition">
+          ✅ I Feel More Grounded
+        </button>
+        <p id="grounding-result" class="hidden text-sm text-green-400 text-center mt-3">🌿 Great job grounding yourself! You're here, in this moment, and that's enough. 💚</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PAGE: DAILY REFLECTION & CBT REFRAMER                              -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <section id="page-reflect" class="page hidden">
+    <div class="max-w-3xl mx-auto px-4 py-8">
+      <h2 class="text-2xl font-bold gradient-text mb-2">Daily Reflection</h2>
+      <p class="text-sm text-slate-400 mb-8">Reflect on your day and challenge unhelpful thoughts using CBT techniques.</p>
+
+      <!-- CBT Thought Reframer -->
+      <div class="glass rounded-2xl p-6 mb-6">
+        <h3 class="font-semibold text-base mb-1">🔄 CBT Thought Reframer</h3>
+        <p class="text-xs text-slate-500 mb-4">Based on David Burns' cognitive distortion framework from <em>Feeling Good</em>.</p>
+
+        <div class="space-y-4">
+          <div>
+            <label class="text-sm text-slate-300 font-medium">1. The automatic negative thought:</label>
+            <textarea id="cbt-thought" rows="2" placeholder='e.g., "I failed the test so I will never succeed in life"' class="w-full mt-1 bg-mm-900/50 border border-mm-400/20 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-500 outline-none focus:border-mm-400/40 resize-none"></textarea>
+          </div>
+          <div>
+            <label class="text-sm text-slate-300 font-medium">2. Which thinking trap might this be?</label>
+            <select id="cbt-distortion" class="w-full mt-1 bg-mm-900/50 border border-mm-400/20 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none focus:border-mm-400/40">
+              <option value="">Select a cognitive distortion...</option>
+              <option value="catastrophizing">Catastrophizing — imagining the worst-case scenario</option>
+              <option value="all-or-nothing">All-or-Nothing — seeing things as black/white, success/failure</option>
+              <option value="overgeneralization">Overgeneralization — "always" or "never" from one event</option>
+              <option value="mind-reading">Mind Reading — assuming you know what others think</option>
+              <option value="emotional-reasoning">Emotional Reasoning — "I feel it, so it must be true"</option>
+              <option value="should-statements">Should Statements — rigid rules about how things must be</option>
+              <option value="labeling">Labeling — "I'm a loser" instead of "I made a mistake"</option>
+              <option value="magnification">Magnification — blowing up negatives, shrinking positives</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-sm text-slate-300 font-medium">3. What's a more balanced thought?</label>
+            <textarea id="cbt-reframe" rows="2" placeholder='e.g., "I failed this test, but I can learn from it. One test doesn't define my whole future."' class="w-full mt-1 bg-mm-900/50 border border-mm-400/20 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-500 outline-none focus:border-mm-400/40 resize-none"></textarea>
+          </div>
+          <button onclick="saveCbtEntry()" class="w-full py-2.5 bg-gradient-to-r from-mm-600 to-purple-600 text-white rounded-xl font-medium hover:shadow-lg transition">
+            Save This Reframe
+          </button>
+        </div>
+      </div>
+
+      <!-- Daily Journal -->
+      <div class="glass rounded-2xl p-6 mb-6">
+        <h3 class="font-semibold text-base mb-4">📔 End-of-Day Reflection</h3>
+        <div class="space-y-4">
+          <div>
+            <label class="text-sm text-slate-300 font-medium">What went well today?</label>
+            <textarea id="journal-good" rows="2" placeholder="Even small wins count..." class="w-full mt-1 bg-mm-900/50 border border-mm-400/20 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-500 outline-none focus:border-mm-400/40 resize-none"></textarea>
+          </div>
+          <div>
+            <label class="text-sm text-slate-300 font-medium">What was difficult?</label>
+            <textarea id="journal-hard" rows="2" placeholder="No judgment — just notice it..." class="w-full mt-1 bg-mm-900/50 border border-mm-400/20 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-500 outline-none focus:border-mm-400/40 resize-none"></textarea>
+          </div>
+          <div>
+            <label class="text-sm text-slate-300 font-medium">One thing I'm grateful for:</label>
+            <input type="text" id="journal-grateful" placeholder="e.g., a friend texted me, I ate a good meal..." class="w-full mt-1 bg-mm-900/50 border border-mm-400/20 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-500 outline-none focus:border-mm-400/40">
+          </div>
+          <button onclick="saveJournal()" class="w-full py-2.5 bg-gradient-to-r from-green-600 to-teal-600 text-white rounded-xl font-medium hover:shadow-lg transition">
+            Save Today's Reflection
+          </button>
+        </div>
+      </div>
+
+      <!-- Journal History -->
+      <div class="glass rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-semibold text-sm">Past Reflections</h3>
+          <button onclick="clearJournals()" class="text-xs text-red-400/60 hover:text-red-400 transition">Clear All</button>
+        </div>
+        <div id="journal-history" class="space-y-3 max-h-64 overflow-y-auto">
+          <p class="text-sm text-slate-500 text-center py-4">No reflections yet. Start journaling above!</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PAGE: PERSONAL GROWTH & HABITS                                      -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <section id="page-growth" class="page hidden">
+    <div class="max-w-3xl mx-auto px-4 py-8">
+      <h2 class="text-2xl font-bold gradient-text mb-2">Personal Growth</h2>
+      <p class="text-sm text-slate-400 mb-8">Build tiny sustainable habits and track your micro-goals. Inspired by <em>Atomic Habits</em>.</p>
+
+      <!-- Add Habit -->
+      <div class="glass rounded-2xl p-6 mb-6">
+        <h3 class="font-semibold text-base mb-4">🎯 Add a Micro-Goal or Habit</h3>
+        <div class="flex gap-2">
+          <input type="text" id="habit-input" placeholder='e.g., "Read for 10 minutes", "No phone first 30 min after waking"' class="flex-1 bg-mm-900/50 border border-mm-400/20 rounded-lg px-3 py-2 text-sm text-slate-200 placeholder-slate-500 outline-none focus:border-mm-400/40">
+          <button onclick="addHabit()" class="px-4 py-2 bg-mm-600 text-white rounded-lg font-medium hover:bg-mm-500 transition">Add</button>
+        </div>
+      </div>
+
+      <!-- Habits List -->
+      <div class="glass rounded-2xl p-6 mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-semibold text-sm">Today's Habits & Goals</h3>
+          <span id="habits-score" class="text-xs text-mm-400">0/0 done</span>
+        </div>
+        <div id="habits-list" class="space-y-2">
+          <p class="text-sm text-slate-500 text-center py-4">No habits yet. Add your first tiny goal above!</p>
+        </div>
+      </div>
+
+      <!-- Streaks -->
+      <div class="glass rounded-2xl p-6">
+        <h3 class="font-semibold text-sm mb-3">📈 Streak Tracker</h3>
+        <p class="text-sm text-slate-400 mb-3">Complete all habits to build your streak!</p>
+        <div class="flex items-center gap-4">
+          <div class="text-center">
+            <div id="streak-count" class="text-3xl font-bold gradient-text">0</div>
+            <div class="text-xs text-slate-500">Day streak</div>
+          </div>
+          <div class="text-center">
+            <div id="best-streak" class="text-3xl font-bold text-purple-400">0</div>
+            <div class="text-xs text-slate-500">Best streak</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PAGE: SAFETY & PRIVACY                                             -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <section id="page-safety" class="page hidden">
+    <div class="max-w-3xl mx-auto px-4 py-8">
+      <h2 class="text-2xl font-bold gradient-text mb-2">Privacy & Safety</h2>
+      <p class="text-sm text-slate-400 mb-8">Your safety and data privacy are our top priorities.</p>
+
+      <div class="space-y-4">
+        <div class="glass rounded-2xl p-6">
+          <h3 class="font-semibold text-base mb-3">🔒 Your Privacy</h3>
+          <ul class="space-y-2 text-sm text-slate-300">
+            <li>• <strong>Anonymous by default:</strong> No registration, no account, no sign-in required.</li>
+            <li>• <strong>Local storage only:</strong> Mood logs, reflections, and habits are stored in YOUR browser, never on a server.</li>
+            <li>• <strong>No tracking:</strong> No analytics, no cookies, no third-party data collection.</li>
+            <li>• <strong>Your control:</strong> Delete all your data anytime with one click from the tools themselves.</li>
+            <li>• <strong>Conversations not stored server-side:</strong> Chat sessions exist only in RAM while the backend runs. Restarting the server clears all conversations.</li>
+            <li>• <strong>No data sharing:</strong> Nothing is shared with any third party — ever.</li>
+          </ul>
+        </div>
+
+        <div class="glass rounded-2xl p-6 border-yellow-500/20">
+          <h3 class="font-semibold text-base mb-3">⚠️ Important Disclaimer</h3>
+          <ul class="space-y-2 text-sm text-slate-300">
+            <li>• DARSHIL'S AI is an <strong>informational wellness companion</strong>, not a licensed therapist, psychologist, psychiatrist, or medical professional.</li>
+            <li>• It does <strong>not provide clinical diagnoses</strong> or prescribe medication.</li>
+            <li>• It is <strong>not a substitute</strong> for professional mental health care.</li>
+            <li>• If you are experiencing a mental health crisis, please contact a qualified professional immediately.</li>
+          </ul>
+        </div>
+
+        <div class="glass rounded-2xl p-6 border-red-500/20">
+          <h3 class="font-semibold text-base mb-3">🚨 Crisis Resources</h3>
+          <p class="text-sm text-slate-400 mb-4">If you or someone you know is in immediate danger or crisis:</p>
+          <div class="space-y-3">
+            <div class="flex items-center gap-3 p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+              <span class="text-lg">🚨</span>
+              <div>
+                <p class="text-sm font-semibold text-red-300">Immediate Emergency (India)</p>
+                <p class="text-lg font-bold text-white">Call 112</p>
+                <p class="text-xs text-slate-400">Police, Ambulance, Fire — all states in India</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 p-3 rounded-lg bg-mm-600/10 border border-mm-400/20">
+              <span class="text-lg">📞</span>
+              <div>
+                <p class="text-sm font-semibold text-mm-300">Tele-MANAS (Govt. of India)</p>
+                <p class="text-lg font-bold text-white">14416 / 1800-891-4416</p>
+                <p class="text-xs text-slate-400">24/7 toll-free mental health helpline in multiple Indian languages</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 p-3 rounded-lg bg-mm-600/10 border border-mm-400/20">
+              <span class="text-lg">📞</span>
+              <div>
+                <p class="text-sm font-semibold text-mm-300">KIRAN Mental Health Helpline</p>
+                <p class="text-lg font-bold text-white">1800-599-0019</p>
+                <p class="text-xs text-slate-400">24/7 national helpline by Ministry of Social Justice</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 p-3 rounded-lg bg-mm-600/10 border border-mm-400/20">
+              <span class="text-lg">📞</span>
+              <div>
+                <p class="text-sm font-semibold text-mm-300">Vandrevala Foundation</p>
+                <p class="text-lg font-bold text-white">+91 9999 666 555</p>
+                <p class="text-xs text-slate-400">24/7 free crisis counseling</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 p-3 rounded-lg bg-mm-600/10 border border-mm-400/20">
+              <span class="text-lg">🌐</span>
+              <div>
+                <p class="text-sm font-semibold text-mm-300">USA / Canada Crisis Lifeline</p>
+                <p class="text-lg font-bold text-white">Call or Text 988</p>
+                <p class="text-xs text-slate-400">Free, confidential support 24/7</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 p-3 rounded-lg bg-mm-600/10 border border-mm-400/20">
+              <span class="text-lg">🌐</span>
+              <div>
+                <p class="text-sm font-semibold text-mm-300">Global Helpline Directory</p>
+                <p class="text-sm font-bold text-white">findahelpline.com</p>
+                <p class="text-xs text-slate-400">Free crisis helplines in 130+ countries</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PAGE: SETTINGS                                                      -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <section id="page-settings" class="page hidden">
+    <div class="max-w-3xl mx-auto px-4 py-8">
+      <h2 class="text-2xl font-bold gradient-text mb-2">Settings</h2>
+      <p class="text-sm text-slate-400 mb-8">Configure DARSHIL'S AI.</p>
+
+      <div class="space-y-4">
+        <!-- AI Configuration -->
+        <div class="glass rounded-2xl p-6">
+          <h3 class="font-semibold text-base mb-4">🤖 AI Provider Configuration</h3>
+          <div class="space-y-3">
+            <p class="text-xs text-slate-500 leading-relaxed">API keys are set in <code class="bg-mm-900 px-1 rounded">backend/.env</code>. Get a free Gemini key at <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-mm-400 underline">aistudio.google.com</a> (free tier: 1500 req/day).</p>
+            <div>
+              <label class="text-sm text-slate-300 font-medium">Provider</label>
+              <select id="settings-provider" class="w-full mt-1 bg-mm-900/50 border border-mm-400/20 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none">
+                <option value="gemini">Google Gemini (Free)</option>
+                <option value="groq">Groq (Free)</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm text-slate-300 font-medium">Model</label>
+              <select id="settings-model" class="w-full mt-1 bg-mm-900/50 border border-mm-400/20 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none">
+                <option value="gemini-1.5-flash">gemini-1.5-flash (Gemini, recommended free)</option>
+                <option value="gemini-1.5-pro">gemini-1.5-pro (Gemini, more capable)</option>
+                <option value="llama3-8b-8192">llama3-8b-8192 (Groq)</option>
+                <option value="llama3-70b-8192">llama3-70b-8192 (Groq, larger)</option>
+                <option value="mixtral-8x7b-32768">mixtral-8x7b-32768 (Groq)</option>
+              </select>
+            </div>
+            <button onclick="saveAiConfig()" class="px-6 py-2 bg-mm-600 text-white rounded-lg font-medium hover:bg-mm-500 transition">Check Connection Status</button>
+            <p id="settings-ai-status" class="text-xs text-slate-500"></p>
+          </div>
+        </div>
+
+        <!-- Data Management -->
+        <div class="glass rounded-2xl p-6">
+          <h3 class="font-semibold text-base mb-4">🗑️ Data Management</h3>
+          <p class="text-sm text-slate-400 mb-3">All data is stored locally in your browser. Clear it anytime.</p>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="clearMoodHistory()" class="px-4 py-2 border border-red-400/20 text-red-400 rounded-lg text-sm hover:bg-red-400/10 transition">Clear Mood Data</button>
+            <button onclick="clearJournals()" class="px-4 py-2 border border-red-400/20 text-red-400 rounded-lg text-sm hover:bg-red-400/10 transition">Clear Reflections</button>
+            <button onclick="clearHabits()" class="px-4 py-2 border border-red-400/20 text-red-400 rounded-lg text-sm hover:bg-red-400/10 transition">Clear Habits</button>
+            <button onclick="clearAllData()" class="px-4 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-500 transition">Clear ALL Data</button>
+          </div>
+        </div>
+
+        <!-- Onboarding Profile (optional) -->
+        <div class="glass rounded-2xl p-6">
+          <h3 class="font-semibold text-base mb-4">👤 Personal Profile (Optional)</h3>
+          <p class="text-sm text-slate-400 mb-3">Help DARSHIL'S AI personalize responses. Nothing is shared externally.</p>
+          <div class="space-y-3">
+            <div>
+              <label class="text-sm text-slate-300 font-medium">Age Group</label>
+              <select id="profile-age" class="w-full mt-1 bg-mm-900/50 border border-mm-400/20 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none">
+                <option value="">Prefer not to say</option>
+                <option value="13-17">13–17 (School student)</option>
+                <option value="18-22">18–22 (College / University)</option>
+                <option value="23-30">23–30 (Young professional)</option>
+                <option value="30+">30+</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm text-slate-300 font-medium">Student Status</label>
+              <select id="profile-student" class="w-full mt-1 bg-mm-900/50 border border-mm-400/20 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none">
+                <option value="">Prefer not to say</option>
+                <option value="school">School student</option>
+                <option value="college">College / University student</option>
+                <option value="postgrad">Postgraduate</option>
+                <option value="working">Working professional</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm text-slate-300 font-medium">Communication Style Preference</label>
+              <select id="profile-style" class="w-full mt-1 bg-mm-900/50 border border-mm-400/20 rounded-lg px-3 py-2 text-sm text-slate-200 outline-none">
+                <option value="balanced">Balanced (default)</option>
+                <option value="direct">Direct and to the point</option>
+                <option value="gentle">Gentle and encouraging</option>
+                <option value="analytical">Analytical and detailed</option>
+              </select>
+            </div>
+            <button onclick="saveProfile()" class="px-6 py-2 bg-mm-600 text-white rounded-lg font-medium hover:bg-mm-500 transition">Save Profile</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /app -->
+
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<!-- JAVASCRIPT — All App Logic                                            -->
+<!-- ═══════════════════════════════════════════════════════════════════════ -->
+<script>
+// ── CONFIG ──
+// Auto-detect backend URL: same origin when deployed, localhost in dev.
+const API = (() => {
+  const h = window.location.hostname;
+  // If opened as a local file (file://) or localhost, hit local backend
+  if (!h || h === 'localhost' || h === '127.0.0.1') return 'http://localhost:3001';
+  // When deployed online, backend is at same origin (e.g. Railway, Render)
+  return window.location.origin;
+})();
+let currentPage = 'landing';
+let sessionId = 'session-' + Date.now();
+let currentLanguage = 'english';
+let isLoading = false;
+let lastUserMessage = '';
+
+// Breathing state
+let breathingInterval = null;
+let breathingType = null;
+let breathingRunning = false;
+
+// ── NAVIGATION ──
+function navigate(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+  const el = document.getElementById('page-' + page);
+  if (el) { el.classList.remove('hidden'); currentPage = page; }
+  window.scrollTo(0, 0);
+  if (page === 'mood') renderMoodHistory();
+  if (page === 'growth') renderHabits();
+  if (page === 'reflect') renderJournals();
+}
+
+function toggleMobileMenu() {
+  document.getElementById('mobile-menu').classList.toggle('hidden');
+}
+
+// ── THEME ──
+function toggleTheme() {
+  document.documentElement.classList.toggle('dark');
+  const icon = document.getElementById('theme-icon');
+  if (document.documentElement.classList.contains('dark')) {
+    icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646Z"/>';
+  } else {
+    icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>';
+  }
+  localStorage.setItem('mm-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+}
+
+// ── AI STATUS CHECK ──
+async function checkAiStatus() {
+  try {
+    const r = await fetch(API + '/api/ai/status');
+    const d = await r.json();
+    const dot = document.getElementById('ai-dot');
+    const label = document.getElementById('ai-label');
+    if (d.online) {
+      dot.className = 'w-2 h-2 rounded-full bg-green-500';
+      label.textContent = d.model || 'Online';
+      label.className = 'text-green-400';
+    } else {
+      dot.className = 'w-2 h-2 rounded-full bg-red-500';
+      label.textContent = 'Offline';
+      label.className = 'text-red-400';
+    }
+    return d.online;
+  } catch {
+    const dot = document.getElementById('ai-dot');
+    const label = document.getElementById('ai-label');
+    dot.className = 'w-2 h-2 rounded-full bg-yellow-500';
+    label.textContent = 'Backend N/A';
+    label.className = 'text-yellow-400';
+    return false;
+  }
+}
+
+// ── CHAT ──
+function setLanguage(lang) { currentLanguage = lang; }
+
+function handleChatKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function autoResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+  document.getElementById('send-btn').disabled = !el.value.trim();
+}
+
+function sendSuggested(text) {
+  document.getElementById('chat-input').value = text;
+  document.getElementById('send-btn').disabled = false;
+  sendMessage();
+}
+
+function startModuleChat(moduleName, opener) {
+  navigate('chat');
+  document.getElementById('chat-input').value = opener;
+  document.getElementById('send-btn').disabled = false;
+  sendMessage();
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim();
+  if (!msg || isLoading) return;
+
+  lastUserMessage = msg;
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('send-btn').disabled = true;
+
+  // Render user bubble
+  appendMessage('user', msg);
+
+  // Show typing
+  isLoading = true;
+  document.getElementById('typing-indicator').classList.remove('hidden');
+  document.getElementById('chat-status').textContent = 'Thinking…';
+
+  const profile = getProfile();
+
+  try {
+    const r = await fetch(API + '/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: msg, sessionId, language: currentLanguage, profile })
+    });
+    const d = await r.json();
+
+    if (d.error) {
+      appendMessage('assistant', '⚠️ ' + d.error, true);
+    } else if (d.offline) {
+      appendMessage('assistant', '🔑 **AI Not Configured** — ' + d.offlineMessage + '\n\nTo enable AI chat:\n1. Get a free Gemini API key at **aistudio.google.com/app/apikey**\n2. Copy `backend/.env.example` to `backend/.env`\n3. Paste your key as `GEMINI_API_KEY=your_key_here`\n4. Restart the backend: `node server.js`\n\nAll wellness tools (breathing, mood tracker, thought reframer, journaling, habits) work right now without an API key.', false, true);
+    } else if (d.isCrisis) {
+      appendMessage('assistant', d.reply, false, false, true);
+    } else if (d.reply) {
+      appendMessage('assistant', d.reply);
+    }
+  } catch (err) {
+    appendMessage('assistant', '⚠️ Could not reach DARSHIL\'S AI backend. Make sure the server is running (`node server.js` in the `backend` folder).\n\nError: ' + err.message, true);
+  }
+
+  isLoading = false;
+  document.getElementById('typing-indicator').classList.add('hidden');
+  document.getElementById('chat-status').textContent = 'Ready to listen';
+}
+
+function appendMessage(role, text, isError = false, isOffline = false, isCrisis = false) {
+  const container = document.getElementById('chat-messages');
+  const wrapper = document.createElement('div');
+  wrapper.className = 'fade-in flex gap-3' + (role === 'user' ? ' justify-end' : '');
+
+  const formatted = formatMarkdown(text);
+
+  if (role === 'user') {
+    wrapper.innerHTML = `
+      <div class="bg-mm-600/30 border border-mm-400/20 rounded-2xl rounded-tr-md px-4 py-3 max-w-[85%]">
+        <p class="text-sm text-slate-200">${escapeHtml(text)}</p>
+      </div>`;
+  } else {
+    const borderClass = isCrisis ? 'border-red-500/30' : isError ? 'border-yellow-500/30' : isOffline ? 'border-yellow-500/20' : '';
+    wrapper.innerHTML = `
+      <div class="w-8 h-8 shrink-0 rounded-lg bg-gradient-to-tr from-mm-600 to-purple-500 flex items-center justify-center mt-1"><span class="text-sm">🧠</span></div>
+      <div class="glass ${borderClass} rounded-2xl rounded-tl-md px-4 py-3 max-w-[85%]">
+        <div class="text-sm text-slate-200 chat-msg">${formatted}</div>
+        <div class="flex gap-2 mt-2 pt-2 border-t border-mm-400/10">
+          <button onclick="copyMessage(this)" class="text-xs text-slate-500 hover:text-mm-400 transition">📋 Copy</button>
+          <button onclick="regenerate()" class="text-xs text-slate-500 hover:text-mm-400 transition">🔄 Regenerate</button>
+        </div>
+      </div>`;
+  }
+
+  container.appendChild(wrapper);
+  container.scrollTop = container.scrollHeight;
+}
+
+function formatMarkdown(text) {
+  if (!text) return '';
+  let html = escapeHtml(text);
+  // Bold
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  // Italic
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  // Links
+  html = html.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  html = html.replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+  // Line breaks
+  html = html.replace(/\n/g, '<br>');
+  return html;
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function copyMessage(btn) {
+  const msg = btn.closest('.chat-msg, div').parentElement.querySelector('.chat-msg');
+  if (msg) {
+    navigator.clipboard.writeText(msg.textContent).then(() => {
+      btn.textContent = '✅ Copied!';
+      setTimeout(() => btn.textContent = '📋 Copy', 1500);
+    });
+  }
+}
+
+function regenerate() {
+  if (lastUserMessage && !isLoading) {
+    document.getElementById('chat-input').value = lastUserMessage;
+    document.getElementById('send-btn').disabled = false;
+    sendMessage();
+  }
+}
+
+function newChat() {
+  sessionId = 'session-' + Date.now();
+  const container = document.getElementById('chat-messages');
+  // Keep only the welcome message (first child)
+  while (container.children.length > 1) {
+    container.removeChild(container.lastChild);
+  }
+  fetch(API + '/api/chat/clear', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ sessionId })
+  }).catch(() => {});
+}
+
+function clearChat() {
+  if (confirm('Clear all messages in this chat?')) {
+    newChat();
+  }
+}
+
+// ── MOOD TRACKER ──
+let selectedMood = null;
+
+function selectMood(btn, emoji, label) {
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('border-mm-400', 'bg-mm-600/20'));
+  btn.classList.add('border-mm-400', 'bg-mm-600/20');
+  selectedMood = { emoji, label };
+  document.getElementById('mood-extra').classList.remove('hidden');
+}
+
+document.getElementById('mood-intensity')?.addEventListener('input', function() {
+  document.getElementById('intensity-val').textContent = this.value;
+});
+
+function saveMood() {
+  if (!selectedMood) return;
+  const entry = {
+    ...selectedMood,
+    intensity: document.getElementById('mood-intensity').value,
+    trigger: document.getElementById('mood-trigger').value,
+    time: new Date().toLocaleString()
+  };
+  const history = JSON.parse(localStorage.getItem('mm-moods') || '[]');
+  history.unshift(entry);
+  localStorage.setItem('mm-moods', JSON.stringify(history.slice(0, 100)));
+
+  // Reset
+  selectedMood = null;
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('border-mm-400', 'bg-mm-600/20'));
+  document.getElementById('mood-extra').classList.add('hidden');
+  document.getElementById('mood-trigger').value = '';
+  document.getElementById('mood-intensity').value = 5;
+  document.getElementById('intensity-val').textContent = '5';
+
+  renderMoodHistory();
+  alert('Mood saved! 💙');
+}
+
+function renderMoodHistory() {
+  const container = document.getElementById('mood-history');
+  const history = JSON.parse(localStorage.getItem('mm-moods') || '[]');
+  if (!history.length) {
+    container.innerHTML = '<p class="text-sm text-slate-500 text-center py-4">No entries yet. Record your first mood above!</p>';
+    return;
+  }
+  container.innerHTML = history.map((m, i) => `
+    <div class="flex items-center gap-3 p-3 rounded-lg bg-mm-900/30 border border-mm-400/10 fade-in">
+      <span class="text-2xl">${m.emoji}</span>
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-medium">${m.label}</span>
+          <span class="text-xs text-slate-500">intensity ${m.intensity}/10</span>
+        </div>
+        ${m.trigger ? `<p class="text-xs text-slate-400 truncate">${escapeHtml(m.trigger)}</p>` : ''}
+        <p class="text-xs text-slate-600">${m.time}</p>
+      </div>
+      <button onclick="deleteMood(${i})" class="text-xs text-red-400/50 hover:text-red-400 transition">✕</button>
+    </div>
+  `).join('');
+}
+
+function deleteMood(index) {
+  const history = JSON.parse(localStorage.getItem('mm-moods') || '[]');
+  history.splice(index, 1);
+  localStorage.setItem('mm-moods', JSON.stringify(history));
+  renderMoodHistory();
+}
+
+function clearMoodHistory() {
+  if (confirm('Clear all mood entries?')) {
+    localStorage.removeItem('mm-moods');
+    renderMoodHistory();
+  }
+}
+
+// ── BREATHING EXERCISES ──
+function startBreathing(type) {
+  breathingType = type;
+  document.querySelectorAll('.breath-type-btn').forEach(b => b.classList.remove('bg-mm-600/20', 'border-mm-400'));
+  event.target.classList.add('bg-mm-600/20', 'border-mm-400');
+  document.getElementById('breath-start-btn').classList.remove('hidden');
+  document.getElementById('breath-stop-btn').classList.add('hidden');
+
+  const instructions = {
+    '4-7-8': 'Breathe in for 4 seconds, hold for 7, exhale for 8. Calms the nervous system.',
+    'box': 'Breathe in 4s, hold 4s, out 4s, hold 4s. Used by Navy SEALs for focus.',
+    'simple': 'Deep breath in for 4 seconds, slow exhale for 6 seconds. Simple and effective.'
+  };
+  document.getElementById('breath-instruction').textContent = instructions[type];
+  document.getElementById('breath-text').textContent = 'Ready';
+}
+
+function toggleBreathing() {
+  if (breathingRunning) { stopBreathing(); return; }
+  breathingRunning = true;
+  document.getElementById('breath-start-btn').textContent = 'Pause';
+  document.getElementById('breath-stop-btn').classList.remove('hidden');
+
+  const circle = document.getElementById('breath-circle');
+  const text = document.getElementById('breath-text');
+
+  const patterns = {
+    '4-7-8': [
+      { phase: 'Breathe In', duration: 4000, scale: 1.5 },
+      { phase: 'Hold', duration: 7000, scale: 1.5 },
+      { phase: 'Breathe Out', duration: 8000, scale: 1 }
+    ],
+    'box': [
+      { phase: 'Breathe In', duration: 4000, scale: 1.5 },
+      { phase: 'Hold', duration: 4000, scale: 1.5 },
+      { phase: 'Breathe Out', duration: 4000, scale: 1 },
+      { phase: 'Hold', duration: 4000, scale: 1 }
+    ],
+    'simple': [
+      { phase: 'Breathe In', duration: 4000, scale: 1.5 },
+      { phase: 'Breathe Out', duration: 6000, scale: 1 }
+    ]
+  };
+
+  const pattern = patterns[breathingType] || patterns['simple'];
+  let stepIndex = 0;
+
+  function runStep() {
+    if (!breathingRunning) return;
+    const step = pattern[stepIndex % pattern.length];
+    text.textContent = step.phase;
+    circle.style.transform = `scale(${step.scale})`;
+    circle.style.borderColor = step.scale > 1 ? 'rgba(129,140,248,0.6)' : 'rgba(129,140,248,0.3)';
+
+    // Countdown
+    let seconds = Math.ceil(step.duration / 1000);
+    const countInterval = setInterval(() => {
+      if (!breathingRunning) { clearInterval(countInterval); return; }
+      seconds--;
+      if (seconds > 0) text.textContent = step.phase + ' ' + seconds;
+    }, 1000);
+
+    breathingInterval = setTimeout(() => {
+      clearInterval(countInterval);
+      stepIndex++;
+      runStep();
+    }, step.duration);
+  }
+
+  runStep();
+}
+
+function stopBreathing() {
+  breathingRunning = false;
+  clearTimeout(breathingInterval);
+  document.getElementById('breath-circle').style.transform = 'scale(1)';
+  document.getElementById('breath-text').textContent = 'Paused';
+  document.getElementById('breath-start-btn').textContent = 'Start';
+  document.getElementById('breath-stop-btn').classList.add('hidden');
+}
+
+function completeGrounding() {
+  document.getElementById('grounding-result').classList.remove('hidden');
+  setTimeout(() => document.getElementById('grounding-result').classList.add('hidden'), 5000);
+}
+
+// ── CBT THOUGHT REFRAMER ──
+function saveCbtEntry() {
+  const thought = document.getElementById('cbt-thought').value.trim();
+  const distortion = document.getElementById('cbt-distortion').value;
+  const reframe = document.getElementById('cbt-reframe').value.trim();
+  if (!thought) { alert('Please enter the automatic thought.'); return; }
+
+  const entry = { thought, distortion, reframe, time: new Date().toLocaleString() };
+  const history = JSON.parse(localStorage.getItem('mm-cbt') || '[]');
+  history.unshift(entry);
+  localStorage.setItem('mm-cbt', JSON.stringify(history.slice(0, 50)));
+
+  document.getElementById('cbt-thought').value = '';
+  document.getElementById('cbt-distortion').value = '';
+  document.getElementById('cbt-reframe').value = '';
+  alert('Thought reframe saved! Great self-awareness work. 💙');
+}
+
+// ── DAILY JOURNAL ──
+function saveJournal() {
+  const good = document.getElementById('journal-good').value.trim();
+  const hard = document.getElementById('journal-hard').value.trim();
+  const grateful = document.getElementById('journal-grateful').value.trim();
+  if (!good && !hard && !grateful) { alert('Write at least one reflection.'); return; }
+
+  const entry = { good, hard, grateful, time: new Date().toLocaleString() };
+  const history = JSON.parse(localStorage.getItem('mm-journals') || '[]');
+  history.unshift(entry);
+  localStorage.setItem('mm-journals', JSON.stringify(history.slice(0, 100)));
+
+  document.getElementById('journal-good').value = '';
+  document.getElementById('journal-hard').value = '';
+  document.getElementById('journal-grateful').value = '';
+  renderJournals();
+  alert('Reflection saved! 📝');
+}
+
+function renderJournals() {
+  const container = document.getElementById('journal-history');
+  const history = JSON.parse(localStorage.getItem('mm-journals') || '[]');
+  if (!history.length) {
+    container.innerHTML = '<p class="text-sm text-slate-500 text-center py-4">No reflections yet. Start journaling above!</p>';
+    return;
+  }
+  container.innerHTML = history.map((j, i) => `
+    <div class="p-3 rounded-lg bg-mm-900/30 border border-mm-400/10 fade-in">
+      <div class="flex justify-between items-center mb-2">
+        <span class="text-xs text-slate-500">${j.time}</span>
+        <button onclick="deleteJournal(${i})" class="text-xs text-red-400/50 hover:text-red-400">✕</button>
+      </div>
+      ${j.good ? `<p class="text-xs text-slate-300">✅ <strong>Good:</strong> ${escapeHtml(j.good)}</p>` : ''}
+      ${j.hard ? `<p class="text-xs text-slate-300">💪 <strong>Hard:</strong> ${escapeHtml(j.hard)}</p>` : ''}
+      ${j.grateful ? `<p class="text-xs text-slate-300">🙏 <strong>Grateful:</strong> ${escapeHtml(j.grateful)}</p>` : ''}
+    </div>
+  `).join('');
+}
+
+function deleteJournal(i) {
+  const h = JSON.parse(localStorage.getItem('mm-journals') || '[]');
+  h.splice(i, 1);
+  localStorage.setItem('mm-journals', JSON.stringify(h));
+  renderJournals();
+}
+
+function clearJournals() {
+  if (confirm('Clear all reflections?')) {
+    localStorage.removeItem('mm-journals');
+    localStorage.removeItem('mm-cbt');
+    renderJournals();
+  }
+}
+
+// ── HABITS & GOALS ──
+function addHabit() {
+  const input = document.getElementById('habit-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const habits = JSON.parse(localStorage.getItem('mm-habits') || '[]');
+  habits.push({ text, done: false, createdAt: new Date().toISOString() });
+  localStorage.setItem('mm-habits', JSON.stringify(habits));
+  input.value = '';
+  renderHabits();
+}
+
+function toggleHabit(i) {
+  const habits = JSON.parse(localStorage.getItem('mm-habits') || '[]');
+  habits[i].done = !habits[i].done;
+  localStorage.setItem('mm-habits', JSON.stringify(habits));
+
+  // Check streaks
+  const allDone = habits.length > 0 && habits.every(h => h.done);
+  if (allDone) {
+    const streaks = JSON.parse(localStorage.getItem('mm-streaks') || '{"current":0,"best":0,"lastDate":""}');
+    const today = new Date().toDateString();
+    if (streaks.lastDate !== today) {
+      streaks.current++;
+      streaks.best = Math.max(streaks.best, streaks.current);
+      streaks.lastDate = today;
+      localStorage.setItem('mm-streaks', JSON.stringify(streaks));
+    }
+  }
+  renderHabits();
+}
+
+function deleteHabit(i) {
+  const habits = JSON.parse(localStorage.getItem('mm-habits') || '[]');
+  habits.splice(i, 1);
+  localStorage.setItem('mm-habits', JSON.stringify(habits));
+  renderHabits();
+}
+
+function renderHabits() {
+  const container = document.getElementById('habits-list');
+  const habits = JSON.parse(localStorage.getItem('mm-habits') || '[]');
+  const streaks = JSON.parse(localStorage.getItem('mm-streaks') || '{"current":0,"best":0}');
+
+  document.getElementById('streak-count').textContent = streaks.current;
+  document.getElementById('best-streak').textContent = streaks.best;
+
+  const done = habits.filter(h => h.done).length;
+  document.getElementById('habits-score').textContent = `${done}/${habits.length} done`;
+
+  if (!habits.length) {
+    container.innerHTML = '<p class="text-sm text-slate-500 text-center py-4">No habits yet. Add your first tiny goal above!</p>';
+    return;
+  }
+  container.innerHTML = habits.map((h, i) => `
+    <div class="flex items-center gap-3 p-3 rounded-lg bg-mm-900/30 border border-mm-400/10">
+      <button onclick="toggleHabit(${i})" class="w-6 h-6 rounded-md border ${h.done ? 'bg-green-600 border-green-500' : 'border-mm-400/30'} flex items-center justify-center transition">
+        ${h.done ? '<span class="text-xs text-white">✓</span>' : ''}
+      </button>
+      <span class="flex-1 text-sm ${h.done ? 'line-through text-slate-500' : 'text-slate-200'}">${escapeHtml(h.text)}</span>
+      <button onclick="deleteHabit(${i})" class="text-xs text-red-400/50 hover:text-red-400 transition">✕</button>
+    </div>
+  `).join('');
+}
+
+function clearHabits() {
+  if (confirm('Clear all habits and streaks?')) {
+    localStorage.removeItem('mm-habits');
+    localStorage.removeItem('mm-streaks');
+    renderHabits();
+  }
+}
+
+// ── SETTINGS ──
+function getProfile() {
+  return JSON.parse(localStorage.getItem('mm-profile') || 'null');
+}
+
+function saveProfile() {
+  const profile = {
+    ageGroup: document.getElementById('profile-age').value,
+    studentStatus: document.getElementById('profile-student').value,
+    commStyle: document.getElementById('profile-style').value
+  };
+  localStorage.setItem('mm-profile', JSON.stringify(profile));
+  alert('Profile saved! DARSHIL\'S AI will personalize responses. 💙');
+}
+
+async function saveAiConfig() {
+  const provider = document.getElementById('settings-provider')?.value || 'gemini';
+  const model    = document.getElementById('settings-model').value;
+  const statusEl = document.getElementById('settings-ai-status');
+  statusEl.textContent = 'Checking connection…';
+  statusEl.className = 'text-xs text-yellow-400';
+
+  try {
+    // Update config on backend
+    await fetch(API + '/api/ai/config', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ provider, [provider === 'groq' ? 'groqModel' : 'geminiModel']: model })
+    });
+    // Now check actual status
+    const online = await checkAiStatus();
+    statusEl.textContent = online
+      ? `✅ ${provider.toUpperCase()} connected — model: ${model}`
+      : `⚠️ Backend reachable but AI key not set. Add GEMINI_API_KEY (or GROQ_API_KEY) to backend/.env and restart.`;
+    statusEl.className = online ? 'text-xs text-green-400' : 'text-xs text-yellow-400';
+  } catch (err) {
+    statusEl.textContent = '❌ Cannot reach backend: ' + err.message;
+    statusEl.className = 'text-xs text-red-400';
+  }
+}
+
+function clearAllData() {
+  if (confirm('This will delete ALL your local data (moods, reflections, habits, profile). Continue?')) {
+    localStorage.removeItem('mm-moods');
+    localStorage.removeItem('mm-journals');
+    localStorage.removeItem('mm-cbt');
+    localStorage.removeItem('mm-habits');
+    localStorage.removeItem('mm-streaks');
+    localStorage.removeItem('mm-profile');
+    alert('All data cleared.');
+  }
+}
+
+// ── INIT ──
+(function init() {
+  // Restore theme
+  const theme = localStorage.getItem('mm-theme');
+  if (theme === 'light') document.documentElement.classList.remove('dark');
+
+  // Restore profile to settings form
+  const profile = getProfile();
+  if (profile) {
+    if (profile.ageGroup) document.getElementById('profile-age').value = profile.ageGroup;
+    if (profile.studentStatus) document.getElementById('profile-student').value = profile.studentStatus;
+    if (profile.commStyle) document.getElementById('profile-style').value = profile.commStyle;
+  }
+
+  // Check AI status
+  checkAiStatus();
+  setInterval(checkAiStatus, 30000);
+
+  // Enable send on input
+  document.getElementById('chat-input').addEventListener('input', function() {
+    document.getElementById('send-btn').disabled = !this.value.trim();
+  });
+})();
+</script>
+</body>
+</html>
