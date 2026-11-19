@@ -16,7 +16,7 @@ function detectProvider() {
 const DEFAULT_CONFIG = {
   provider: detectProvider(),
   // Gemini defaults
-  geminiModel:  process.env.GEMINI_MODEL  || 'gemini-2.5-flash',
+  geminiModel:  process.env.GEMINI_MODEL  || 'gemini-3.8-flash',
   geminiApiKey: GEMINI_KEY,
   // Groq defaults
   groqModel:    process.env.GROQ_MODEL    || 'llama3-8b-8192',
