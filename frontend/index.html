@@ -81,6 +81,7 @@
         <button onclick="navigate('mood')" class="hover:text-calm-300 transition">Mood</button>
         <button onclick="navigate('growth')" class="hover:text-calm-300 transition">Habits</button>
         <button onclick="navigate('safety')" class="hover:text-calm-300 transition">Safety</button>
+        <button onclick="navigate('about')" class="hover:text-calm-300 transition flex items-center gap-1"><span>✨</span> About AI</button>
       </div>
       <div class="flex items-center gap-2">
         <div id="ai-badge" class="hidden md:flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border border-calm-400/20 bg-calm-900/60">
@@ -103,6 +104,7 @@
       <button onclick="navigate('mood');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-calm-800/60">😊 Mood Check-In</button>
       <button onclick="navigate('growth');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-calm-800/60">🌱 Habits</button>
       <button onclick="navigate('safety');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-calm-800/60">🔒 Safety</button>
+      <button onclick="navigate('about');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-calm-800/60">✨ About AI</button>
     </div>
   </nav>
 
@@ -460,7 +462,72 @@
       </div>
     </div>
   </section>
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PAGE: ABOUT AI (OVERVIEW)                                           -->
+  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <section id="page-about" class="page hidden">
+    <div class="max-w-4xl mx-auto px-4 py-10 fade-in">
+      <div class="text-center mb-10">
+        <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-calm-600/30 border border-calm-300/30 flex items-center justify-center">
+          <span class="text-2xl">✨</span>
+        </div>
+        <h2 class="text-3xl font-bold gradient-text mb-2">About DARSHIL'S AI</h2>
+        <p class="text-sm text-slate-400 max-w-xl mx-auto">Your calm, psychology-grounded companion designed to help you think clearly, feel lighter, and take control of your mind.</p>
+      </div>
 
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+        <!-- Why Use It -->
+        <div class="glass rounded-2xl p-6">
+          <h3 class="font-semibold text-base text-cream mb-3 flex items-center gap-2"><span>💡</span> Why Should You Use It?</h3>
+          <ul class="space-y-2 text-sm text-slate-300">
+            <li>• <strong>Zero Judgment, 24/7:</strong> Share thoughts you can't easily tell anyone else.</li>
+            <li>• <strong>100% Private & Anonymous:</strong> No login, no account, no tracking.</li>
+            <li>• <strong>Speaks Your Language:</strong> Chat naturally in English, Hindi, or Hinglish.</li>
+            <li>• <strong>Built for Calmness:</strong> Soft colors and simple design that never overwhelm your eyes.</li>
+          </ul>
+        </div>
+
+        <!-- Power of This AI -->
+        <div class="glass rounded-2xl p-6">
+          <h3 class="font-semibold text-base text-cream mb-3 flex items-center gap-2"><span>⚡</span> The Power Behind It</h3>
+          <ul class="space-y-2 text-sm text-slate-300">
+            <li>• <strong>100+ Psychology Books Brain:</strong> Grounded in CBT, Stoicism, Habit Science, and Emotional Intelligence.</li>
+            <li>• <strong>Real Clarity, Not Clichés:</strong> No fake "just stay positive" lines—only practical, human advice.</li>
+            <li>• <strong>Voice Playback (🔊):</strong> Too tired to read? Tap Listen and let the AI talk you through it.</li>
+            <li>• <strong>Always-On Engine:</strong> Dual-AI reliability so it's ready whenever you need support.</li>
+          </ul>
+        </div>
+
+        <!-- What Help Will It Do -->
+        <div class="glass rounded-2xl p-6">
+          <h3 class="font-semibold text-base text-cream mb-3 flex items-center gap-2"><span>🤝</span> What It Helps You With</h3>
+          <ul class="space-y-2 text-sm text-slate-300">
+            <li>• <strong>Overthinking & Anxiety:</strong> Break endless mental loops before they drain your day.</li>
+            <li>• <strong>Student & Career Stress:</strong> Handle exam pressure, procrastination, and focus issues.</li>
+            <li>• <strong>Emotional Clarity:</strong> Understand loneliness, anger, self-doubt, or relationship confusion.</li>
+            <li>• <strong>Better Daily Habits:</strong> Build small, realistic 1% steps that actually stick.</li>
+          </ul>
+        </div>
+
+        <!-- How It Helps -->
+        <div class="glass rounded-2xl p-6">
+          <h3 class="font-semibold text-base text-cream mb-3 flex items-center gap-2"><span>🧭</span> How It Works</h3>
+          <ul class="space-y-2 text-sm text-slate-300">
+            <li>• <strong>1. Chat Freely:</strong> Vent or ask anything—get calm, step-by-step guidance.</li>
+            <li>• <strong>2. 4-Step Clarity Flow:</strong> Write your problem, negative thought, positive side & solution—AI untangles it all.</li>
+            <li>• <strong>3. Breathe & Ground:</strong> Use the 4-4-6 slow breathing timer & 3-2-1 grounding offline anytime.</li>
+            <li>• <strong>4. 1-Tap Mood Check-In:</strong> Log your mood and get an instant soothing tip.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <button onclick="navigate('chat')" class="px-8 py-3 bg-calm-500 hover:bg-calm-400 text-white rounded-xl font-semibold text-sm shadow-lg transition">
+          Start Talking to DARSHIL'S AI →
+        </button>
+      </div>
+    </div>
+  </section>
 </div><!-- /app -->
 
 <script>
