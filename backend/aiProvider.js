@@ -1,9 +1,6 @@
-// DARSHIL'S AI — AI Provider Abstraction Layer
-// Supports Google Gemini API and Groq API via env vars.
-// Zero extra npm dependencies — uses Node 18+ built-in fetch.
+// DARSHIL'S AI — Fast & Reliable AI Provider Layer
+// Priority: gemini-3.8-flash → instant 10s fallback to gemini-2.5-flash → gemini-2.0-flash → Groq
 
-// ── Provider detection ──────────────────────────────────────────────────────
-// Priority: GEMINI_API_KEY → GROQ_API_KEY → offline
 const GEMINI_KEY = process.env.GEMINI_API_KEY || '';
 const GROQ_KEY   = process.env.GROQ_API_KEY   || '';
 
@@ -15,10 +12,8 @@ function detectProvider() {
 
 const DEFAULT_CONFIG = {
   provider: detectProvider(),
-  // Gemini defaults
   geminiModel:  process.env.GEMINI_MODEL  || 'gemini-3.8-flash',
   geminiApiKey: GEMINI_KEY,
-  // Groq defaults
   groqModel:    process.env.GROQ_MODEL    || 'llama-3.3-70b-versatile',
   groqApiKey:   GROQ_KEY,
 };
@@ -41,7 +36,6 @@ function getConfig() {
   };
 }
 
-// ── Health check ────────────────────────────────────────────────────────────
 async function checkProviderHealth() {
   const p = currentConfig.provider;
   if (p === 'gemini' && currentConfig.geminiApiKey) return { online: true, provider: 'gemini', model: currentConfig.geminiModel };
@@ -49,10 +43,28 @@ async function checkProviderHealth() {
   return { online: false, provider: 'offline', model: null };
 }
 
-// Helper: wait ms
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+// ── Call a specific Gemini model (10s fast timeout) ─────────────────────────
+async function callGeminiModel(modelName, body) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${currentConfig.geminiApiKey}`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(10000),
+  });
 
-// ── Gemini API call (with Auto-Retry for 503/429) ───────────────────────────
+  const data = await res.json();
+  if (!res.ok) {
+    const errMsg = data?.error?.message || JSON.stringify(data);
+    throw new Error(`Gemini (${modelName}) error ${res.status}: ${errMsg}`);
+  }
+
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error(`Gemini (${modelName}) returned empty response.`);
+  return text;
+}
+
+// ── Gemini API with instant model fallback ──────────────────────────────────
 async function chatWithGemini(messages) {
   const systemMsg = messages.find(m => m.role === 'system');
   const chatMsgs  = messages.filter(m => m.role !== 'system');
@@ -78,40 +90,18 @@ async function chatWithGemini(messages) {
     ],
   };
 
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${currentConfig.geminiModel}:generateContent?key=${currentConfig.geminiApiKey}`;
+  const modelsToTry = [...new Set([
+    currentConfig.geminiModel, // Pehle 3.8-flash try karega
+    'gemini-2.5-flash',        // Atka toh turant 2.5-flash
+    'gemini-2.0-flash'         // Final backup
+  ])];
 
   let lastError;
-  for (let attempt = 1; attempt <= 3; attempt++) {
+  for (const model of modelsToTry) {
     try {
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body),
-        signal: AbortSignal.timeout(45000),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        const errMsg = data?.error?.message || JSON.stringify(data);
-        // Retry automatically on temporary overload (503) or rate limit (429)
-        if ((res.status === 503 || res.status === 429) && attempt < 3) {
-          await sleep(1500 * attempt);
-          continue;
-        }
-        throw new Error(`Gemini API error (${res.status}): ${errMsg}`);
-      }
-
-      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-      if (!text) throw new Error('Gemini returned an empty response. Check your API key and quota.');
-      return text;
+      return await callGeminiModel(model, body);
     } catch (err) {
       lastError = err;
-      if (attempt < 3 && (err.name === 'TimeoutError' || err.message.includes('503'))) {
-        await sleep(1500 * attempt);
-        continue;
-      }
-      throw err;
     }
   }
   throw lastError;
@@ -119,9 +109,7 @@ async function chatWithGemini(messages) {
 
 // ── Groq API call ───────────────────────────────────────────────────────────
 async function chatWithGroq(messages) {
-  const url = 'https://api.groq.com/openai/v1/chat/completions';
-
-  const res = await fetch(url, {
+  const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -134,29 +122,26 @@ async function chatWithGroq(messages) {
       max_tokens: 1024,
       top_p: 0.9,
     }),
-    signal: AbortSignal.timeout(45000),
+    signal: AbortSignal.timeout(15000),
   });
 
   const data = await res.json();
-
   if (!res.ok) {
-    const errMsg = data?.error?.message || JSON.stringify(data);
-    throw new Error(`Groq API error (${res.status}): ${errMsg}`);
+    throw new Error(`Groq API error (${res.status}): ${data?.error?.message || JSON.stringify(data)}`);
   }
 
   const text = data?.choices?.[0]?.message?.content;
-  if (!text) throw new Error('Groq returned an empty response. Check your API key and quota.');
+  if (!text) throw new Error('Groq returned an empty response.');
   return text;
 }
 
-// ── Unified chat function (with automatic fallback) ─────────────────────────
+// ── Unified chat function ───────────────────────────────────────────────────
 async function chat(messages) {
   const p = currentConfig.provider;
   if (p === 'gemini') {
     try {
       return await chatWithGemini(messages);
     } catch (err) {
-      // If Gemini fails and Groq backup key exists, seamlessly switch to Groq
       if (currentConfig.groqApiKey) {
         return await chatWithGroq(messages);
       }
@@ -164,7 +149,7 @@ async function chat(messages) {
     }
   }
   if (p === 'groq') return chatWithGroq(messages);
-  throw new Error('No AI provider configured. Set GEMINI_API_KEY or GROQ_API_KEY in environment.');
+  throw new Error('No AI provider configured.');
 }
 
 module.exports = { configure, getConfig, checkProviderHealth, chat };
