@@ -1,5 +1,5 @@
-// DARSHIL'S AI — Fast & Reliable AI Provider Layer
-// Priority: gemini-3.8-flash → instant 10s fallback to gemini-2.5-flash → gemini-2.0-flash → Groq
+// DARSHIL'S AI — Clean & Reliable AI Provider Layer
+// Priority: gemini-3.8-flash → gemini-2.5-flash → Groq (if configured)
 
 const GEMINI_KEY = process.env.GEMINI_API_KEY || '';
 const GROQ_KEY   = process.env.GROQ_API_KEY   || '';
@@ -43,28 +43,28 @@ async function checkProviderHealth() {
   return { online: false, provider: 'offline', model: null };
 }
 
-// ── Call a specific Gemini model (10s fast timeout) ─────────────────────────
+// ── Call a specific Gemini model (25s timeout) ──────────────────────────────
 async function callGeminiModel(modelName, body) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${currentConfig.geminiApiKey}`;
   const res = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
-    signal: AbortSignal.timeout(10000),
+    signal: AbortSignal.timeout(25000),
   });
 
   const data = await res.json();
   if (!res.ok) {
     const errMsg = data?.error?.message || JSON.stringify(data);
-    throw new Error(`Gemini (${modelName}) error ${res.status}: ${errMsg}`);
+    throw new Error(`[${modelName} ${res.status}]: ${errMsg}`);
   }
 
   const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) throw new Error(`Gemini (${modelName}) returned empty response.`);
+  if (!text) throw new Error(`[${modelName}]: Returned empty response.`);
   return text;
 }
 
-// ── Gemini API with instant model fallback ──────────────────────────────────
+// ── Gemini API with clean fallback ──────────────────────────────────────────
 async function chatWithGemini(messages) {
   const systemMsg = messages.find(m => m.role === 'system');
   const chatMsgs  = messages.filter(m => m.role !== 'system');
@@ -91,20 +91,19 @@ async function chatWithGemini(messages) {
   };
 
   const modelsToTry = [...new Set([
-    currentConfig.geminiModel, // Pehle 3.8-flash try karega
-    'gemini-2.5-flash',        // Atka toh turant 2.5-flash
-    'gemini-2.0-flash'         // Final backup
+    currentConfig.geminiModel, // Pehle gemini-3.8-flash
+    'gemini-2.5-flash'         // Backup
   ])];
 
-  let lastError;
+  const errors = [];
   for (const model of modelsToTry) {
     try {
       return await callGeminiModel(model, body);
     } catch (err) {
-      lastError = err;
+      errors.push(err.message);
     }
   }
-  throw lastError;
+  throw new Error(errors.join(' | '));
 }
 
 // ── Groq API call ───────────────────────────────────────────────────────────
@@ -122,12 +121,12 @@ async function chatWithGroq(messages) {
       max_tokens: 1024,
       top_p: 0.9,
     }),
-    signal: AbortSignal.timeout(15000),
+    signal: AbortSignal.timeout(20000),
   });
 
   const data = await res.json();
   if (!res.ok) {
-    throw new Error(`Groq API error (${res.status}): ${data?.error?.message || JSON.stringify(data)}`);
+    throw new Error(`Groq (${res.status}): ${data?.error?.message || JSON.stringify(data)}`);
   }
 
   const text = data?.choices?.[0]?.message?.content;
