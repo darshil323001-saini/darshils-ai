@@ -19,7 +19,7 @@ const DEFAULT_CONFIG = {
   geminiModel:  process.env.GEMINI_MODEL  || 'gemini-3.8-flash',
   geminiApiKey: GEMINI_KEY,
   // Groq defaults
-  groqModel:    process.env.GROQ_MODEL    || 'llama3-8b-8192',
+  groqModel:    process.env.GROQ_MODEL    || 'llama-3.3-70b-versatile',
   groqApiKey:   GROQ_KEY,
 };
 
@@ -27,7 +27,6 @@ let currentConfig = { ...DEFAULT_CONFIG };
 
 function configure(overrides) {
   currentConfig = { ...currentConfig, ...overrides };
-  // Re-detect provider whenever keys change
   if (!currentConfig.provider || currentConfig.provider === 'offline') {
     if (currentConfig.geminiApiKey) currentConfig.provider = 'gemini';
     else if (currentConfig.groqApiKey) currentConfig.provider = 'groq';
@@ -42,7 +41,7 @@ function getConfig() {
   };
 }
 
-// ── Health check (synchronous determination — no network ping needed) ───────
+// ── Health check ────────────────────────────────────────────────────────────
 async function checkProviderHealth() {
   const p = currentConfig.provider;
   if (p === 'gemini' && currentConfig.geminiApiKey) return { online: true, provider: 'gemini', model: currentConfig.geminiModel };
@@ -50,15 +49,14 @@ async function checkProviderHealth() {
   return { online: false, provider: 'offline', model: null };
 }
 
-// ── Gemini API call ─────────────────────────────────────────────────────────
-// Uses the Gemini generateContent REST endpoint (free tier).
-// Converts OpenAI-style messages [{role, content}] to Gemini's format.
+// Helper: wait ms
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// ── Gemini API call (with Auto-Retry for 503/429) ───────────────────────────
 async function chatWithGemini(messages) {
-  // Split system prompt from conversation
   const systemMsg = messages.find(m => m.role === 'system');
   const chatMsgs  = messages.filter(m => m.role !== 'system');
 
-  // Gemini uses "user" and "model" roles (not "assistant")
   const contents = chatMsgs.map(m => ({
     role: m.role === 'assistant' ? 'model' : 'user',
     parts: [{ text: m.content }]
@@ -82,27 +80,44 @@ async function chatWithGemini(messages) {
 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${currentConfig.geminiModel}:generateContent?key=${currentConfig.geminiApiKey}`;
 
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-    signal: AbortSignal.timeout(60000),
-  });
+  let lastError;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(45000),
+      });
 
-  const data = await res.json();
+      const data = await res.json();
 
-  if (!res.ok) {
-    const errMsg = data?.error?.message || JSON.stringify(data);
-    throw new Error(`Gemini API error (${res.status}): ${errMsg}`);
+      if (!res.ok) {
+        const errMsg = data?.error?.message || JSON.stringify(data);
+        // Retry automatically on temporary overload (503) or rate limit (429)
+        if ((res.status === 503 || res.status === 429) && attempt < 3) {
+          await sleep(1500 * attempt);
+          continue;
+        }
+        throw new Error(`Gemini API error (${res.status}): ${errMsg}`);
+      }
+
+      const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) throw new Error('Gemini returned an empty response. Check your API key and quota.');
+      return text;
+    } catch (err) {
+      lastError = err;
+      if (attempt < 3 && (err.name === 'TimeoutError' || err.message.includes('503'))) {
+        await sleep(1500 * attempt);
+        continue;
+      }
+      throw err;
+    }
   }
-
-  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) throw new Error('Gemini returned an empty response. Check your API key and quota.');
-  return text;
+  throw lastError;
 }
 
 // ── Groq API call ───────────────────────────────────────────────────────────
-// Groq is OpenAI-compatible — uses /openai/v1/chat/completions.
 async function chatWithGroq(messages) {
   const url = 'https://api.groq.com/openai/v1/chat/completions';
 
@@ -119,7 +134,7 @@ async function chatWithGroq(messages) {
       max_tokens: 1024,
       top_p: 0.9,
     }),
-    signal: AbortSignal.timeout(60000),
+    signal: AbortSignal.timeout(45000),
   });
 
   const data = await res.json();
@@ -134,11 +149,21 @@ async function chatWithGroq(messages) {
   return text;
 }
 
-// ── Unified chat function ───────────────────────────────────────────────────
+// ── Unified chat function (with automatic fallback) ─────────────────────────
 async function chat(messages) {
   const p = currentConfig.provider;
-  if (p === 'gemini') return chatWithGemini(messages);
-  if (p === 'groq')   return chatWithGroq(messages);
+  if (p === 'gemini') {
+    try {
+      return await chatWithGemini(messages);
+    } catch (err) {
+      // If Gemini fails and Groq backup key exists, seamlessly switch to Groq
+      if (currentConfig.groqApiKey) {
+        return await chatWithGroq(messages);
+      }
+      throw err;
+    }
+  }
+  if (p === 'groq') return chatWithGroq(messages);
   throw new Error('No AI provider configured. Set GEMINI_API_KEY or GROQ_API_KEY in environment.');
 }
 
