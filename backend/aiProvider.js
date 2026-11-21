@@ -128,7 +128,7 @@ async function chatWithGroq(messages) {
       model,
       messages,
       temperature: 0.7,
-      max_tokens: 1024,
+      max_tokens: 800,
       top_p: 0.9,
     }),
     signal: AbortSignal.timeout(20000),
