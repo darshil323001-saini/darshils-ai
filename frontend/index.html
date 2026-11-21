@@ -34,6 +34,69 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+  /* Floating Leaf-Block Trigger with Small Triangle Icon */
+  .unfiltered-leaf-btn {
+    position: fixed;
+    right: 20px;
+    bottom: 24px;
+    z-index: 40;
+    width: 54px;
+    height: 54px;
+    border-radius: 6px 26px 26px 26px; /* Organic leaf-block shape */
+    background: linear-gradient(135deg, rgba(14, 116, 144, 0.92), rgba(15, 23, 42, 0.95));
+    border: 1px solid rgba(103, 232, 249, 0.45);
+    box-shadow: 0 8px 28px rgba(6, 182, 212, 0.35), inset 0 0 14px rgba(56, 189, 248, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    backdrop-filter: blur(10px);
+  }
+  .unfiltered-leaf-btn:hover {
+    transform: translateY(-3px) scale(1.06);
+    border-color: rgba(165, 243, 252, 0.85);
+    box-shadow: 0 12px 34px rgba(34, 211, 238, 0.5), inset 0 0 18px rgba(168, 85, 247, 0.3);
+  }
+  .unfiltered-leaf-tooltip {
+    position: absolute;
+    right: 64px;
+    white-space: nowrap;
+    background: rgba(2, 6, 23, 0.92);
+    color: #a5f3fc;
+    border: 1px solid rgba(34, 211, 238, 0.3);
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .unfiltered-leaf-btn:hover .unfiltered-leaf-tooltip {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Midnight-Navy Ocean Modal */
+  #unfiltered-modal {
+    background: radial-gradient(circle at 50% 45%, #071936 0%, #030b1c 58%, #01040d 100%);
+  }
+  #ocean-ripple-canvas {
+    width: 100%;
+    max-width: 520px;
+    height: 300px;
+    display: block;
+    touch-action: none;
+  }
+  @media (max-width: 640px) {
+    #ocean-ripple-canvas { height: 240px; }
+    .unfiltered-leaf-btn { right: 16px; bottom: 18px; width: 50px; height: 50px; }
+  }
+</style>
+  <style>
     * { box-sizing: border-box; }
     body { font-family: 'Inter', system-ui, sans-serif; }
     .glass { background: rgba(24, 35, 50, 0.72); backdrop-filter: blur(16px); border: 1px solid rgba(114, 161, 134, 0.16); }
@@ -1208,69 +1271,7 @@ function renderHabits() {
  <!-- ═══════════════════════════════════════════════════════════════════ -->
 <!-- UNFILTERED MODE — LEAF-BLOCK TRIGGER + CANVAS OCEAN RIPPLE ENGINE  -->
 <!-- ═══════════════════════════════════════════════════════════════════ -->
-<style>
-  /* Floating Leaf-Block Trigger with Small Triangle Icon */
-  .unfiltered-leaf-btn {
-    position: fixed;
-    right: 20px;
-    bottom: 24px;
-    z-index: 40;
-    width: 54px;
-    height: 54px;
-    border-radius: 6px 26px 26px 26px; /* Organic leaf-block shape */
-    background: linear-gradient(135deg, rgba(14, 116, 144, 0.92), rgba(15, 23, 42, 0.95));
-    border: 1px solid rgba(103, 232, 249, 0.45);
-    box-shadow: 0 8px 28px rgba(6, 182, 212, 0.35), inset 0 0 14px rgba(56, 189, 248, 0.25);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-    backdrop-filter: blur(10px);
-  }
-  .unfiltered-leaf-btn:hover {
-    transform: translateY(-3px) scale(1.06);
-    border-color: rgba(165, 243, 252, 0.85);
-    box-shadow: 0 12px 34px rgba(34, 211, 238, 0.5), inset 0 0 18px rgba(168, 85, 247, 0.3);
-  }
-  .unfiltered-leaf-tooltip {
-    position: absolute;
-    right: 64px;
-    white-space: nowrap;
-    background: rgba(2, 6, 23, 0.92);
-    color: #a5f3fc;
-    border: 1px solid rgba(34, 211, 238, 0.3);
-    padding: 5px 10px;
-    border-radius: 8px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.03em;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateX(6px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-  }
-  .unfiltered-leaf-btn:hover .unfiltered-leaf-tooltip {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  /* Midnight-Navy Ocean Modal */
-  #unfiltered-modal {
-    background: radial-gradient(circle at 50% 45%, #071936 0%, #030b1c 58%, #01040d 100%);
-  }
-  #ocean-ripple-canvas {
-    width: 100%;
-    max-width: 520px;
-    height: 300px;
-    display: block;
-    touch-action: none;
-  }
-  @media (max-width: 640px) {
-    #ocean-ripple-canvas { height: 240px; }
-    .unfiltered-leaf-btn { right: 16px; bottom: 18px; width: 50px; height: 50px; }
-  }
-</style>
+</script>
 
 <!-- Separate Floating Leaf-Block Icon (Small Triangle Inside) -->
 <button
