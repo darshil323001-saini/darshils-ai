@@ -34,69 +34,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-  /* Floating Leaf-Block Trigger with Small Triangle Icon */
-  .unfiltered-leaf-btn {
-    position: fixed;
-    right: 20px;
-    bottom: 24px;
-    z-index: 40;
-    width: 54px;
-    height: 54px;
-    border-radius: 6px 26px 26px 26px; /* Organic leaf-block shape */
-    background: linear-gradient(135deg, rgba(14, 116, 144, 0.92), rgba(15, 23, 42, 0.95));
-    border: 1px solid rgba(103, 232, 249, 0.45);
-    box-shadow: 0 8px 28px rgba(6, 182, 212, 0.35), inset 0 0 14px rgba(56, 189, 248, 0.25);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-    backdrop-filter: blur(10px);
-  }
-  .unfiltered-leaf-btn:hover {
-    transform: translateY(-3px) scale(1.06);
-    border-color: rgba(165, 243, 252, 0.85);
-    box-shadow: 0 12px 34px rgba(34, 211, 238, 0.5), inset 0 0 18px rgba(168, 85, 247, 0.3);
-  }
-  .unfiltered-leaf-tooltip {
-    position: absolute;
-    right: 64px;
-    white-space: nowrap;
-    background: rgba(2, 6, 23, 0.92);
-    color: #a5f3fc;
-    border: 1px solid rgba(34, 211, 238, 0.3);
-    padding: 5px 10px;
-    border-radius: 8px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.03em;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateX(6px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
-  }
-  .unfiltered-leaf-btn:hover .unfiltered-leaf-tooltip {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  /* Midnight-Navy Ocean Modal */
-  #unfiltered-modal {
-    background: radial-gradient(circle at 50% 45%, #071936 0%, #030b1c 58%, #01040d 100%);
-  }
-  #ocean-ripple-canvas {
-    width: 100%;
-    max-width: 520px;
-    height: 300px;
-    display: block;
-    touch-action: none;
-  }
-  @media (max-width: 640px) {
-    #ocean-ripple-canvas { height: 240px; }
-    .unfiltered-leaf-btn { right: 16px; bottom: 18px; width: 50px; height: 50px; }
-  }
-</style>
-  <style>
     * { box-sizing: border-box; }
     body { font-family: 'Inter', system-ui, sans-serif; }
     .glass { background: rgba(24, 35, 50, 0.72); backdrop-filter: blur(16px); border: 1px solid rgba(114, 161, 134, 0.16); }
@@ -117,7 +54,6 @@
     .chat-msg p { margin-bottom: 0.5rem; }
     .chat-msg ul, .chat-msg ol { margin-left: 1.25rem; margin-bottom: 0.5rem; }
     .chat-msg li { margin-bottom: 0.25rem; }
-    /* Light theme overrides */
     html:not(.dark) body { background: #f4f7f5; color: #1e293b; }
     html:not(.dark) .glass { background: rgba(255, 255, 255, 0.85); border-color: rgba(84, 133, 106, 0.18); }
     html:not(.dark) .chat-msg strong { color: #0f172a; }
@@ -128,7 +64,7 @@
 
 <div id="app">
 
-  <!-- ─── NAVBAR ──────────────────────────────────────────────────────── -->
+  <!-- NAVBAR -->
   <nav class="sticky top-0 z-50 glass border-b border-calm-400/15">
     <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
       <div class="flex items-center gap-2 cursor-pointer" onclick="navigate('landing')">
@@ -145,7 +81,6 @@
         <button onclick="navigate('growth')" class="hover:text-calm-300 transition">Habits</button>
         <button onclick="navigate('safety')" class="hover:text-calm-300 transition">Safety</button>
         <button onclick="navigate('about')" class="hover:text-calm-300 transition flex items-center gap-1"><span>✨</span> About AI</button>
-        <button onclick="openUnfilteredMode()" class="hover:text-calm-300 transition">Unfiltered Mood</button>
       </div>
       <div class="flex items-center gap-2">
         <div id="ai-badge" class="hidden md:flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border border-calm-400/20 bg-calm-900/60">
@@ -169,13 +104,11 @@
       <button onclick="navigate('growth');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-calm-800/60">🌱 Habits</button>
       <button onclick="navigate('safety');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-calm-800/60">🔒 Safety</button>
       <button onclick="navigate('about');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-calm-800/60">✨ About AI</button>
-   <button onclick="openUnfilteredMode();toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-cyan-300 font-semibold hover:bg-calm-800/60">🎙️ Unfiltered Mode</button>
+      <button onclick="openUnfilteredMode();toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-cyan-300 font-semibold hover:bg-calm-800/60">🎙️ Unfiltered Mode</button>
     </div>
   </nav>
 
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <!-- PAGE: LANDING                                                       -->
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PAGE: LANDING -->
   <section id="page-landing" class="page">
     <div class="min-h-[calc(100vh-56px)] flex flex-col items-center justify-center px-4 py-12 text-center">
       <div class="slide-up max-w-3xl">
@@ -202,7 +135,6 @@
         </p>
       </div>
 
-      <!-- Feature Cards (Simple 4-5 word lines) -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mt-14 w-full">
         <div class="glass rounded-2xl p-5 text-left hover:border-calm-300/40 transition cursor-pointer" onclick="navigate('chat')">
           <div class="text-2xl mb-2">💬</div>
@@ -228,12 +160,9 @@
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <!-- PAGE: CHAT                                                          -->
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PAGE: CHAT -->
   <section id="page-chat" class="page hidden">
     <div class="max-w-4xl mx-auto flex flex-col h-[calc(100vh-56px)]">
-      <!-- Chat Header -->
       <div class="flex items-center justify-between px-4 py-3 border-b border-calm-400/15">
         <div class="flex items-center gap-3">
           <div class="w-8 h-8 rounded-lg bg-calm-600/80 flex items-center justify-center"><span class="text-sm">🌿</span></div>
@@ -253,7 +182,6 @@
         </div>
       </div>
 
-      <!-- Messages Area -->
       <div id="chat-messages" class="flex-1 overflow-y-auto px-4 py-4 space-y-4">
         <div class="fade-in flex gap-3">
           <div class="w-8 h-8 shrink-0 rounded-lg bg-calm-600/80 flex items-center justify-center mt-1"><span class="text-sm">🌿</span></div>
@@ -270,7 +198,6 @@
         </div>
       </div>
 
-      <!-- Typing Indicator -->
       <div id="typing-indicator" class="hidden px-4 pb-2">
         <div class="flex gap-3 items-center">
           <div class="w-8 h-8 shrink-0 rounded-lg bg-calm-600/80 flex items-center justify-center"><span class="text-sm">🌿</span></div>
@@ -283,7 +210,6 @@
         </div>
       </div>
 
-      <!-- Input Area -->
       <div class="px-4 py-3 border-t border-calm-400/15">
         <div class="flex gap-2">
           <textarea id="chat-input" rows="1" placeholder="Write whatever you feel…" class="flex-1 bg-calm-900/70 border border-calm-400/20 rounded-xl px-4 py-3 text-sm text-cream placeholder-slate-500 outline-none focus:border-calm-300/50 resize-none transition" onkeydown="handleChatKey(event)" oninput="autoResize(this)"></textarea>
@@ -296,15 +222,12 @@
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <!-- PAGE: 4-SLIDE CLARITY FLOW                                          -->
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PAGE: 4-SLIDE CLARITY FLOW -->
   <section id="page-clarity" class="page hidden">
     <div class="max-w-2xl mx-auto px-4 py-10">
       <h2 class="text-2xl font-bold gradient-text mb-1">Clarity Flow</h2>
       <p class="text-sm text-slate-400 mb-6">Turn heavy thoughts into clarity in 4 simple steps.</p>
 
-      <!-- Progress Dots -->
       <div class="flex items-center gap-2 mb-6">
         <div id="dot-1" class="h-1.5 flex-1 rounded-full bg-calm-400 transition-all"></div>
         <div id="dot-2" class="h-1.5 flex-1 rounded-full bg-calm-800 transition-all"></div>
@@ -313,7 +236,6 @@
       </div>
 
       <div class="glass rounded-2xl p-6 fade-in">
-        <!-- Slide 1 -->
         <div id="clarity-slide-1" class="clarity-slide">
           <span class="text-xs uppercase tracking-wider text-calm-300 font-semibold">Step 1 of 4</span>
           <h3 class="text-lg font-semibold text-cream mt-1 mb-2">What is the main problem right now?</h3>
@@ -321,7 +243,6 @@
           <textarea id="cf-problem" rows="4" placeholder="e.g., I have exams next week and I feel behind..." class="w-full bg-calm-900/70 border border-calm-400/20 rounded-xl p-3 text-sm text-cream placeholder-slate-500 outline-none focus:border-calm-300/50 resize-none"></textarea>
         </div>
 
-        <!-- Slide 2 -->
         <div id="clarity-slide-2" class="clarity-slide hidden">
           <span class="text-xs uppercase tracking-wider text-calm-300 font-semibold">Step 2 of 4</span>
           <h3 class="text-lg font-semibold text-cream mt-1 mb-2">What negative thoughts are looping in your head?</h3>
@@ -329,7 +250,6 @@
           <textarea id="cf-negative" rows="4" placeholder="e.g., I'm going to fail, everyone else is smarter than me..." class="w-full bg-calm-900/70 border border-calm-400/20 rounded-xl p-3 text-sm text-cream placeholder-slate-500 outline-none focus:border-calm-300/50 resize-none"></textarea>
         </div>
 
-        <!-- Slide 3 -->
         <div id="clarity-slide-3" class="clarity-slide hidden">
           <span class="text-xs uppercase tracking-wider text-calm-300 font-semibold">Step 3 of 4</span>
           <h3 class="text-lg font-semibold text-cream mt-1 mb-2">What is one positive side or strength you still have?</h3>
@@ -337,7 +257,6 @@
           <textarea id="cf-positive" rows="4" placeholder="e.g., I still have 5 days left and I've passed tough exams before..." class="w-full bg-calm-900/70 border border-calm-400/20 rounded-xl p-3 text-sm text-cream placeholder-slate-500 outline-none focus:border-calm-300/50 resize-none"></textarea>
         </div>
 
-        <!-- Slide 4 -->
         <div id="clarity-slide-4" class="clarity-slide hidden">
           <span class="text-xs uppercase tracking-wider text-calm-300 font-semibold">Step 4 of 4</span>
           <h3 class="text-lg font-semibold text-cream mt-1 mb-2">What is one small solution you think could help?</h3>
@@ -345,7 +264,6 @@
           <textarea id="cf-solution" rows="4" placeholder="e.g., Study just 2 key chapters today without checking my phone..." class="w-full bg-calm-900/70 border border-calm-400/20 rounded-xl p-3 text-sm text-cream placeholder-slate-500 outline-none focus:border-calm-300/50 resize-none"></textarea>
         </div>
 
-        <!-- Navigation Buttons -->
         <div class="flex justify-between items-center mt-6">
           <button id="cf-prev-btn" onclick="changeClaritySlide(-1)" class="px-4 py-2 rounded-lg border border-calm-400/20 text-sm text-slate-300 hover:text-white transition hidden">← Back</button>
           <div class="flex-1"></div>
@@ -356,15 +274,12 @@
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <!-- PAGE: BREATHE & PRACTICAL GROUNDING                                 -->
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PAGE: BREATHE & GROUND -->
   <section id="page-breathe" class="page hidden">
     <div class="max-w-3xl mx-auto px-4 py-8">
       <h2 class="text-2xl font-bold gradient-text mb-1">Breathe & Ground</h2>
       <p class="text-sm text-slate-400 mb-6">Slow down your racing mind. Works offline anytime.</p>
 
-      <!-- Slow Breathing Timer (4-4-6 Default) -->
       <div class="glass rounded-2xl p-6 mb-6">
         <div class="flex items-center justify-between flex-wrap gap-2 mb-6">
           <div>
@@ -389,7 +304,6 @@
         </div>
       </div>
 
-      <!-- Practical 3-2-1 Grounding -->
       <div class="glass rounded-2xl p-6">
         <h3 class="font-semibold text-base text-cream mb-1">🌿 Quick Room Grounding (3-2-1)</h3>
         <p class="text-xs text-calm-300 mb-4">This gently pulls your mind out of overthinking and back into the present room. (All fields are optional.)</p>
@@ -415,9 +329,7 @@
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <!-- PAGE: 1-TAP SMART MOOD TRACKER                                      -->
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PAGE: MOOD -->
   <section id="page-mood" class="page hidden">
     <div class="max-w-3xl mx-auto px-4 py-8">
       <h2 class="text-2xl font-bold gradient-text mb-1">Mood Check-In</h2>
@@ -450,14 +362,12 @@
           </button>
         </div>
 
-        <!-- Instant AI Tip Box -->
         <div id="mood-ai-tip" class="hidden mt-4 p-4 rounded-xl bg-calm-800/60 border border-calm-300/25 fade-in">
           <p class="text-xs font-semibold text-calm-300 mb-1">🌿 DARSHIL'S AI says:</p>
           <p id="mood-ai-tip-text" class="text-sm text-cream leading-relaxed"></p>
         </div>
       </div>
 
-      <!-- Mood History -->
       <div class="glass rounded-2xl p-6">
         <div class="flex items-center justify-between mb-4">
           <h3 class="font-semibold text-sm text-cream">Recent Check-Ins</h3>
@@ -470,9 +380,7 @@
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <!-- PAGE: HABITS (PERSONAL GROWTH)                                      -->
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PAGE: HABITS -->
   <section id="page-growth" class="page hidden">
     <div class="max-w-3xl mx-auto px-4 py-8">
       <h2 class="text-2xl font-bold gradient-text mb-1">Daily Habits</h2>
@@ -497,9 +405,7 @@
     </div>
   </section>
 
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
-  <!-- PAGE: SAFETY & PRIVACY                                              -->
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
+  <!-- PAGE: SAFETY -->
   <section id="page-safety" class="page hidden">
     <div class="max-w-3xl mx-auto px-4 py-8">
       <h2 class="text-2xl font-bold gradient-text mb-1">Privacy & Safety</h2>
@@ -527,9 +433,8 @@
       </div>
     </div>
   </section>
-<!-- ═══════════════════════════════════════════════════════════════════ -->
-  <!-- PAGE: ABOUT AI (OVERVIEW)                                           -->
-  <!-- ═══════════════════════════════════════════════════════════════════ -->
+
+  <!-- PAGE: ABOUT AI -->
   <section id="page-about" class="page hidden">
     <div class="max-w-4xl mx-auto px-4 py-10 fade-in">
       <div class="text-center mb-10">
@@ -541,7 +446,6 @@
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
-        <!-- Why Use It -->
         <div class="glass rounded-2xl p-6">
           <h3 class="font-semibold text-base text-cream mb-3 flex items-center gap-2"><span>💡</span> Why Should You Use It?</h3>
           <ul class="space-y-2 text-sm text-slate-300">
@@ -552,7 +456,6 @@
           </ul>
         </div>
 
-        <!-- Power of This AI -->
         <div class="glass rounded-2xl p-6">
           <h3 class="font-semibold text-base text-cream mb-3 flex items-center gap-2"><span>⚡</span> The Power Behind It</h3>
           <ul class="space-y-2 text-sm text-slate-300">
@@ -563,7 +466,6 @@
           </ul>
         </div>
 
-        <!-- What Help Will It Do -->
         <div class="glass rounded-2xl p-6">
           <h3 class="font-semibold text-base text-cream mb-3 flex items-center gap-2"><span>🤝</span> What It Helps You With</h3>
           <ul class="space-y-2 text-sm text-slate-300">
@@ -574,7 +476,6 @@
           </ul>
         </div>
 
-        <!-- How It Helps -->
         <div class="glass rounded-2xl p-6">
           <h3 class="font-semibold text-base text-cream mb-3 flex items-center gap-2"><span>🧭</span> How It Works</h3>
           <ul class="space-y-2 text-sm text-slate-300">
@@ -593,26 +494,21 @@
       </div>
     </div>
   </section>
-</div><!-- /app -->
+</div>
 
 <script>
-// ── CONFIG ──
 const API = 'https://darshils-ai.onrender.com';
 let sessionId = 'session-' + Date.now();
 let currentLanguage = 'english';
 let isLoading = false;
 let lastUserMessage = '';
 
-// Breathing state
 let breathingTimeout = null;
 let breathingCountInterval = null;
 let breathingType = '4-4-6';
 let breathingRunning = false;
-
-// Clarity Flow state
 let clarityStep = 1;
 
-// Helper: Fetch with 60-second timeout
 async function fetchWithTimeout(url, options = {}, timeoutMs = 60000) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeoutMs);
@@ -626,7 +522,6 @@ async function fetchWithTimeout(url, options = {}, timeoutMs = 60000) {
   }
 }
 
-// ── NAVIGATION ──
 function navigate(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
   const el = document.getElementById('page-' + page);
@@ -640,13 +535,11 @@ function toggleMobileMenu() {
   document.getElementById('mobile-menu').classList.toggle('hidden');
 }
 
-// ── THEME ──
 function toggleTheme() {
   document.documentElement.classList.toggle('dark');
   localStorage.setItem('mm-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
 }
 
-// ── AI STATUS CHECK ──
 async function checkAiStatus() {
   try {
     const r = await fetchWithTimeout(API + '/api/ai/status', {}, 15000);
@@ -671,7 +564,6 @@ async function checkAiStatus() {
   }
 }
 
-// ── VOICE / LISTEN (Text-to-Speech) ──
 function speakMessage(btn) {
   if (!('speechSynthesis' in window)) {
     alert('Voice playback is not supported in this browser.');
@@ -693,7 +585,6 @@ function speakMessage(btn) {
   window.speechSynthesis.speak(utter);
 }
 
-// ── CHAT ──
 function setLanguage(lang) { currentLanguage = lang; }
 
 function handleChatKey(e) {
@@ -826,7 +717,6 @@ function clearChat() {
   if (confirm('Clear this conversation?')) newChat();
 }
 
-// ── 4-SLIDE CLARITY FLOW ──
 function changeClaritySlide(dir) {
   clarityStep = Math.max(1, Math.min(4, clarityStep + dir));
   for (let i = 1; i <= 4; i++) {
@@ -857,7 +747,6 @@ function submitClarityFlow() {
 
 Please help me untangle this calmly.`;
 
-  // Reset slides
   ['cf-problem', 'cf-negative', 'cf-positive', 'cf-solution'].forEach(id => document.getElementById(id).value = '');
   clarityStep = 1;
   changeClaritySlide(0);
@@ -866,7 +755,6 @@ Please help me untangle this calmly.`;
   sendMessage(prompt);
 }
 
-// ── SLOW BREATHING TIMER (4-4-6 DEFAULT) ──
 function selectBreathPattern(type, btn) {
   stopBreathing();
   breathingType = type;
@@ -944,7 +832,6 @@ function completeGrounding() {
   document.getElementById('grounding-result').classList.remove('hidden');
 }
 
-// ── 1-TAP SMART MOOD TRACKER ──
 let selectedMood = null;
 
 function selectMood(btn, emoji, label) {
@@ -965,7 +852,6 @@ async function saveMood() {
   localStorage.setItem('mm-moods', JSON.stringify(history.slice(0, 50)));
   renderMoodHistory();
 
-  // Fetch instant gentle AI tip
   const btn = document.getElementById('mood-save-btn');
   const tipBox = document.getElementById('mood-ai-tip');
   const tipText = document.getElementById('mood-ai-tip-text');
@@ -1028,7 +914,6 @@ function clearMoodHistory() {
   }
 }
 
-// ── HABITS ──
 function addHabit() {
   const input = document.getElementById('habit-input');
   const text = input.value.trim();
@@ -1074,18 +959,75 @@ function renderHabits() {
   `).join('');
 }
 
-// ── INIT ──
 (function init() {
   if (localStorage.getItem('mm-theme') === 'light') document.documentElement.classList.remove('dark');
   checkAiStatus();
   setInterval(checkAiStatus, 30000);
 })();
 </script>
-  <!-- ═══ UNFILTERED MODE (OCEAN RIPPLE LIVE VOICE) ═══ -->
-<style>
- 
 
-<!-- Separate Floating Leaf-Block Icon (Small Triangle Inside) -->
+<!-- UNFILTERED MODE — LEAF-BLOCK TRIGGER + CANVAS OCEAN RIPPLE ENGINE -->
+<style>
+  .unfiltered-leaf-btn {
+    position: fixed;
+    right: 20px;
+    bottom: 24px;
+    z-index: 40;
+    width: 54px;
+    height: 54px;
+    border-radius: 6px 26px 26px 26px;
+    background: linear-gradient(135deg, rgba(14, 116, 144, 0.92), rgba(15, 23, 42, 0.95));
+    border: 1px solid rgba(103, 232, 249, 0.45);
+    box-shadow: 0 8px 28px rgba(6, 182, 212, 0.35), inset 0 0 14px rgba(56, 189, 248, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    backdrop-filter: blur(10px);
+  }
+  .unfiltered-leaf-btn:hover {
+    transform: translateY(-3px) scale(1.06);
+    border-color: rgba(165, 243, 252, 0.85);
+    box-shadow: 0 12px 34px rgba(34, 211, 238, 0.5), inset 0 0 18px rgba(168, 85, 247, 0.3);
+  }
+  .unfiltered-leaf-tooltip {
+    position: absolute;
+    right: 64px;
+    white-space: nowrap;
+    background: rgba(2, 6, 23, 0.92);
+    color: #a5f3fc;
+    border: 1px solid rgba(34, 211, 238, 0.3);
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .unfiltered-leaf-btn:hover .unfiltered-leaf-tooltip {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  #unfiltered-modal {
+    background: radial-gradient(circle at 50% 45%, #071936 0%, #030b1c 58%, #01040d 100%);
+  }
+  #ocean-ripple-canvas {
+    width: 100%;
+    max-width: 520px;
+    height: 300px;
+    display: block;
+    touch-action: none;
+  }
+  @media (max-width: 640px) {
+    #ocean-ripple-canvas { height: 240px; }
+    .unfiltered-leaf-btn { right: 16px; bottom: 18px; width: 50px; height: 50px; }
+  }
+</style>
+
 <button
   onclick="openUnfilteredMode()"
   class="unfiltered-leaf-btn"
@@ -1110,9 +1052,7 @@ function renderHabits() {
   </svg>
 </button>
 
-<!-- Fullscreen Ocean Ripple Live Voice Interface -->
 <div id="unfiltered-modal" class="fixed inset-0 z-50 hidden flex flex-col items-center justify-between p-5 sm:p-8 text-center">
-  <!-- Top Bar -->
   <div class="w-full max-w-xl flex items-center justify-between">
     <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-400/25">
       <span id="unfiltered-state-dot" class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]"></span>
@@ -1126,7 +1066,6 @@ function renderHabits() {
     </button>
   </div>
 
-  <!-- Center Canvas Ocean Ripple -->
   <div class="w-full flex flex-col items-center justify-center my-auto gap-3">
     <canvas id="ocean-ripple-canvas" aria-label="Ocean Ripple Voice Visualizer"></canvas>
     <div class="max-w-md px-2">
@@ -1135,7 +1074,6 @@ function renderHabits() {
     </div>
   </div>
 
-  <!-- Bottom Controls -->
   <div class="flex items-center gap-3 pb-2">
     <button
       onclick="toggleUnfilteredMic()"
@@ -1158,24 +1096,20 @@ function renderHabits() {
   const UNFILTERED_API = 'https://darshils-ai.onrender.com/api/chat';
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Voice & App State
   let modalOpen = false;
-  let voiceState = 'idle'; // 'idle' | 'listening' | 'thinking' | 'speaking' | 'paused'
+  let voiceState = 'idle';
   let recognition = null;
   let history = [];
 
-  // Real-time Audio Analysis (Microphone)
   let audioCtx = null;
   let analyser = null;
   let micStream = null;
   let freqData = null;
 
-  // Smooth Amplitude & Speaking Envelope
   let targetAmp = 0;
   let smoothAmp = 0;
   let speechPulse = 0;
 
-  // Canvas & Animation State
   let canvas, ctx, width = 520, height = 300, dpr = 1;
   let rafId = null;
   let lastTime = 0;
@@ -1243,7 +1177,6 @@ function renderHabits() {
     }
   }
 
-  // Real-time Microphone Audio Level
   async function startMicAnalyser() {
     if (micStream) return;
     try {
@@ -1257,7 +1190,6 @@ function renderHabits() {
       source.connect(analyser);
       freqData = new Uint8Array(analyser.frequencyBinCount);
     } catch (e) {
-      // Graceful fallback if mic analyser is restricted on device
       analyser = null;
     }
   }
@@ -1283,7 +1215,6 @@ function renderHabits() {
       const avg = sum / (46 * 255);
       targetAmp = Math.min(1, avg * 2.4);
     } else if (voiceState === 'speaking') {
-      // Smooth speech-synced modulation driven by word boundaries + gentle cadence
       speechPulse = Math.max(0, speechPulse - dt * 2.2);
       const cadence = 0.28 + 0.22 * Math.sin(elapsed * 5.2) + 0.14 * Math.sin(elapsed * 8.7);
       targetAmp = Math.min(1, cadence + speechPulse * 0.55);
@@ -1346,11 +1277,10 @@ function renderHabits() {
 
     const cx = width / 2;
     const cy = height * 0.54;
-    const perspectiveY = 0.34; // Slight ocean-surface angle
+    const perspectiveY = 0.34;
 
     ctx.clearRect(0, 0, width, height);
 
-    // 1. Soft Ocean Surface Reflection & Light Scattering
     const scatterRadius = Math.min(width * 0.46, 220) * (1 + smoothAmp * 0.16);
     const surfaceGrad = ctx.createRadialGradient(cx, cy, 4, cx, cy, scatterRadius);
     if (voiceState === 'thinking') {
@@ -1374,7 +1304,6 @@ function renderHabits() {
     ctx.fill();
     ctx.restore();
 
-    // 2. Spawn & Update Expanding Water Ripples
     const spawnInterval =
       voiceState === 'speaking' ? Math.max(0.28, 0.58 - smoothAmp * 0.3) :
       voiceState === 'listening' ? Math.max(0.38, 0.78 - smoothAmp * 0.35) :
@@ -1397,7 +1326,6 @@ function renderHabits() {
       }
     }
 
-    // 3. Bright Cyan Glowing Center Point (Soft Pulse)
     const corePulse = 1 + 0.14 * Math.sin(elapsed * (voiceState === 'thinking' ? 4.2 : 2.2)) + smoothAmp * 0.42;
     const coreRadius = 11 * corePulse;
 
@@ -1416,7 +1344,6 @@ function renderHabits() {
     ctx.fill();
     ctx.restore();
 
-    // 4. Floating Glowing Particles
     for (const p of particles) {
       if (!prefersReducedMotion) {
         p.x += p.vx * dt;
@@ -1437,7 +1364,6 @@ function renderHabits() {
     rafId = requestAnimationFrame(renderFrame);
   }
 
-  // Indian Male Calming Voice (0.9x speed, slightly deep pitch)
   function pickIndianMaleVoice() {
     const voices = window.speechSynthesis.getVoices();
     return (
@@ -1462,7 +1388,7 @@ function renderHabits() {
       setOceanVoiceState('speaking', 'AI Speaking...');
     };
     utter.onboundary = () => {
-      speechPulse = 0.95; // Syncs ripple pulse with spoken words
+      speechPulse = 0.95;
     };
     utter.onend = () => {
       speechPulse = 0;
@@ -1521,7 +1447,6 @@ function renderHabits() {
     try { recognition.start(); } catch (e) {}
   }
 
-  // Expose controls globally
   window.openUnfilteredMode = function () {
     modalOpen = true;
     const modal = document.getElementById('unfiltered-modal');
