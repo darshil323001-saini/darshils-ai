@@ -82,6 +82,7 @@
         <button onclick="navigate('growth')" class="hover:text-calm-300 transition">Habits</button>
         <button onclick="navigate('safety')" class="hover:text-calm-300 transition">Safety</button>
         <button onclick="navigate('about')" class="hover:text-calm-300 transition flex items-center gap-1"><span>✨</span> About AI</button>
+        <button onclick="openUnfilteredMode()" class="px-3 py-1.5 rounded-full bg-gradient-to-r from-cyan-500/20 to-teal-400/20 border border-cyan-400/40 text-cyan-200 hover:bg-cyan-500/30 transition flex items-center gap-1.5 text-xs font-semibold shadow-sm"><span>🎙️</span> Unfiltered Mode</button>
       </div>
       <div class="flex items-center gap-2">
         <div id="ai-badge" class="hidden md:flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border border-calm-400/20 bg-calm-900/60">
@@ -105,6 +106,7 @@
       <button onclick="navigate('growth');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-calm-800/60">🌱 Habits</button>
       <button onclick="navigate('safety');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-calm-800/60">🔒 Safety</button>
       <button onclick="navigate('about');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-calm-800/60">✨ About AI</button>
+   <button onclick="openUnfilteredMode();toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-cyan-300 font-semibold hover:bg-calm-800/60">🎙️ Unfiltered Mode</button>
     </div>
   </nav>
 
@@ -1015,6 +1017,217 @@ function renderHabits() {
   checkAiStatus();
   setInterval(checkAiStatus, 30000);
 })();
+</script>
+  <!-- ═══ UNFILTERED MODE (OCEAN RIPPLE LIVE VOICE) ═══ -->
+<style>
+  .ocean-stage { position: relative; width: 220px; height: 220px; display: flex; align-items: center; justify-content: center; }
+  .ocean-core {
+    width: 92px; height: 92px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #67e8f9, #0891b2 65%, #164e63);
+    box-shadow: 0 0 35px rgba(34, 211, 238, 0.35);
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    z-index: 2;
+  }
+  .ocean-ring {
+    position: absolute; width: 92px; height: 92px; border-radius: 50%;
+    border: 1.5px solid rgba(103, 232, 249, 0.45);
+    opacity: 0; pointer-events: none;
+  }
+  /* 1. Listening: Soft water ripples */
+  .state-listening .ocean-ring { animation: waterRipple 2.8s cubic-bezier(0.2, 0.7, 0.3, 1) infinite; }
+  .state-listening .ocean-ring:nth-child(2) { animation-delay: 0.9s; }
+  .state-listening .ocean-ring:nth-child(3) { animation-delay: 1.8s; }
+  @keyframes waterRipple {
+    0%   { transform: scale(1); opacity: 0.65; }
+    100% { transform: scale(2.4); opacity: 0; }
+  }
+  /* 2. Thinking: Center glowing circle */
+  .state-thinking .ocean-core {
+    animation: thinkGlow 1.6s ease-in-out infinite;
+  }
+  @keyframes thinkGlow {
+    0%, 100% { transform: scale(0.95); box-shadow: 0 0 25px rgba(34, 211, 238, 0.4); }
+    50%      { transform: scale(1.1);  box-shadow: 0 0 60px rgba(103, 232, 249, 0.85); }
+  }
+  /* 3. Responding: Subtle voice waves */
+  .state-responding .ocean-core {
+    animation: voicePulse 0.9s ease-in-out infinite alternate;
+  }
+  .state-responding .ocean-ring {
+    border-width: 2.5px; border-color: rgba(45, 212, 191, 0.6);
+    animation: voiceWave 1.4s ease-out infinite;
+  }
+  .state-responding .ocean-ring:nth-child(2) { animation-delay: 0.45s; }
+  @keyframes voicePulse {
+    0%   { transform: scale(1); }
+    100% { transform: scale(1.14); box-shadow: 0 0 50px rgba(45, 212, 191, 0.75); }
+  }
+  @keyframes voiceWave {
+    0%   { transform: scale(1.05); opacity: 0.7; }
+    100% { transform: scale(2.1); opacity: 0; }
+  }
+</style>
+
+<div id="unfiltered-modal" class="fixed inset-0 z-50 hidden bg-slate-950/95 backdrop-blur-xl flex flex-col items-center justify-between p-6 text-center">
+  <!-- Top Bar -->
+  <div class="w-full max-w-md flex items-center justify-between">
+    <span class="text-xs uppercase tracking-widest text-cyan-300/80 font-semibold">🎙️ Unfiltered Mode</span>
+    <button onclick="closeUnfilteredMode()" class="px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-slate-200 text-xs">✕ Close</button>
+  </div>
+
+  <!-- Center Ocean Ripple -->
+  <div class="flex flex-col items-center gap-6 my-auto">
+    <div id="ocean-stage" class="ocean-stage state-listening">
+      <div class="ocean-ring"></div>
+      <div class="ocean-ring"></div>
+      <div class="ocean-ring"></div>
+      <div class="ocean-core"></div>
+    </div>
+    <div>
+      <p id="live-status" class="text-lg font-medium text-cyan-200">Listening... dil ki baat bolo</p>
+      <p id="live-caption" class="text-sm text-slate-400 max-w-sm mt-2 min-h-[42px]"></p>
+    </div>
+  </div>
+
+  <!-- Bottom Controls -->
+  <div class="flex items-center gap-4 pb-4">
+    <button id="live-mic-btn" onclick="toggleLiveMic()" class="px-6 py-3 rounded-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-semibold text-sm shadow-lg transition">
+      🎙️ Tap to Speak
+    </button>
+    <button onclick="stopLiveSpeech()" class="px-4 py-3 rounded-full bg-white/10 hover:bg-white/20 text-slate-200 text-sm">
+      ⏹️ Stop Audio
+    </button>
+  </div>
+</div>
+
+<script>
+  let liveActive = false;
+  let liveRecognition = null;
+  let liveHistory = [];
+  const LIVE_API_ENDPOINT = 'https://darshils-ai.onrender.com/api/chat';
+
+  function setOceanState(state, statusText) {
+    const stage = document.getElementById('ocean-stage');
+    stage.className = 'ocean-stage state-' + state;
+    document.getElementById('live-status').textContent = statusText;
+  }
+
+  function getDeepIndianMaleVoice() {
+    const voices = window.speechSynthesis.getVoices();
+    return (
+      voices.find(v => /en-IN/i.test(v.lang) && /male|ravi|prabhat|madhur|hemant|google/i.test(v.name)) ||
+      voices.find(v => /hi-IN/i.test(v.lang) && /male|madhur|hemant/i.test(v.name)) ||
+      voices.find(v => /en-IN|hi-IN/i.test(v.lang)) ||
+      voices.find(v => /male|david|mark|daniel/i.test(v.name)) ||
+      voices[0]
+    );
+  }
+
+  function speakCalmMale(text) {
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    const voice = getDeepIndianMaleVoice();
+    if (voice) utter.voice = voice;
+    utter.lang = 'en-IN';
+    utter.rate = 0.9;   // Slow, grounding speed
+    utter.pitch = 0.85; // Deep, calm male tone
+
+    utter.onstart = () => setOceanState('responding', 'Speaking...');
+    utter.onend = () => {
+      if (liveActive) startListening();
+    };
+    utter.onerror = () => {
+      if (liveActive) startListening();
+    };
+    window.speechSynthesis.speak(utter);
+  }
+
+  function startListening() {
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRec) {
+      document.getElementById('live-status').textContent = 'Voice Chrome/Edge browser mein best chalta hai.';
+      return;
+    }
+    if (liveRecognition) { try { liveRecognition.abort(); } catch(e){} }
+
+    liveRecognition = new SpeechRec();
+    liveRecognition.lang = 'en-IN';
+    liveRecognition.interimResults = true;
+    liveRecognition.continuous = false;
+
+    let finalTranscript = '';
+    setOceanState('listening', 'Listening... aaram se bolo');
+
+    liveRecognition.onresult = (e) => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) finalTranscript += e.results[i][0].transcript;
+        else interim += e.results[i][0].transcript;
+      }
+      document.getElementById('live-caption').textContent = finalTranscript || interim;
+    };
+
+    liveRecognition.onend = async () => {
+      if (!liveActive) return;
+      const userText = finalTranscript.trim();
+      if (!userText) {
+        setOceanState('listening', 'Tap "Tap to Speak" jab bolna ho');
+        return;
+      }
+      await sendLiveMessage(userText);
+    };
+
+    liveRecognition.onerror = () => {
+      if (liveActive) setOceanState('listening', 'Tap "Tap to Speak" to continue');
+    };
+
+    liveRecognition.start();
+  }
+
+  async function sendLiveMessage(userText) {
+    setOceanState('thinking', 'Thinking...');
+    liveHistory.push({ role: 'user', content: userText });
+
+    try {
+      const res = await fetch(LIVE_API_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: userText, history: liveHistory.slice(-6) })
+      });
+      const data = await res.json();
+      const reply = data.reply || data.response || data.message || 'Main sun raha hoon, ek baar phir bolo.';
+      liveHistory.push({ role: 'assistant', content: reply });
+      document.getElementById('live-caption').textContent = reply;
+      speakCalmMale(reply);
+    } catch (err) {
+      document.getElementById('live-caption').textContent = 'Connection thoda slow hai, dobara try karo.';
+      setOceanState('listening', 'Tap to Speak');
+    }
+  }
+
+  function openUnfilteredMode() {
+    liveActive = true;
+    document.getElementById('unfiltered-modal').classList.remove('hidden');
+    window.speechSynthesis.getVoices();
+    startListening();
+  }
+
+  function toggleLiveMic() {
+    window.speechSynthesis.cancel();
+    startListening();
+  }
+
+  function stopLiveSpeech() {
+    window.speechSynthesis.cancel();
+    setOceanState('listening', 'Paused — Tap to Speak');
+  }
+
+  function closeUnfilteredMode() {
+    liveActive = false;
+    window.speechSynthesis.cancel();
+    if (liveRecognition) { try { liveRecognition.abort(); } catch(e){} }
+    document.getElementById('unfiltered-modal').classList.add('hidden');
+  }
 </script>
 </body>
 </html>
