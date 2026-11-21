@@ -82,7 +82,7 @@
         <button onclick="navigate('growth')" class="hover:text-calm-300 transition">Habits</button>
         <button onclick="navigate('safety')" class="hover:text-calm-300 transition">Safety</button>
         <button onclick="navigate('about')" class="hover:text-calm-300 transition flex items-center gap-1"><span>✨</span> About AI</button>
-        <button onclick="openUnfilteredMode()" class="px-3 py-1.5 rounded-full bg-gradient-to-r from-cyan-500/20 to-teal-400/20 border border-cyan-400/40 text-cyan-200 hover:bg-cyan-500/30 transition flex items-center gap-1.5 text-xs font-semibold shadow-sm"><span>🎙️</span> Unfiltered Mode</button>
+       
       </div>
       <div class="flex items-center gap-2">
         <div id="ai-badge" class="hidden md:flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border border-calm-400/20 bg-calm-900/60">
@@ -1205,29 +1205,552 @@ function renderHabits() {
     }
   }
 
-  function openUnfilteredMode() {
-    liveActive = true;
-    document.getElementById('unfiltered-modal').classList.remove('hidden');
+ <!-- ═══════════════════════════════════════════════════════════════════ -->
+<!-- UNFILTERED MODE — LEAF-BLOCK TRIGGER + CANVAS OCEAN RIPPLE ENGINE  -->
+<!-- ═══════════════════════════════════════════════════════════════════ -->
+<style>
+  /* Floating Leaf-Block Trigger with Small Triangle Icon */
+  .unfiltered-leaf-btn {
+    position: fixed;
+    right: 20px;
+    bottom: 24px;
+    z-index: 40;
+    width: 54px;
+    height: 54px;
+    border-radius: 6px 26px 26px 26px; /* Organic leaf-block shape */
+    background: linear-gradient(135deg, rgba(14, 116, 144, 0.92), rgba(15, 23, 42, 0.95));
+    border: 1px solid rgba(103, 232, 249, 0.45);
+    box-shadow: 0 8px 28px rgba(6, 182, 212, 0.35), inset 0 0 14px rgba(56, 189, 248, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    backdrop-filter: blur(10px);
+  }
+  .unfiltered-leaf-btn:hover {
+    transform: translateY(-3px) scale(1.06);
+    border-color: rgba(165, 243, 252, 0.85);
+    box-shadow: 0 12px 34px rgba(34, 211, 238, 0.5), inset 0 0 18px rgba(168, 85, 247, 0.3);
+  }
+  .unfiltered-leaf-tooltip {
+    position: absolute;
+    right: 64px;
+    white-space: nowrap;
+    background: rgba(2, 6, 23, 0.92);
+    color: #a5f3fc;
+    border: 1px solid rgba(34, 211, 238, 0.3);
+    padding: 5px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(6px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+  .unfiltered-leaf-btn:hover .unfiltered-leaf-tooltip {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  /* Midnight-Navy Ocean Modal */
+  #unfiltered-modal {
+    background: radial-gradient(circle at 50% 45%, #071936 0%, #030b1c 58%, #01040d 100%);
+  }
+  #ocean-ripple-canvas {
+    width: 100%;
+    max-width: 520px;
+    height: 300px;
+    display: block;
+    touch-action: none;
+  }
+  @media (max-width: 640px) {
+    #ocean-ripple-canvas { height: 240px; }
+    .unfiltered-leaf-btn { right: 16px; bottom: 18px; width: 50px; height: 50px; }
+  }
+</style>
+
+<!-- Separate Floating Leaf-Block Icon (Small Triangle Inside) -->
+<button
+  onclick="openUnfilteredMode()"
+  class="unfiltered-leaf-btn"
+  aria-label="Open Unfiltered Mode Live Voice"
+  title="Unfiltered Mode"
+>
+  <span class="unfiltered-leaf-tooltip">Unfiltered Mode</span>
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path
+      d="M8.5 5.6C7.6 5.05 6.5 5.7 6.5 6.75V17.25C6.5 18.3 7.6 18.95 8.5 18.4L17.6 13.15C18.5 12.63 18.5 11.37 17.6 10.85L8.5 5.6Z"
+      fill="url(#leafTriGrad)"
+      stroke="#cffafe"
+      stroke-width="1.2"
+    />
+    <defs>
+      <linearGradient id="leafTriGrad" x1="6" y1="5" x2="19" y2="19" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#67e8f9" />
+        <stop offset="0.6" stop-color="#38bdf8" />
+        <stop offset="1" stop-color="#a855f7" />
+      </linearGradient>
+    </defs>
+  </svg>
+</button>
+
+<!-- Fullscreen Ocean Ripple Live Voice Interface -->
+<div id="unfiltered-modal" class="fixed inset-0 z-50 hidden flex flex-col items-center justify-between p-5 sm:p-8 text-center">
+  <!-- Top Bar -->
+  <div class="w-full max-w-xl flex items-center justify-between">
+    <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-400/25">
+      <span id="unfiltered-state-dot" class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]"></span>
+      <span class="text-xs font-semibold tracking-wide text-cyan-200">Unfiltered Mode</span>
+    </div>
+    <button
+      onclick="closeUnfilteredMode()"
+      class="px-3.5 py-1.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 text-slate-300 text-xs transition"
+    >
+      ✕ Exit
+    </button>
+  </div>
+
+  <!-- Center Canvas Ocean Ripple -->
+  <div class="w-full flex flex-col items-center justify-center my-auto gap-3">
+    <canvas id="ocean-ripple-canvas" aria-label="Ocean Ripple Voice Visualizer"></canvas>
+    <div class="max-w-md px-2">
+      <p id="unfiltered-status" class="text-cyan-300 font-medium text-base tracking-wide">Idle — Ready when you are</p>
+      <p id="unfiltered-transcript" class="text-slate-400 text-sm mt-2 min-h-[44px] leading-relaxed"></p>
+    </div>
+  </div>
+
+  <!-- Bottom Controls -->
+  <div class="flex items-center gap-3 pb-2">
+    <button
+      onclick="toggleUnfilteredMic()"
+      id="unfiltered-mic-btn"
+      class="px-6 py-3 rounded-full bg-gradient-to-r from-cyan-400 to-sky-500 hover:from-cyan-300 hover:to-sky-400 text-slate-950 font-semibold text-sm shadow-lg shadow-cyan-500/25 transition"
+    >
+      🎙️ Speak
+    </button>
+    <button
+      onclick="pauseUnfilteredMode()"
+      class="px-4 py-3 rounded-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 text-slate-300 text-sm transition"
+    >
+      ⏸ Pause
+    </button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const UNFILTERED_API = 'https://darshils-ai.onrender.com/api/chat';
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Voice & App State
+  let modalOpen = false;
+  let voiceState = 'idle'; // 'idle' | 'listening' | 'thinking' | 'speaking' | 'paused'
+  let recognition = null;
+  let history = [];
+
+  // Real-time Audio Analysis (Microphone)
+  let audioCtx = null;
+  let analyser = null;
+  let micStream = null;
+  let freqData = null;
+
+  // Smooth Amplitude & Speaking Envelope
+  let targetAmp = 0;
+  let smoothAmp = 0;
+  let speechPulse = 0;
+
+  // Canvas & Animation State
+  let canvas, ctx, width = 520, height = 300, dpr = 1;
+  let rafId = null;
+  let lastTime = 0;
+  let elapsed = 0;
+  let rings = [];
+  let particles = [];
+  let spawnTimer = 0;
+
+  function initParticles() {
+    particles = Array.from({ length: 34 }, () => ({
+      x: Math.random(),
+      y: Math.random(),
+      r: 0.7 + Math.random() * 1.6,
+      vx: (Math.random() - 0.5) * 0.008,
+      vy: -0.004 - Math.random() * 0.01,
+      alpha: 0.15 + Math.random() * 0.45,
+      phase: Math.random() * Math.PI * 2,
+      hue: Math.random() > 0.75 ? '168, 85, 247' : '103, 232, 249',
+    }));
+  }
+
+  function resizeCanvas() {
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    width = rect.width || 520;
+    height = rect.height || 300;
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function spawnRing(initialRadius = 10, boost = 0) {
+    const isThinking = voiceState === 'thinking';
+    const isSpeaking = voiceState === 'speaking';
+    rings.push({
+      radius: initialRadius,
+      maxRadius: Math.min(width * 0.48, 245),
+      speed: isSpeaking ? 48 + boost * 32 : isThinking ? 38 : 26 + boost * 22,
+      lineWidth: 1.1 + boost * 1.4,
+      opacity: 0.85,
+      wobbleFreq: 3 + Math.floor(Math.random() * 3),
+      wobbleAmp: 1.2 + boost * 3.2,
+      phase: Math.random() * Math.PI * 2,
+      purpleMix: isThinking ? 0.55 : isSpeaking ? 0.42 : 0.15,
+    });
+  }
+
+  function setOceanVoiceState(nextState, statusText) {
+    voiceState = nextState;
+    const statusEl = document.getElementById('unfiltered-status');
+    const dotEl = document.getElementById('unfiltered-state-dot');
+    if (statusEl && statusText) statusEl.textContent = statusText;
+
+    if (dotEl) {
+      const colors = {
+        idle: '#38bdf8',
+        paused: '#64748b',
+        listening: '#22d3ee',
+        thinking: '#a855f7',
+        speaking: '#67e8f9',
+      };
+      dotEl.style.background = colors[nextState] || '#22d3ee';
+      dotEl.style.boxShadow = `0 0 10px ${colors[nextState] || '#22d3ee'}`;
+    }
+  }
+
+  // Real-time Microphone Audio Level
+  async function startMicAnalyser() {
+    if (micStream) return;
+    try {
+      micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const AC = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AC();
+      const source = audioCtx.createMediaStreamSource(micStream);
+      analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 256;
+      analyser.smoothingTimeConstant = 0.82;
+      source.connect(analyser);
+      freqData = new Uint8Array(analyser.frequencyBinCount);
+    } catch (e) {
+      // Graceful fallback if mic analyser is restricted on device
+      analyser = null;
+    }
+  }
+
+  function stopMicAnalyser() {
+    if (micStream) {
+      micStream.getTracks().forEach(t => t.stop());
+      micStream = null;
+    }
+    if (audioCtx) {
+      audioCtx.close().catch(() => {});
+      audioCtx = null;
+    }
+    analyser = null;
+    freqData = null;
+  }
+
+  function sampleAudioAmplitude(dt) {
+    if (voiceState === 'listening' && analyser && freqData) {
+      analyser.getByteFrequencyData(freqData);
+      let sum = 0;
+      for (let i = 2; i < 48; i++) sum += freqData[i];
+      const avg = sum / (46 * 255);
+      targetAmp = Math.min(1, avg * 2.4);
+    } else if (voiceState === 'speaking') {
+      // Smooth speech-synced modulation driven by word boundaries + gentle cadence
+      speechPulse = Math.max(0, speechPulse - dt * 2.2);
+      const cadence = 0.28 + 0.22 * Math.sin(elapsed * 5.2) + 0.14 * Math.sin(elapsed * 8.7);
+      targetAmp = Math.min(1, cadence + speechPulse * 0.55);
+    } else if (voiceState === 'thinking') {
+      targetAmp = 0.25 + 0.18 * (0.5 + 0.5 * Math.sin(elapsed * 2.8));
+    } else {
+      targetAmp = 0.05;
+    }
+    smoothAmp += (targetAmp - smoothAmp) * Math.min(1, dt * 7);
+  }
+
+  function drawEllipticalRipple(cx, cy, ring, perspectiveY) {
+    const progress = ring.radius / ring.maxRadius;
+    const fade = Math.sin(Math.min(1, progress) * Math.PI) * (1 - progress * 0.65);
+    const alpha = Math.max(0, fade * ring.opacity);
+    if (alpha <= 0.01) return;
+
+    const grad = ctx.createLinearGradient(cx - ring.radius, cy, cx + ring.radius, cy);
+    const pAlpha = (alpha * ring.purpleMix).toFixed(3);
+    const cAlpha = alpha.toFixed(3);
+    grad.addColorStop(0, `rgba(56, 189, 248, ${(alpha * 0.65).toFixed(3)})`);
+    grad.addColorStop(0.35, `rgba(34, 211, 238, ${cAlpha})`);
+    grad.addColorStop(0.65, `rgba(168, 85, 247, ${pAlpha})`);
+    grad.addColorStop(1, `rgba(59, 130, 246, ${(alpha * 0.65).toFixed(3)})`);
+
+    ctx.save();
+    ctx.beginPath();
+    const segments = 72;
+    const distortion = prefersReducedMotion ? 0 : ring.wobbleAmp * (0.4 + smoothAmp * 1.4);
+
+    for (let i = 0; i <= segments; i++) {
+      const angle = (i / segments) * Math.PI * 2;
+      const wave =
+        Math.sin(angle * ring.wobbleFreq + elapsed * 2.2 + ring.phase) * distortion +
+        Math.cos(angle * 2 - elapsed * 1.4) * (distortion * 0.45);
+      const rx = ring.radius + wave;
+      const ry = (ring.radius + wave * 0.6) * perspectiveY;
+      const x = cx + Math.cos(angle) * rx;
+      const y = cy + Math.sin(angle) * ry;
+      if (i === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = ring.lineWidth * (1 - progress * 0.35);
+    ctx.shadowColor = ring.purpleMix > 0.35 ? 'rgba(139, 92, 246, 0.55)' : 'rgba(34, 211, 238, 0.65)';
+    ctx.shadowBlur = 10 + smoothAmp * 14;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function renderFrame(ts) {
+    if (!modalOpen) return;
+    const dt = lastTime ? Math.min(0.05, (ts - lastTime) / 1000) : 0.016;
+    lastTime = ts;
+    elapsed += prefersReducedMotion ? dt * 0.25 : dt;
+
+    sampleAudioAmplitude(dt);
+
+    const cx = width / 2;
+    const cy = height * 0.54;
+    const perspectiveY = 0.34; // Slight ocean-surface angle
+
+    ctx.clearRect(0, 0, width, height);
+
+    // 1. Soft Ocean Surface Reflection & Light Scattering
+    const scatterRadius = Math.min(width * 0.46, 220) * (1 + smoothAmp * 0.16);
+    const surfaceGrad = ctx.createRadialGradient(cx, cy, 4, cx, cy, scatterRadius);
+    if (voiceState === 'thinking') {
+      surfaceGrad.addColorStop(0, `rgba(129, 140, 248, ${(0.28 + smoothAmp * 0.25).toFixed(3)})`);
+      surfaceGrad.addColorStop(0.45, 'rgba(34, 211, 238, 0.12)');
+    } else if (voiceState === 'speaking') {
+      surfaceGrad.addColorStop(0, `rgba(103, 232, 249, ${(0.3 + smoothAmp * 0.3).toFixed(3)})`);
+      surfaceGrad.addColorStop(0.5, 'rgba(168, 85, 247, 0.12)');
+    } else {
+      surfaceGrad.addColorStop(0, `rgba(34, 211, 238, ${(0.2 + smoothAmp * 0.22).toFixed(3)})`);
+      surfaceGrad.addColorStop(0.5, 'rgba(37, 99, 235, 0.08)');
+    }
+    surfaceGrad.addColorStop(1, 'rgba(2, 6, 23, 0)');
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.scale(1, perspectiveY * 1.45);
+    ctx.beginPath();
+    ctx.arc(0, 0, scatterRadius, 0, Math.PI * 2);
+    ctx.fillStyle = surfaceGrad;
+    ctx.fill();
+    ctx.restore();
+
+    // 2. Spawn & Update Expanding Water Ripples
+    const spawnInterval =
+      voiceState === 'speaking' ? Math.max(0.28, 0.58 - smoothAmp * 0.3) :
+      voiceState === 'listening' ? Math.max(0.38, 0.78 - smoothAmp * 0.35) :
+      voiceState === 'thinking' ? 0.62 : 1.05;
+
+    spawnTimer += dt;
+    if (spawnTimer >= spawnInterval && rings.length < 11) {
+      spawnTimer = 0;
+      spawnRing(8, smoothAmp);
+    }
+
+    for (let i = rings.length - 1; i >= 0; i--) {
+      const r = rings[i];
+      const speedMult = prefersReducedMotion ? 0.3 : 1 + smoothAmp * 0.75;
+      r.radius += r.speed * speedMult * dt;
+      if (r.radius >= r.maxRadius) {
+        rings.splice(i, 1);
+      } else {
+        drawEllipticalRipple(cx, cy, r, perspectiveY);
+      }
+    }
+
+    // 3. Bright Cyan Glowing Center Point (Soft Pulse)
+    const corePulse = 1 + 0.14 * Math.sin(elapsed * (voiceState === 'thinking' ? 4.2 : 2.2)) + smoothAmp * 0.42;
+    const coreRadius = 11 * corePulse;
+
+    const haloGrad = ctx.createRadialGradient(cx, cy, 1, cx, cy, coreRadius * 3.6);
+    haloGrad.addColorStop(0, 'rgba(224, 242, 254, 0.95)');
+    haloGrad.addColorStop(0.28, 'rgba(34, 211, 238, 0.75)');
+    haloGrad.addColorStop(0.6, voiceState === 'thinking' ? 'rgba(168, 85, 247, 0.32)' : 'rgba(59, 130, 246, 0.25)');
+    haloGrad.addColorStop(1, 'rgba(2, 6, 23, 0)');
+
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.scale(1, 0.52);
+    ctx.beginPath();
+    ctx.arc(0, 0, coreRadius * 3.6, 0, Math.PI * 2);
+    ctx.fillStyle = haloGrad;
+    ctx.fill();
+    ctx.restore();
+
+    // 4. Floating Glowing Particles
+    for (const p of particles) {
+      if (!prefersReducedMotion) {
+        p.x += p.vx * dt;
+        p.y += p.vy * dt * (1 + smoothAmp * 1.1);
+        if (p.y < 0.08) { p.y = 0.92; p.x = 0.1 + Math.random() * 0.8; }
+        if (p.x < 0.05) p.x = 0.95;
+        if (p.x > 0.95) p.x = 0.05;
+      }
+      const twinkle = 0.5 + 0.5 * Math.sin(elapsed * 2 + p.phase);
+      const px = p.x * width;
+      const py = p.y * height;
+      ctx.beginPath();
+      ctx.arc(px, py, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${p.hue}, ${(p.alpha * twinkle).toFixed(3)})`;
+      ctx.fill();
+    }
+
+    rafId = requestAnimationFrame(renderFrame);
+  }
+
+  // Indian Male Calming Voice (0.9x speed, slightly deep pitch)
+  function pickIndianMaleVoice() {
+    const voices = window.speechSynthesis.getVoices();
+    return (
+      voices.find(v => /en-IN|hi-IN/i.test(v.lang) && /male|rishi|prabhat|madhur|ravi|google/i.test(v.name)) ||
+      voices.find(v => /en-IN|hi-IN/i.test(v.lang)) ||
+      voices.find(v => /male|david|daniel/i.test(v.name)) ||
+      voices[0]
+    );
+  }
+
+  function speakReply(text) {
+    window.speechSynthesis.cancel();
+    const clean = text.replace(/[*#_`~]/g, '');
+    const utter = new SpeechSynthesisUtterance(clean);
+    utter.voice = pickIndianMaleVoice();
+    utter.lang = 'en-IN';
+    utter.rate = 0.9;
+    utter.pitch = 0.85;
+
+    utter.onstart = () => {
+      speechPulse = 0.8;
+      setOceanVoiceState('speaking', 'AI Speaking...');
+    };
+    utter.onboundary = () => {
+      speechPulse = 0.95; // Syncs ripple pulse with spoken words
+    };
+    utter.onend = () => {
+      speechPulse = 0;
+      if (modalOpen && voiceState !== 'paused') startListening();
+    };
+    utter.onerror = () => {
+      if (modalOpen) setOceanVoiceState('idle', 'Tap Speak to continue');
+    };
+    window.speechSynthesis.speak(utter);
+  }
+
+  async function startListening() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+      setOceanVoiceState('idle', 'Voice ke liye Chrome browser use karein');
+      return;
+    }
+    if (recognition) { try { recognition.abort(); } catch (e) {} }
+
+    await startMicAnalyser();
+    recognition = new SR();
+    recognition.lang = 'en-IN';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    setOceanVoiceState('listening', 'Listening... aaram se dil ki baat bolo');
+
+    recognition.onresult = async (e) => {
+      const userText = e.results[0][0].transcript;
+      document.getElementById('unfiltered-transcript').textContent = `"${userText}"`;
+      setOceanVoiceState('thinking', 'Thinking...');
+
+      try {
+        history.push({ role: 'user', content: userText });
+        const res = await fetch(UNFILTERED_API, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: userText, history: history.slice(-6) }),
+        });
+        const data = await res.json();
+        const reply = data.reply || data.response || data.message || 'Main sun raha hoon, ek baar phir bolo.';
+        history.push({ role: 'assistant', content: reply });
+        document.getElementById('unfiltered-transcript').textContent = reply;
+        if (modalOpen) speakReply(reply);
+      } catch (err) {
+        if (modalOpen) setOceanVoiceState('idle', 'Network issue — Tap Speak again');
+      }
+    };
+
+    recognition.onerror = () => {
+      if (modalOpen && voiceState === 'listening') {
+        setOceanVoiceState('idle', 'Paused — Tap Speak');
+      }
+    };
+
+    try { recognition.start(); } catch (e) {}
+  }
+
+  // Expose controls globally
+  window.openUnfilteredMode = function () {
+    modalOpen = true;
+    const modal = document.getElementById('unfiltered-modal');
+    modal.classList.remove('hidden');
+
+    canvas = document.getElementById('ocean-ripple-canvas');
+    ctx = canvas.getContext('2d');
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    rings = [];
+    initParticles();
+    for (let i = 0; i < 4; i++) spawnRing(28 + i * 42, 0.1);
+
+    lastTime = 0;
     window.speechSynthesis.getVoices();
+    setOceanVoiceState('idle', 'Connecting...');
+    rafId = requestAnimationFrame(renderFrame);
     startListening();
-  }
+  };
 
-  function toggleLiveMic() {
+  window.toggleUnfilteredMic = function () {
     window.speechSynthesis.cancel();
     startListening();
-  }
+  };
 
-  function stopLiveSpeech() {
+  window.pauseUnfilteredMode = function () {
     window.speechSynthesis.cancel();
-    setOceanState('listening', 'Paused — Tap to Speak');
-  }
+    if (recognition) { try { recognition.abort(); } catch (e) {} }
+    setOceanVoiceState('paused', 'Paused — Tap Speak anytime');
+  };
 
-  function closeUnfilteredMode() {
-    liveActive = false;
+  window.closeUnfilteredMode = function () {
+    modalOpen = false;
     window.speechSynthesis.cancel();
-    if (liveRecognition) { try { liveRecognition.abort(); } catch(e){} }
+    if (recognition) { try { recognition.abort(); } catch (e) {} }
+    stopMicAnalyser();
+    if (rafId) cancelAnimationFrame(rafId);
+    window.removeEventListener('resize', resizeCanvas);
     document.getElementById('unfiltered-modal').classList.add('hidden');
-  }
+  };
+})();
 </script>
 </body>
 </html>
