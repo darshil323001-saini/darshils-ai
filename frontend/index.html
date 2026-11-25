@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DARSHIL'S AI — Calm Your Mind</title>
+  <title>AUREVIA — Calm Your Mind</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -36,16 +36,16 @@
   <style>
     * { box-sizing: border-box; }
     body { font-family: 'Inter', system-ui, sans-serif; }
-    .glass { background: rgba(24, 35, 50, 0.72); backdrop-filter: blur(16px); border: 1px solid rgba(114, 161, 134, 0.16); }
+    .glass { background: rgba(24, 35, 50, 0.74); backdrop-filter: blur(16px); border: 1px solid rgba(114, 161, 134, 0.18); }
     .gradient-text { background: linear-gradient(135deg, #9cbfaa, #c5d9cc, #72a186); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
     @keyframes typing-dot { 0%,60%,100% { opacity: 0.3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-4px); } }
     .typing-dot { animation: typing-dot 1.4s infinite; }
     .typing-dot:nth-child(2) { animation-delay: 0.2s; }
     .typing-dot:nth-child(3) { animation-delay: 0.4s; }
-    .fade-in { animation: fadeIn 0.3s ease; }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
-    .slide-up { animation: slideUp 0.5s ease; }
-    @keyframes slideUp { from { opacity:0; transform:translateY(24px); } to { opacity:1; transform:translateY(0); } }
+    .fade-in { animation: fadeIn 0.25s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    .slide-up { animation: slideUp 0.45s ease; }
+    @keyframes slideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(114, 161, 134, 0.3); border-radius: 3px; }
@@ -55,9 +55,12 @@
     .chat-msg ul, .chat-msg ol { margin-left: 1.25rem; margin-bottom: 0.5rem; }
     .chat-msg li { margin-bottom: 0.25rem; }
     html:not(.dark) body { background: #f4f7f5; color: #1e293b; }
-    html:not(.dark) .glass { background: rgba(255, 255, 255, 0.85); border-color: rgba(84, 133, 106, 0.18); }
+    html:not(.dark) .glass { background: rgba(255, 255, 255, 0.88); border-color: rgba(84, 133, 106, 0.2); }
     html:not(.dark) .chat-msg strong { color: #0f172a; }
     html:not(.dark) .text-cream { color: #1e293b; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
   </style>
 </head>
 <body class="bg-calm-950 text-cream min-h-screen">
@@ -65,13 +68,13 @@
 <div id="app">
 
   <!-- NAVBAR -->
-  <nav class="sticky top-0 z-50 glass border-b border-calm-400/15">
+  <nav class="sticky top-0 z-50 glass border-b border-calm-400/15" aria-label="Main Navigation">
     <div class="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
-      <div class="flex items-center gap-2 cursor-pointer" onclick="navigate('landing')">
+      <div class="flex items-center gap-2 cursor-pointer" onclick="navigate('landing')" role="button" tabindex="0" aria-label="AUREVIA Home">
         <div class="w-9 h-9 rounded-xl bg-calm-600/80 border border-calm-300/30 flex items-center justify-center shadow-md">
-          <span class="text-lg">🌿</span>
+          <span class="text-lg" aria-hidden="true">🌿</span>
         </div>
-        <span class="font-bold text-base tracking-tight gradient-text">DARSHIL'S AI</span>
+        <span class="font-bold text-base tracking-wider gradient-text">AUREVIA</span>
       </div>
       <div class="hidden md:flex items-center gap-5 text-sm font-medium text-slate-300">
         <button onclick="navigate('chat')" class="hover:text-calm-300 transition">Chat</button>
@@ -80,18 +83,18 @@
         <button onclick="navigate('mood')" class="hover:text-calm-300 transition">Mood</button>
         <button onclick="navigate('frequency')" class="hover:text-cyan-300 transition font-semibold text-calm-300">〰️ Frequency</button>
         <button onclick="navigate('growth')" class="hover:text-calm-300 transition">Habits</button>
-        <button onclick="navigate('safety')" class="hover:text-calm-300 transition">Safety</button>
-        <button onclick="navigate('about')" class="hover:text-calm-300 transition flex items-center gap-1"><span>✨</span> About AI</button>
+        <button onclick="navigate('safety')" class="hover:text-calm-300 transition">Privacy & Safety</button>
+        <button onclick="navigate('about')" class="hover:text-calm-300 transition">How AI Works</button>
       </div>
       <div class="flex items-center gap-2">
-        <div id="ai-badge" class="hidden md:flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border border-calm-400/20 bg-calm-900/60">
+        <div id="ai-badge" class="hidden md:flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full border border-calm-400/20 bg-calm-900/60" aria-live="polite">
           <span id="ai-dot" class="w-2 h-2 rounded-full bg-yellow-500"></span>
           <span id="ai-label" class="text-slate-400">Checking…</span>
         </div>
-        <button onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-calm-800/60 text-slate-400 hover:text-calm-300 transition" title="Toggle theme">
+        <button onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-calm-800/60 text-slate-400 hover:text-calm-300 transition" title="Toggle theme" aria-label="Toggle dark or light theme">
           <svg id="theme-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646Z"/></svg>
         </button>
-        <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg hover:bg-calm-800/60 text-slate-400">
+        <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg hover:bg-calm-800/60 text-slate-400" aria-label="Open menu">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
       </div>
@@ -104,8 +107,8 @@
       <button onclick="navigate('mood');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-calm-800/60">😊 Mood Check-In</button>
       <button onclick="navigate('frequency');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-calm-300 font-semibold hover:bg-calm-800/60">〰️ Everything is Frequency</button>
       <button onclick="navigate('growth');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-calm-800/60">🌱 Habits</button>
-      <button onclick="navigate('safety');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-calm-800/60">🔒 Safety</button>
-      <button onclick="navigate('about');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-calm-800/60">✨ About AI</button>
+      <button onclick="navigate('safety');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-calm-800/60">🔒 Privacy & Safety</button>
+      <button onclick="navigate('about');toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-slate-300 hover:bg-calm-800/60">✨ How AI Works</button>
       <button onclick="openUnfilteredMode();toggleMobileMenu()" class="block w-full text-left px-3 py-2 rounded-lg text-sm text-cyan-300 font-semibold hover:bg-calm-800/60">🎙️ Unfiltered Mode</button>
     </div>
   </nav>
@@ -115,48 +118,49 @@
     <div class="min-h-[calc(100vh-56px)] flex flex-col items-center justify-center px-4 py-12 text-center">
       <div class="slide-up max-w-3xl">
         <div class="w-16 h-16 mx-auto mb-6 rounded-2xl bg-calm-600/30 border border-calm-300/30 flex items-center justify-center shadow-lg">
-          <span class="text-3xl">🌿</span>
+          <span class="text-3xl" aria-hidden="true">🌿</span>
         </div>
+        <p class="text-xs uppercase tracking-[0.25em] text-calm-300 font-semibold mb-2">AUREVIA — Inner Light & Clarity</p>
         <h1 class="text-3xl md:text-5xl font-bold leading-snug mb-4 text-cream">
           You don’t have to carry every thought alone.<br>
           <span class="gradient-text">Let’s untangle your mind, one calm step at a time.</span>
         </h1>
         <p class="text-base md:text-lg text-slate-400 max-w-xl mx-auto mb-8">
-          A safe space to breathe, reflect, and feel lighter.
+          A gentle AI-powered space for self-reflection, emotional clarity, and grounding.
         </p>
         <div class="flex flex-col sm:flex-row gap-3 justify-center mb-8">
           <button onclick="navigate('chat')" class="px-8 py-3.5 bg-calm-500 hover:bg-calm-400 text-white rounded-xl font-semibold text-base shadow-lg shadow-calm-900/40 transition-all">
-            Start Talking
+            Start Reflecting
           </button>
           <button onclick="navigate('clarity')" class="px-8 py-3.5 glass rounded-xl font-medium text-calm-200 hover:text-white hover:border-calm-300/40 transition-all">
             Try 4-Step Clarity Flow
           </button>
         </div>
-        <p class="text-xs text-slate-500 max-w-lg mx-auto">
-          DARSHIL'S AI is a calm wellness companion, not a doctor or therapist. For emergencies in India, call <strong>112</strong> or Tele-MANAS <strong>14416</strong>.
+        <p class="text-xs text-slate-400 max-w-lg mx-auto bg-calm-900/50 border border-calm-400/15 rounded-xl px-4 py-2.5">
+          <strong>Disclaimer:</strong> AUREVIA is a self-reflection & emotional wellness tool, not a doctor, therapist, or emergency service. AI responses can be imperfect. For urgent help in India, call <strong>112</strong> or Tele-MANAS <strong>14416</strong>.
         </p>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mt-14 w-full">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mt-12 w-full">
         <div class="glass rounded-2xl p-5 text-left hover:border-calm-300/40 transition cursor-pointer" onclick="navigate('chat')">
           <div class="text-2xl mb-2">💬</div>
-          <h3 class="font-semibold text-sm mb-1 text-cream">Chat</h3>
-          <p class="text-xs text-slate-400">Talk freely without any judgment.</p>
+          <h3 class="font-semibold text-sm mb-1 text-cream">Guided Chat</h3>
+          <p class="text-xs text-slate-400">Reflect on overthinking, stress, or emotions calmly.</p>
         </div>
         <div class="glass rounded-2xl p-5 text-left hover:border-calm-300/40 transition cursor-pointer" onclick="navigate('clarity')">
           <div class="text-2xl mb-2">✨</div>
           <h3 class="font-semibold text-sm mb-1 text-cream">Clarity Flow</h3>
-          <p class="text-xs text-slate-400">Turn heavy thoughts into clarity.</p>
+          <p class="text-xs text-slate-400">4 adaptive steps to untangle heavy thoughts.</p>
         </div>
         <div class="glass rounded-2xl p-5 text-left hover:border-calm-300/40 transition cursor-pointer" onclick="navigate('breathe')">
           <div class="text-2xl mb-2">🌬️</div>
           <h3 class="font-semibold text-sm mb-1 text-cream">Breathe & Ground</h3>
-          <p class="text-xs text-slate-400">Slow down your racing mind.</p>
+          <p class="text-xs text-slate-400">Optional gentle breathing & 3-2-1 grounding.</p>
         </div>
         <div class="glass rounded-2xl p-5 text-left hover:border-calm-300/40 transition cursor-pointer" onclick="navigate('mood')">
           <div class="text-2xl mb-2">😊</div>
           <h3 class="font-semibold text-sm mb-1 text-cream">Mood Check-In</h3>
-          <p class="text-xs text-slate-400">Track how you feel today.</p>
+          <p class="text-xs text-slate-400">Private local mood log & simple trends.</p>
         </div>
       </div>
 
@@ -177,73 +181,83 @@
     </div>
   </section>
 
-  <!-- PAGE: CHAT -->
+  <!-- PAGE: CHAT (WITH MULTI-CONVERSATION SIDEBAR & CONTROLS) -->
   <section id="page-chat" class="page hidden">
-    <div class="max-w-4xl mx-auto flex flex-col h-[calc(100vh-56px)]">
-      <div class="flex items-center justify-between px-4 py-3 border-b border-calm-400/15">
-        <div class="flex items-center gap-3">
-          <div class="w-8 h-8 rounded-lg bg-calm-600/80 flex items-center justify-center"><span class="text-sm">🌿</span></div>
-          <div>
-            <h2 class="font-semibold text-sm text-cream">DARSHIL'S AI</h2>
-            <p id="chat-status" class="text-xs text-slate-400">Here to listen</p>
+    <div class="max-w-6xl mx-auto flex h-[calc(100vh-56px)]">
+      <!-- Chat History Sidebar (Desktop) -->
+      <aside id="chat-sidebar" class="hidden md:flex flex-col w-64 border-r border-calm-400/15 bg-calm-900/40 p-3">
+        <button onclick="createNewConversation()" class="w-full py-2 px-3 rounded-xl bg-calm-500/25 hover:bg-calm-500/40 border border-calm-300/30 text-xs font-semibold text-cream mb-3 transition">+ New Conversation</button>
+        <div class="flex items-center justify-between text-[11px] text-slate-400 px-1 mb-2">
+          <span>Saved Locally</span>
+          <label class="flex items-center gap-1 cursor-pointer" title="Save chat history in your browser">
+            <input type="checkbox" id="chat-memory-toggle" checked onchange="toggleChatMemory(this.checked)" class="accent-calm-400">
+            <span>Save</span>
+          </label>
+        </div>
+        <div id="conv-list" class="flex-1 overflow-y-auto space-y-1.5"></div>
+        <button onclick="clearAllConversations()" class="mt-2 py-1.5 text-[11px] text-red-400/70 hover:text-red-400 border border-red-400/20 rounded-lg transition">Clear All History</button>
+      </aside>
+
+      <!-- Main Chat Area -->
+      <div class="flex-1 flex flex-col min-w-0">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-calm-400/15 gap-2">
+          <div class="flex items-center gap-2.5 min-w-0">
+            <div class="w-8 h-8 shrink-0 rounded-lg bg-calm-600/80 flex items-center justify-center"><span class="text-sm">🌿</span></div>
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5">
+                <h2 id="active-conv-title" class="font-semibold text-sm text-cream truncate">AUREVIA</h2>
+                <button onclick="renameActiveConversation()" class="text-[11px] text-slate-400 hover:text-calm-300" title="Rename conversation" aria-label="Rename conversation">✏️</button>
+              </div>
+              <p id="chat-status" class="text-xs text-slate-400">Here to reflect with you</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <select id="lang-select" onchange="setLanguage(this.value)" aria-label="Response language" class="text-xs bg-calm-900 border border-calm-400/20 rounded-lg px-2 py-1 text-slate-200 outline-none">
+              <option value="english">English</option>
+              <option value="hinglish">Hinglish</option>
+              <option value="hindi">हिंदी</option>
+            </select>
+            <button onclick="createNewConversation()" class="md:hidden text-xs px-2.5 py-1.5 rounded-lg border border-calm-400/20 text-slate-300 hover:text-white transition">+ New</button>
+            <button onclick="deleteActiveConversation()" class="text-xs px-2.5 py-1.5 rounded-lg border border-red-400/20 text-red-400/80 hover:text-red-400 transition">Delete</button>
           </div>
         </div>
-        <div class="flex items-center gap-2">
-          <select id="lang-select" onchange="setLanguage(this.value)" class="text-xs bg-calm-900 border border-calm-400/20 rounded-lg px-2 py-1 text-slate-200 outline-none">
-            <option value="english">English</option>
-            <option value="hinglish">Hinglish</option>
-            <option value="hindi">हिंदी</option>
-          </select>
-          <button onclick="newChat()" class="text-xs px-3 py-1.5 rounded-lg border border-calm-400/20 text-slate-300 hover:text-white transition">+ New</button>
-          <button onclick="clearChat()" class="text-xs px-3 py-1.5 rounded-lg border border-red-400/20 text-red-400/70 hover:text-red-400 transition">Clear</button>
-        </div>
-      </div>
 
-      <div id="chat-messages" class="flex-1 overflow-y-auto px-4 py-4 space-y-4">
-        <div class="fade-in flex gap-3">
-          <div class="w-8 h-8 shrink-0 rounded-lg bg-calm-600/80 flex items-center justify-center mt-1"><span class="text-sm">🌿</span></div>
-          <div class="glass rounded-2xl rounded-tl-md px-4 py-3 max-w-[85%]">
-            <p class="text-sm text-cream mb-2">Hi, I'm <strong>DARSHIL'S AI</strong>. Take a breath—what's on your mind right now?</p>
-            <p class="text-xs text-slate-400 mb-2">You can tap one of these to start:</p>
-            <div class="flex flex-wrap gap-2">
-              <button onclick="sendSuggested(this.textContent)" class="text-xs px-3 py-1.5 rounded-full border border-calm-400/25 text-calm-200 hover:bg-calm-600/30 transition">I can't stop overthinking</button>
-              <button onclick="sendSuggested(this.textContent)" class="text-xs px-3 py-1.5 rounded-full border border-calm-400/25 text-calm-200 hover:bg-calm-600/30 transition">I feel stressed about studies</button>
-              <button onclick="sendSuggested(this.textContent)" class="text-xs px-3 py-1.5 rounded-full border border-calm-400/25 text-calm-200 hover:bg-calm-600/30 transition">I'm procrastinating a lot</button>
-              <button onclick="sendSuggested(this.textContent)" class="text-xs px-3 py-1.5 rounded-full border border-calm-400/25 text-calm-200 hover:bg-calm-600/30 transition">I feel low and lonely today</button>
+        <div id="chat-messages" class="flex-1 overflow-y-auto px-4 py-4 space-y-4"></div>
+
+        <div id="typing-indicator" class="hidden px-4 pb-2">
+          <div class="flex gap-3 items-center">
+            <div class="w-8 h-8 shrink-0 rounded-lg bg-calm-600/80 flex items-center justify-center"><span class="text-sm">🌿</span></div>
+            <div class="glass rounded-2xl rounded-tl-md px-4 py-2.5 flex items-center gap-3">
+              <span class="text-xs text-calm-300">AUREVIA is reflecting</span>
+              <span class="typing-dot w-1.5 h-1.5 rounded-full bg-calm-300"></span>
+              <span class="typing-dot w-1.5 h-1.5 rounded-full bg-calm-300"></span>
+              <span class="typing-dot w-1.5 h-1.5 rounded-full bg-calm-300"></span>
+              <button onclick="stopGeneration()" class="ml-2 text-[11px] px-2 py-0.5 rounded bg-red-500/20 border border-red-400/30 text-red-300 hover:bg-red-500/30 transition">⏹ Stop</button>
             </div>
           </div>
         </div>
-      </div>
 
-      <div id="typing-indicator" class="hidden px-4 pb-2">
-        <div class="flex gap-3 items-center">
-          <div class="w-8 h-8 shrink-0 rounded-lg bg-calm-600/80 flex items-center justify-center"><span class="text-sm">🌿</span></div>
-          <div class="glass rounded-2xl rounded-tl-md px-4 py-2.5 flex items-center gap-2">
-            <span class="text-xs text-calm-300">DARSHIL'S AI is thinking</span>
-            <span class="typing-dot w-1.5 h-1.5 rounded-full bg-calm-300"></span>
-            <span class="typing-dot w-1.5 h-1.5 rounded-full bg-calm-300"></span>
-            <span class="typing-dot w-1.5 h-1.5 rounded-full bg-calm-300"></span>
+        <div class="px-4 py-3 border-t border-calm-400/15">
+          <div class="flex gap-2">
+            <textarea id="chat-input" rows="1" placeholder="Share what's on your mind…" class="flex-1 bg-calm-900/70 border border-calm-400/20 rounded-xl px-4 py-3 text-sm text-cream placeholder-slate-500 outline-none focus:border-calm-300/50 resize-none transition" onkeydown="handleChatKey(event)" oninput="autoResize(this)"></textarea>
+            <button onclick="sendMessage()" id="send-btn" class="px-4 py-3 bg-calm-500 hover:bg-calm-400 text-white rounded-xl font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed" disabled aria-label="Send message">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+            </button>
           </div>
+          <p class="text-[10px] text-slate-500 mt-1.5 text-center">AUREVIA is an AI reflection companion, not a therapist. AI can make mistakes. Urgent help (India): 112 / Tele-MANAS 14416.</p>
         </div>
-      </div>
-
-      <div class="px-4 py-3 border-t border-calm-400/15">
-        <div class="flex gap-2">
-          <textarea id="chat-input" rows="1" placeholder="Write whatever you feel…" class="flex-1 bg-calm-900/70 border border-calm-400/20 rounded-xl px-4 py-3 text-sm text-cream placeholder-slate-500 outline-none focus:border-calm-300/50 resize-none transition" onkeydown="handleChatKey(event)" oninput="autoResize(this)"></textarea>
-          <button onclick="sendMessage()" id="send-btn" class="px-4 py-3 bg-calm-500 hover:bg-calm-400 text-white rounded-xl font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed" disabled>
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
-          </button>
-        </div>
-        <p class="text-[10px] text-slate-500 mt-1.5 text-center">DARSHIL'S AI is a wellness companion, not a substitute for professional help. Crisis helpline: 112 / 14416.</p>
       </div>
     </div>
   </section>
 
-  <!-- PAGE: 4-SLIDE CLARITY FLOW -->
+  <!-- PAGE: 4-STEP CLARITY FLOW (ADAPTIVE & SKIPPABLE) -->
   <section id="page-clarity" class="page hidden">
     <div class="max-w-2xl mx-auto px-4 py-10">
-      <h2 class="text-2xl font-bold gradient-text mb-1">Clarity Flow</h2>
-      <p class="text-sm text-slate-400 mb-6">Turn heavy thoughts into clarity in 4 simple steps.</p>
+      <div class="flex items-center justify-between mb-1">
+        <h2 class="text-2xl font-bold gradient-text">4-Step Clarity Flow</h2>
+        <button onclick="exitClarityFlow()" class="text-xs text-slate-400 hover:text-cream transition">✕ Exit Anytime</button>
+      </div>
+      <p class="text-sm text-slate-400 mb-6">A gentle, optional reflection exercise—not a clinical assessment. Skip any step you don't want to answer.</p>
 
       <div class="flex items-center gap-2 mb-6">
         <div id="dot-1" class="h-1.5 flex-1 rounded-full bg-calm-400 transition-all"></div>
@@ -254,38 +268,39 @@
 
       <div class="glass rounded-2xl p-6 fade-in">
         <div id="clarity-slide-1" class="clarity-slide">
-          <span class="text-xs uppercase tracking-wider text-calm-300 font-semibold">Step 1 of 4</span>
-          <h3 class="text-lg font-semibold text-cream mt-1 mb-2">What is the main problem right now?</h3>
-          <p class="text-xs text-slate-400 mb-4">Write it simply—no need to make it sound perfect.</p>
-          <textarea id="cf-problem" rows="4" placeholder="e.g., I have exams next week and I feel behind..." class="w-full bg-calm-900/70 border border-calm-400/20 rounded-xl p-3 text-sm text-cream placeholder-slate-500 outline-none focus:border-calm-300/50 resize-none"></textarea>
+          <span class="text-xs uppercase tracking-wider text-calm-300 font-semibold">Step 1 of 4 • Understand the Situation</span>
+          <h3 class="text-lg font-semibold text-cream mt-1 mb-2">What happened, or what is weighing on you right now?</h3>
+          <p class="text-xs text-slate-400 mb-4">Just the simple facts—no need to write it perfectly.</p>
+          <textarea id="cf-problem" rows="4" placeholder="e.g., My exams are next week and I feel behind on two subjects..." class="w-full bg-calm-900/70 border border-calm-400/20 rounded-xl p-3 text-sm text-cream placeholder-slate-500 outline-none focus:border-calm-300/50 resize-none"></textarea>
         </div>
 
         <div id="clarity-slide-2" class="clarity-slide hidden">
-          <span class="text-xs uppercase tracking-wider text-calm-300 font-semibold">Step 2 of 4</span>
-          <h3 class="text-lg font-semibold text-cream mt-1 mb-2">What negative thoughts are looping in your head?</h3>
-          <p class="text-xs text-slate-400 mb-4">Let them out on screen so they stop spinning inside.</p>
-          <textarea id="cf-negative" rows="4" placeholder="e.g., I'm going to fail, everyone else is smarter than me..." class="w-full bg-calm-900/70 border border-calm-400/20 rounded-xl p-3 text-sm text-cream placeholder-slate-500 outline-none focus:border-calm-300/50 resize-none"></textarea>
+          <span class="text-xs uppercase tracking-wider text-calm-300 font-semibold">Step 2 of 4 • Thoughts & Feelings</span>
+          <h3 class="text-lg font-semibold text-cream mt-1 mb-2">What recurring thoughts or emotions are showing up?</h3>
+          <p class="text-xs text-slate-400 mb-4">Putting them into words helps separate what you feel from what is a proven fact.</p>
+          <textarea id="cf-negative" rows="4" placeholder="e.g., I feel anxious and keep thinking I will fail..." class="w-full bg-calm-900/70 border border-calm-400/20 rounded-xl p-3 text-sm text-cream placeholder-slate-500 outline-none focus:border-calm-300/50 resize-none"></textarea>
         </div>
 
         <div id="clarity-slide-3" class="clarity-slide hidden">
-          <span class="text-xs uppercase tracking-wider text-calm-300 font-semibold">Step 3 of 4</span>
-          <h3 class="text-lg font-semibold text-cream mt-1 mb-2">What is one positive side or strength you still have?</h3>
-          <p class="text-xs text-slate-400 mb-4">Even a tiny fact counts.</p>
-          <textarea id="cf-positive" rows="4" placeholder="e.g., I still have 5 days left and I've passed tough exams before..." class="w-full bg-calm-900/70 border border-calm-400/20 rounded-xl p-3 text-sm text-cream placeholder-slate-500 outline-none focus:border-calm-300/50 resize-none"></textarea>
+          <span class="text-xs uppercase tracking-wider text-calm-300 font-semibold">Step 3 of 4 • Alternative Perspective</span>
+          <h3 class="text-lg font-semibold text-cream mt-1 mb-2">Without dismissing your feelings, what else might be true?</h3>
+          <p class="text-xs text-slate-400 mb-4">Your feelings are valid. Is there another angle or a strength you've used before?</p>
+          <textarea id="cf-positive" rows="4" placeholder="e.g., It's normal to feel stressed, and I still have 5 days to cover key topics..." class="w-full bg-calm-900/70 border border-calm-400/20 rounded-xl p-3 text-sm text-cream placeholder-slate-500 outline-none focus:border-calm-300/50 resize-none"></textarea>
         </div>
 
         <div id="clarity-slide-4" class="clarity-slide hidden">
-          <span class="text-xs uppercase tracking-wider text-calm-300 font-semibold">Step 4 of 4</span>
-          <h3 class="text-lg font-semibold text-cream mt-1 mb-2">What is one small solution you think could help?</h3>
-          <p class="text-xs text-slate-400 mb-4">Your own mind often knows the first step.</p>
-          <textarea id="cf-solution" rows="4" placeholder="e.g., Study just 2 key chapters today without checking my phone..." class="w-full bg-calm-900/70 border border-calm-400/20 rounded-xl p-3 text-sm text-cream placeholder-slate-500 outline-none focus:border-calm-300/50 resize-none"></textarea>
+          <span class="text-xs uppercase tracking-wider text-calm-300 font-semibold">Step 4 of 4 • One Realistic Next Step</span>
+          <h3 class="text-lg font-semibold text-cream mt-1 mb-2">What is one small, realistic step you could try next?</h3>
+          <p class="text-xs text-slate-400 mb-4">Even a 10-minute action or taking a short break counts.</p>
+          <textarea id="cf-solution" rows="4" placeholder="e.g., Review just one chapter for 25 minutes, then rest..." class="w-full bg-calm-900/70 border border-calm-400/20 rounded-xl p-3 text-sm text-cream placeholder-slate-500 outline-none focus:border-calm-300/50 resize-none"></textarea>
         </div>
 
-        <div class="flex justify-between items-center mt-6">
+        <div class="flex justify-between items-center mt-6 gap-2">
           <button id="cf-prev-btn" onclick="changeClaritySlide(-1)" class="px-4 py-2 rounded-lg border border-calm-400/20 text-sm text-slate-300 hover:text-white transition hidden">← Back</button>
           <div class="flex-1"></div>
+          <button id="cf-skip-btn" onclick="changeClaritySlide(1)" class="px-4 py-2 text-xs text-slate-400 hover:text-cream transition">Skip</button>
           <button id="cf-next-btn" onclick="changeClaritySlide(1)" class="px-6 py-2.5 bg-calm-500 hover:bg-calm-400 text-white rounded-xl text-sm font-medium transition">Next →</button>
-          <button id="cf-submit-btn" onclick="submitClarityFlow()" class="hidden px-6 py-2.5 bg-calm-500 hover:bg-calm-400 text-white rounded-xl text-sm font-semibold transition">✨ Get AI Clarity</button>
+          <button id="cf-submit-btn" onclick="submitClarityFlow()" class="hidden px-6 py-2.5 bg-calm-500 hover:bg-calm-400 text-white rounded-xl text-sm font-semibold transition">✨ Reflect with AUREVIA</button>
         </div>
       </div>
     </div>
@@ -295,22 +310,26 @@
   <section id="page-breathe" class="page hidden">
     <div class="max-w-3xl mx-auto px-4 py-8">
       <h2 class="text-2xl font-bold gradient-text mb-1">Breathe & Ground</h2>
-      <p class="text-sm text-slate-400 mb-6">Slow down your racing mind. Works offline anytime.</p>
+      <p class="text-sm text-slate-400 mb-2">Optional exercises to help slow down. Works offline anytime.</p>
+      <p class="text-xs text-calm-300/90 mb-6 bg-calm-900/50 border border-calm-400/15 rounded-xl px-3.5 py-2">
+        💡 <strong>Comfort First:</strong> Breathing exercises don't feel right for everyone. Never force breath-holding—if you feel dizzy or uncomfortable, stop anytime and try the 3-2-1 Room Grounding below instead.
+      </p>
 
       <div class="glass rounded-2xl p-6 mb-6">
         <div class="flex items-center justify-between flex-wrap gap-2 mb-6">
           <div>
-            <h3 class="font-semibold text-base text-cream">🌬️ Slow Breathing Timer</h3>
-            <p class="text-xs text-slate-400">4s Inhale • 4s Hold • 6s Exhale</p>
+            <h3 class="font-semibold text-base text-cream">🌬️ Guided Breathing</h3>
+            <p id="breath-subtitle" class="text-xs text-slate-400">Gentle 4s Inhale • 6s Exhale (No Hold)</p>
           </div>
-          <div class="flex gap-2">
-            <button onclick="selectBreathPattern('4-4-6', this)" class="breath-type-btn px-3 py-1.5 rounded-lg border border-calm-300 bg-calm-600/30 text-xs text-cream transition">4-4-6 Calm</button>
+          <div class="flex flex-wrap gap-2">
+            <button onclick="selectBreathPattern('gentle', this)" class="breath-type-btn px-3 py-1.5 rounded-lg border border-calm-300 bg-calm-600/30 text-xs text-cream transition">Gentle 4-6 (No Hold)</button>
+            <button onclick="selectBreathPattern('4-4-6', this)" class="breath-type-btn px-3 py-1.5 rounded-lg border border-calm-400/20 text-xs text-slate-300 hover:border-calm-300 transition">4-4-6 Calm</button>
             <button onclick="selectBreathPattern('box', this)" class="breath-type-btn px-3 py-1.5 rounded-lg border border-calm-400/20 text-xs text-slate-300 hover:border-calm-300 transition">4-4-4-4 Box</button>
           </div>
         </div>
 
         <div class="flex flex-col items-center py-4">
-          <div id="breath-circle" class="w-40 h-40 rounded-full bg-calm-500/20 border-2 border-calm-300/40 flex flex-col items-center justify-center mb-6 transition-transform ease-in-out">
+          <div id="breath-circle" class="w-40 h-40 rounded-full bg-calm-500/20 border-2 border-calm-300/40 flex flex-col items-center justify-center mb-6 transition-transform ease-in-out" aria-live="polite">
             <span id="breath-phase" class="text-base font-semibold text-calm-200">Ready</span>
             <span id="breath-count" class="text-2xl font-bold text-cream mt-0.5"></span>
           </div>
@@ -322,8 +341,8 @@
       </div>
 
       <div class="glass rounded-2xl p-6">
-        <h3 class="font-semibold text-base text-cream mb-1">🌿 Quick Room Grounding (3-2-1)</h3>
-        <p class="text-xs text-calm-300 mb-4">This gently pulls your mind out of overthinking and back into the present room. (All fields are optional.)</p>
+        <h3 class="font-semibold text-base text-cream mb-1">🌿 3-2-1 Room Grounding (Alternative)</h3>
+        <p class="text-xs text-calm-300 mb-4">Gently brings your attention back to your surroundings. All fields are optional.</p>
         <div class="space-y-3">
           <div>
             <label class="text-xs font-medium text-slate-300">👀 3 things you can SEE around you</label>
@@ -341,7 +360,7 @@
         <button onclick="completeGrounding()" class="mt-4 w-full py-2.5 bg-calm-500 hover:bg-calm-400 text-white rounded-xl text-sm font-medium transition">
           ✅ I'm Back in the Present
         </button>
-        <p id="grounding-result" class="hidden text-xs text-calm-300 text-center mt-3">🌿 Nice work. Take one slow breath—you are safe right here, right now.</p>
+        <p id="grounding-result" class="hidden text-xs text-calm-300 text-center mt-3">🌿 Nice work. Take one gentle breath—you are right here, right now.</p>
       </div>
     </div>
   </section>
@@ -350,7 +369,7 @@
   <section id="page-mood" class="page hidden">
     <div class="max-w-3xl mx-auto px-4 py-8">
       <h2 class="text-2xl font-bold gradient-text mb-1">Mood Check-In</h2>
-      <p class="text-sm text-slate-400 mb-6">Tap how you feel today and get a gentle 1-line tip.</p>
+      <p class="text-sm text-slate-400 mb-6">Optional daily reflection. Stored privately on your device—no streaks, no pressure.</p>
 
       <div class="glass rounded-2xl p-6 mb-6">
         <div class="flex flex-wrap justify-center gap-3 mb-4" id="mood-selector">
@@ -372,17 +391,24 @@
         </div>
 
         <div id="mood-extra" class="hidden fade-in mt-4">
-          <label class="text-xs text-slate-300 mb-1.5 block">1-line reason (optional):</label>
-          <input type="text" id="mood-trigger" placeholder="e.g., too much work, tired, had a good talk..." class="w-full bg-calm-900/70 border border-calm-400/20 rounded-lg px-3 py-2 text-sm text-cream placeholder-slate-500 outline-none focus:border-calm-300/50">
-          <button id="mood-save-btn" onclick="saveMood()" class="mt-3 w-full py-2.5 bg-calm-500 hover:bg-calm-400 text-white rounded-xl text-sm font-medium transition">
-            Save & Get Quick AI Tip
-          </button>
+          <label class="text-xs text-slate-300 mb-1.5 block">1-line reflection (optional):</label>
+          <input type="text" id="mood-trigger" placeholder="e.g., tired, heavy workload, had a good talk..." class="w-full bg-calm-900/70 border border-calm-400/20 rounded-lg px-3 py-2 text-sm text-cream placeholder-slate-500 outline-none focus:border-calm-300/50">
+          <div class="flex gap-2 mt-3">
+            <button id="mood-save-local-btn" onclick="saveMood(false)" class="flex-1 py-2.5 border border-calm-400/30 text-calm-200 hover:bg-calm-800/60 rounded-xl text-xs font-medium transition">Save Locally Only</button>
+            <button id="mood-save-btn" onclick="saveMood(true)" class="flex-1 py-2.5 bg-calm-500 hover:bg-calm-400 text-white rounded-xl text-xs font-medium transition">Save & Get AI Reflection</button>
+          </div>
         </div>
 
         <div id="mood-ai-tip" class="hidden mt-4 p-4 rounded-xl bg-calm-800/60 border border-calm-300/25 fade-in">
-          <p class="text-xs font-semibold text-calm-300 mb-1">🌿 DARSHIL'S AI says:</p>
+          <p class="text-xs font-semibold text-calm-300 mb-1">🌿 AUREVIA reflects:</p>
           <p id="mood-ai-tip-text" class="text-sm text-cream leading-relaxed"></p>
         </div>
+      </div>
+
+      <!-- Simple Non-Diagnostic Mood Trends -->
+      <div id="mood-trends-box" class="hidden glass rounded-2xl p-5 mb-6">
+        <h3 class="font-semibold text-sm text-cream mb-3">📊 Your Recent Mood Summary <span class="text-[11px] font-normal text-slate-400">(for self-awareness only)</span></h3>
+        <div id="mood-trends" class="space-y-2"></div>
       </div>
 
       <div class="glass rounded-2xl p-6">
@@ -397,116 +423,106 @@
     </div>
   </section>
 
-  <!-- PAGE: HABITS -->
+  <!-- PAGE: HABITS (FLEXIBLE, NO GUILT) -->
   <section id="page-growth" class="page hidden">
     <div class="max-w-3xl mx-auto px-4 py-8">
       <h2 class="text-2xl font-bold gradient-text mb-1">Daily Habits</h2>
-      <p class="text-sm text-slate-400 mb-6">Small 1% daily steps build real confidence.</p>
+      <p class="text-sm text-slate-400 mb-6">Small, gentle steps at your own pace. Pause or skip anytime—no guilt, no streaks.</p>
 
       <div class="glass rounded-2xl p-6 mb-6">
-        <div class="flex gap-2">
-          <input type="text" id="habit-input" placeholder='e.g., "10 min walk", "No phone for 30 min"' class="flex-1 bg-calm-900/70 border border-calm-400/20 rounded-lg px-3 py-2 text-sm text-cream placeholder-slate-500 outline-none focus:border-calm-300/50">
+        <div class="flex gap-2 mb-3">
+          <input type="text" id="habit-input" placeholder='e.g., "10 min walk", "Drink a glass of water"' class="flex-1 bg-calm-900/70 border border-calm-400/20 rounded-lg px-3 py-2 text-sm text-cream placeholder-slate-500 outline-none focus:border-calm-300/50">
           <button onclick="addHabit()" class="px-5 py-2 bg-calm-500 hover:bg-calm-400 text-white rounded-lg text-sm font-medium transition">Add</button>
+        </div>
+        <div class="flex flex-wrap gap-1.5">
+          <span class="text-[11px] text-slate-400 mr-1">Gentle ideas:</span>
+          <button onclick="quickAddHabit('10 min walk')" class="text-[11px] px-2.5 py-1 rounded-full border border-calm-400/20 text-calm-200 hover:bg-calm-600/30">+ 10 min walk</button>
+          <button onclick="quickAddHabit('2 min slow breathing')" class="text-[11px] px-2.5 py-1 rounded-full border border-calm-400/20 text-calm-200 hover:bg-calm-600/30">+ 2 min breathing</button>
+          <button onclick="quickAddHabit('No phone 20 min before sleep')" class="text-[11px] px-2.5 py-1 rounded-full border border-calm-400/20 text-calm-200 hover:bg-calm-600/30">+ Screen-free wind-down</button>
         </div>
       </div>
 
       <div class="glass rounded-2xl p-6">
         <div class="flex items-center justify-between mb-4">
-          <h3 class="font-semibold text-sm text-cream">Today's List</h3>
+          <h3 class="font-semibold text-sm text-cream">Your Habits</h3>
           <span id="habits-score" class="text-xs text-calm-300">0/0 done</span>
         </div>
         <div id="habits-list" class="space-y-2">
-          <p class="text-sm text-slate-500 text-center py-4">No habits yet. Add one tiny step above!</p>
+          <p class="text-sm text-slate-500 text-center py-4">No habits yet. Add one small step above!</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- PAGE: SAFETY -->
+  <!-- PAGE: PRIVACY & SAFETY -->
   <section id="page-safety" class="page hidden">
     <div class="max-w-3xl mx-auto px-4 py-8">
       <h2 class="text-2xl font-bold gradient-text mb-1">Privacy & Safety</h2>
-      <p class="text-sm text-slate-400 mb-6">Your space is private, anonymous, and safe.</p>
+      <p class="text-sm text-slate-400 mb-6">Clear, honest details about your data and verified support resources.</p>
 
       <div class="space-y-4">
         <div class="glass rounded-2xl p-6">
-          <h3 class="font-semibold text-base text-cream mb-3">🔒 Your Privacy</h3>
-          <ul class="space-y-2 text-sm text-slate-300">
-            <li>• <strong>No login needed:</strong> Completely anonymous by default.</li>
-            <li>• <strong>Stored on your device:</strong> Moods and habits stay in your browser only.</li>
-            <li>• <strong>No permanent chat logs:</strong> Conversations clear when the server restarts.</li>
+          <h3 class="font-semibold text-base text-cream mb-3">🔒 Your Data & Controls</h3>
+          <ul class="space-y-2 text-sm text-slate-300 mb-4">
+            <li>• <strong>No account required:</strong> You can use AUREVIA without signing up.</li>
+            <li>• <strong>Local device storage:</strong> Your moods, habits, and saved chat list are stored in your browser's <code class="text-calm-300">localStorage</code>.</li>
+            <li>• <strong>AI processing:</strong> When you send a chat message, it is sent over HTTPS to our backend server to generate a reply. Do not share passwords, government IDs, or financial details.</li>
+            <li>• <strong>Deletion:</strong> Deleting a chat removes it from your browser immediately. Server/provider-side temporary logs depend on the AI provider's policy.</li>
           </ul>
+          <div class="flex flex-wrap gap-3">
+            <button onclick="exportLocalData()" class="px-4 py-2 rounded-xl bg-calm-600/40 hover:bg-calm-600/60 border border-calm-300/30 text-xs font-medium text-cream transition">⬇️ Export My Local Data (JSON)</button>
+            <button onclick="deleteAllLocalData()" class="px-4 py-2 rounded-xl border border-red-400/30 text-red-300 hover:bg-red-400/10 text-xs font-medium transition">🗑️ Delete All Local Data</button>
+          </div>
         </div>
-        <div class="glass rounded-2xl p-6 border-red-500/20">
-          <h3 class="font-semibold text-base text-cream mb-3">🚨 Emergency Helplines</h3>
+
+        <div class="glass rounded-2xl p-6 border-red-500/30">
+          <h3 class="font-semibold text-base text-cream mb-2">🚨 Urgent Support & Helplines</h3>
+          <p class="text-xs text-slate-400 mb-3">AUREVIA cannot contact emergency services or monitor you in real time. If you or someone you know is in immediate danger or distress, please reach out to a trusted person or a verified helpline:</p>
           <div class="space-y-2 text-sm text-slate-300">
-            <p>• <strong>India Emergency:</strong> 112</p>
-            <p>• <strong>Tele-MANAS (24/7 Free):</strong> 14416 / 1800-891-4416</p>
-            <p>• <strong>KIRAN Helpline:</strong> 1800-599-0019</p>
-            <p>• <strong>Vandrevala Foundation:</strong> +91 9999 666 555</p>
-            <p>• <strong>Global:</strong> <a href="https://findahelpline.com" target="_blank" class="text-calm-300 underline">findahelpline.com</a></p>
+            <p>• <strong>India Emergency Services:</strong> 112</p>
+            <p>• <strong>Tele-MANAS (Govt. of India, 24/7 Free):</strong> 14416 / 1800-891-4416</p>
+            <p>• <strong>KIRAN Mental Health Helpline:</strong> 1800-599-0019</p>
+            <p>• <strong>International Helplines:</strong> <a href="https://findahelpline.com" target="_blank" rel="noopener noreferrer" class="text-calm-300 underline">findahelpline.com</a></p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- PAGE: ABOUT AI -->
+  <!-- PAGE: HOW AUREVIA WORKS (TRANSPARENCY) -->
   <section id="page-about" class="page hidden">
     <div class="max-w-4xl mx-auto px-4 py-10 fade-in">
       <div class="text-center mb-10">
         <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-calm-600/30 border border-calm-300/30 flex items-center justify-center">
           <span class="text-2xl">✨</span>
         </div>
-        <h2 class="text-3xl font-bold gradient-text mb-2">About DARSHIL'S AI</h2>
-        <p class="text-sm text-slate-400 max-w-xl mx-auto">Your calm, psychology-grounded companion designed to help you think clearly, feel lighter, and take control of your mind.</p>
+        <h2 class="text-3xl font-bold gradient-text mb-2">How AUREVIA Works</h2>
+        <p class="text-sm text-slate-400 max-w-xl mx-auto">Transparent information about our approach, capabilities, and limitations.</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
         <div class="glass rounded-2xl p-6">
-          <h3 class="font-semibold text-base text-cream mb-3 flex items-center gap-2"><span>💡</span> Why Should You Use It?</h3>
+          <h3 class="font-semibold text-base text-cream mb-3">🧭 What AUREVIA Is (and Isn't)</h3>
           <ul class="space-y-2 text-sm text-slate-300">
-            <li>• <strong>Zero Judgment, 24/7:</strong> Share thoughts you can't easily tell anyone else.</li>
-            <li>• <strong>100% Private & Anonymous:</strong> No login, no account, no tracking.</li>
-            <li>• <strong>Speaks Your Language:</strong> Chat naturally in English, Hindi, or Hinglish.</li>
-            <li>• <strong>Built for Calmness:</strong> Soft colors and simple design that never overwhelm your eyes.</li>
+            <li>• <strong>Self-Reflection Tool:</strong> Helps you organize thoughts, practice grounding, and explore calmer perspectives.</li>
+            <li>• <strong>Evidence-Informed Concepts:</strong> Inspired by general CBT reframing, reflective questioning, and mindfulness exercises.</li>
+            <li>• <strong>Not Medical Care:</strong> Does not diagnose conditions, provide psychotherapy, or replace licensed professionals or trusted human relationships.</li>
           </ul>
         </div>
 
         <div class="glass rounded-2xl p-6">
-          <h3 class="font-semibold text-base text-cream mb-3 flex items-center gap-2"><span>⚡</span> The Power Behind It</h3>
+          <h3 class="font-semibold text-base text-cream mb-3">⚙️ AI & Limitations</h3>
           <ul class="space-y-2 text-sm text-slate-300">
-            <li>• <strong>100+ Psychology Books Brain:</strong> Grounded in CBT, Stoicism, Habit Science, and Emotional Intelligence.</li>
-            <li>• <strong>Real Clarity, Not Clichés:</strong> No fake "just stay positive" lines—only practical, human advice.</li>
-            <li>• <strong>Voice Playback (🔊):</strong> Too tired to read? Tap Listen and let the AI talk you through it.</li>
-            <li>• <strong>Always-On Engine:</strong> Dual-AI reliability so it's ready whenever you need support.</li>
-          </ul>
-        </div>
-
-        <div class="glass rounded-2xl p-6">
-          <h3 class="font-semibold text-base text-cream mb-3 flex items-center gap-2"><span>🤝</span> What It Helps You With</h3>
-          <ul class="space-y-2 text-sm text-slate-300">
-            <li>• <strong>Overthinking & Anxiety:</strong> Break endless mental loops before they drain your day.</li>
-            <li>• <strong>Student & Career Stress:</strong> Handle exam pressure, procrastination, and focus issues.</li>
-            <li>• <strong>Emotional Clarity:</strong> Understand loneliness, anger, self-doubt, or relationship confusion.</li>
-            <li>• <strong>Better Daily Habits:</strong> Build small, realistic 1% steps that actually stick.</li>
-          </ul>
-        </div>
-
-        <div class="glass rounded-2xl p-6">
-          <h3 class="font-semibold text-base text-cream mb-3 flex items-center gap-2"><span>🧭</span> How It Works</h3>
-          <ul class="space-y-2 text-sm text-slate-300">
-            <li>• <strong>1. Chat Freely:</strong> Vent or ask anything—get calm, step-by-step guidance.</li>
-            <li>• <strong>2. 4-Step Clarity Flow:</strong> Write your problem, negative thought, positive side & solution—AI untangles it all.</li>
-            <li>• <strong>3. Breathe & Ground:</strong> Use the 4-4-6 slow breathing timer & 3-2-1 grounding offline anytime.</li>
-            <li>• <strong>4. 1-Tap Mood Check-In:</strong> Log your mood and get an instant soothing tip.</li>
+            <li>• <strong>AI-Generated Responses:</strong> Replies are generated by an AI language model via our backend API and may occasionally be inaccurate or miss context.</li>
+            <li>• <strong>Offline Tools:</strong> Breathe & Ground, Mood Check-In (local save), Daily Habits, and Frequency Audio run directly in your browser.</li>
+            <li>• <strong>Safety Guardrails:</strong> Built-in crisis detection pauses ordinary advice and surfaces human support resources if distress is detected.</li>
           </ul>
         </div>
       </div>
 
       <div class="text-center">
         <button onclick="navigate('chat')" class="px-8 py-3 bg-calm-500 hover:bg-calm-400 text-white rounded-xl font-semibold text-sm shadow-lg transition">
-          Start Talking to DARSHIL'S AI →
+          Start Reflecting with AUREVIA →
         </button>
       </div>
     </div>
@@ -537,7 +553,7 @@
       <div class="glass rounded-2xl p-5 mb-6 border-cyan-400/20">
         <div class="flex items-center justify-between flex-wrap gap-2 mb-4">
           <h3 class="text-sm font-semibold text-cream">🧭 Step 1: Apna Mood, Condition & Emotion Chunein</h3>
-          <span class="text-[11px] text-cyan-300">AI Auto-Match</span>
+          <span class="text-[11px] text-cyan-300">Auto-Match</span>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
           <div>
@@ -590,7 +606,7 @@
         </div>
       </div>
 
-      <!-- ACTIVE PLAYER + WAVE & BREATHING ANIMATION -->
+      <!-- ACTIVE PLAYER -->
       <div id="freq-player" class="hidden glass rounded-2xl p-6 mb-7 border-cyan-400/35 fade-in">
         <div class="flex flex-col md:flex-row items-center gap-6">
           <div class="relative w-40 h-40 shrink-0 flex items-center justify-center">
@@ -654,30 +670,61 @@
   </section>
 </div>
 
+<!-- FEEDBACK / REPORT MODAL -->
+<div id="report-modal" class="fixed inset-0 z-50 hidden bg-black/70 flex items-center justify-center p-4">
+  <div class="glass rounded-2xl max-w-md w-full p-6 fade-in">
+    <h3 class="font-semibold text-base text-cream mb-1">🚩 Report Unsafe or Inaccurate Response</h3>
+    <p class="text-xs text-slate-400 mb-4">Your private chat content is <strong>not</strong> automatically included. Only the category and optional note you write below are saved locally for your review.</p>
+    <select id="report-category" class="w-full bg-calm-900 border border-calm-400/25 rounded-xl px-3 py-2 text-xs text-cream mb-3 outline-none">
+      <option value="inaccurate">Inaccurate or unhelpful response</option>
+      <option value="unsafe">Unsafe, harmful, or insensitive content</option>
+      <option value="medical">Sounded like medical/clinical diagnosis</option>
+      <option value="other">Other concern</option>
+    </select>
+    <textarea id="report-note" rows="3" placeholder="Optional note (avoid personal details)..." class="w-full bg-calm-900 border border-calm-400/25 rounded-xl p-3 text-xs text-cream outline-none resize-none mb-4"></textarea>
+    <div class="flex justify-end gap-2">
+      <button onclick="closeReportModal()" class="px-4 py-2 text-xs text-slate-300 hover:text-white">Cancel</button>
+      <button onclick="submitReport()" class="px-4 py-2 bg-calm-500 hover:bg-calm-400 text-white rounded-xl text-xs font-semibold">Submit Feedback</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const API = 'https://darshils-ai.onrender.com';
-let sessionId = 'session-' + Date.now();
 let currentLanguage = 'english';
 let isLoading = false;
-let lastUserMessage = '';
+let activeAbortController = null;
+let saveChatsEnabled = true;
+
+let conversations = [];
+let activeConvId = null;
 
 let breathingTimeout = null;
 let breathingCountInterval = null;
-let breathingType = '4-4-6';
+let breathingType = 'gentle';
 let breathingRunning = false;
 let clarityStep = 1;
 
-async function fetchWithTimeout(url, options = {}, timeoutMs = 60000) {
-  const controller = new AbortController();
-  const id = setTimeout(() => controller.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, { ...options, signal: controller.signal });
-    clearTimeout(id);
-    return res;
-  } catch (err) {
-    clearTimeout(id);
-    throw err;
-  }
+// P0: Client-side Crisis Detection Guardrail
+const CRISIS_PATTERNS = [
+  /\b(suicide|suicidal|kill myself|end my life|want to die|wanna die|don't want to live|hurt myself|self[- ]?harm|cut myself|overdose)\b/i,
+  /(marna chahta|marna chahti|khud ko maar|zindagi khatam|aatmahatya|jeena nahi chahta|jeena nahi chahti)/i
+];
+
+function isCrisisMessage(text) {
+  return CRISIS_PATTERNS.some(rx => rx.test(text || ''));
+}
+
+function getCrisisResponseText() {
+  return `It sounds like you're carrying something very heavy right now, and your safety matters most. **AUREVIA is an AI tool and cannot provide emergency help or monitor you in real time.**
+
+Please reach out to a trusted person or a trained human right now:
+• **India Emergency:** 112
+• **Tele-MANAS (24/7 Free, Govt. of India):** 14416 or 1800-891-4416
+• **KIRAN Helpline:** 1800-599-0019
+• **Outside India:** findahelpline.com
+
+You don't have to face this moment alone—please call or message someone you trust.`;
 }
 
 function navigate(page) {
@@ -687,20 +734,21 @@ function navigate(page) {
   window.scrollTo(0, 0);
   if (page === 'mood') renderMoodHistory();
   if (page === 'growth') renderHabits();
+  if (page === 'chat') renderActiveConversation();
 }
 
-function toggleMobileMenu() {
-  document.getElementById('mobile-menu').classList.toggle('hidden');
-}
-
+function toggleMobileMenu() { document.getElementById('mobile-menu').classList.toggle('hidden'); }
 function toggleTheme() {
   document.documentElement.classList.toggle('dark');
-  localStorage.setItem('mm-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+  localStorage.setItem('aurevia-theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
 }
 
 async function checkAiStatus() {
   try {
-    const r = await fetchWithTimeout(API + '/api/ai/status', {}, 15000);
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), 15000);
+    const r = await fetch(API + '/api/ai/status', { signal: controller.signal });
+    clearTimeout(id);
     const d = await r.json();
     const dot = document.getElementById('ai-dot');
     const label = document.getElementById('ai-label');
@@ -714,51 +762,147 @@ async function checkAiStatus() {
       label.className = 'text-red-400';
     }
   } catch {
-    const dot = document.getElementById('ai-dot');
-    const label = document.getElementById('ai-label');
-    dot.className = 'w-2 h-2 rounded-full bg-yellow-400';
-    label.textContent = 'Waking up…';
-    label.className = 'text-yellow-300';
+    document.getElementById('ai-dot').className = 'w-2 h-2 rounded-full bg-yellow-400';
+    document.getElementById('ai-label').textContent = 'Waking up…';
+    document.getElementById('ai-label').className = 'text-yellow-300';
   }
 }
 
+// P1: Multi-Conversation Isolated Storage
+function loadConversations() {
+  saveChatsEnabled = localStorage.getItem('aurevia-save-chats') !== 'false';
+  const toggle = document.getElementById('chat-memory-toggle');
+  if (toggle) toggle.checked = saveChatsEnabled;
+  const saved = saveChatsEnabled ? JSON.parse(localStorage.getItem('aurevia-convs') || '[]') : [];
+  conversations = saved.length ? saved : [{ id: 'conv-' + Date.now(), title: 'New Reflection', messages: [] }];
+  activeConvId = conversations[0].id;
+  renderConvList();
+  renderActiveConversation();
+}
+
+function persistConversations() {
+  if (saveChatsEnabled) {
+    localStorage.setItem('aurevia-convs', JSON.stringify(conversations.slice(0, 25)));
+  }
+}
+
+function toggleChatMemory(enabled) {
+  saveChatsEnabled = enabled;
+  localStorage.setItem('aurevia-save-chats', enabled ? 'true' : 'false');
+  if (!enabled) localStorage.removeItem('aurevia-convs');
+  else persistConversations();
+}
+
+function getActiveConv() {
+  return conversations.find(c => c.id === activeConvId) || conversations[0];
+}
+
+function createNewConversation() {
+  const c = { id: 'conv-' + Date.now(), title: 'New Reflection', messages: [] };
+  conversations.unshift(c);
+  activeConvId = c.id;
+  persistConversations();
+  renderConvList();
+  renderActiveConversation();
+}
+
+function selectConversation(id) {
+  activeConvId = id;
+  renderConvList();
+  renderActiveConversation();
+}
+
+function renameActiveConversation() {
+  const c = getActiveConv();
+  const next = prompt('Rename this conversation:', c.title);
+  if (next && next.trim()) {
+    c.title = next.trim().slice(0, 40);
+    persistConversations();
+    renderConvList();
+    document.getElementById('active-conv-title').textContent = c.title;
+  }
+}
+
+function deleteActiveConversation() {
+  if (!confirm('Delete this conversation from your device?')) return;
+  conversations = conversations.filter(c => c.id !== activeConvId);
+  if (!conversations.length) conversations.push({ id: 'conv-' + Date.now(), title: 'New Reflection', messages: [] });
+  activeConvId = conversations[0].id;
+  persistConversations();
+  renderConvList();
+  renderActiveConversation();
+}
+
+function clearAllConversations() {
+  if (!confirm('Delete all saved conversations from this browser?')) return;
+  conversations = [{ id: 'conv-' + Date.now(), title: 'New Reflection', messages: [] }];
+  activeConvId = conversations[0].id;
+  localStorage.removeItem('aurevia-convs');
+  renderConvList();
+  renderActiveConversation();
+}
+
+function renderConvList() {
+  const list = document.getElementById('conv-list');
+  if (!list) return;
+  list.innerHTML = conversations.map(c => `
+    <button onclick="selectConversation('${c.id}')" class="w-full text-left px-3 py-2 rounded-xl text-xs truncate transition ${c.id === activeConvId ? 'bg-calm-600/40 text-cream border border-calm-300/30' : 'text-slate-400 hover:bg-calm-800/60'}">
+      💬 ${escapeHtml(c.title)}
+    </button>
+  `).join('');
+}
+
+function renderActiveConversation() {
+  const c = getActiveConv();
+  document.getElementById('active-conv-title').textContent = c.title;
+  const container = document.getElementById('chat-messages');
+  container.innerHTML = `
+    <div class="fade-in flex gap-3">
+      <div class="w-8 h-8 shrink-0 rounded-lg bg-calm-600/80 flex items-center justify-center mt-1"><span class="text-sm">🌿</span></div>
+      <div class="glass rounded-2xl rounded-tl-md px-4 py-3 max-w-[85%]">
+        <p class="text-sm text-cream mb-2">Hi, I'm <strong>AUREVIA</strong>. Take a breath—what's on your mind right now?</p>
+        <p class="text-xs text-slate-400 mb-2">Tap a prompt or write freely:</p>
+        <div class="flex flex-wrap gap-2">
+          <button onclick="sendSuggested(this.textContent)" class="text-xs px-3 py-1.5 rounded-full border border-calm-400/25 text-calm-200 hover:bg-calm-600/30 transition">I can't stop overthinking</button>
+          <button onclick="sendSuggested(this.textContent)" class="text-xs px-3 py-1.5 rounded-full border border-calm-400/25 text-calm-200 hover:bg-calm-600/30 transition">I feel stressed about studies</button>
+          <button onclick="sendSuggested(this.textContent)" class="text-xs px-3 py-1.5 rounded-full border border-calm-400/25 text-calm-200 hover:bg-calm-600/30 transition">I feel low and lonely today</button>
+        </div>
+      </div>
+    </div>`;
+  c.messages.forEach(m => appendMessageDOM(m.role, m.text, m.isError, m.isCrisis));
+}
+
 function speakMessage(btn) {
-  if (!('speechSynthesis' in window)) {
-    alert('Voice playback is not supported in this browser.');
-    return;
-  }
-  if (window.speechSynthesis.speaking) {
-    window.speechSynthesis.cancel();
-    btn.textContent = '🔊 Listen';
-    return;
-  }
+  if (!('speechSynthesis' in window)) { alert('Voice playback is not supported in this browser.'); return; }
+  if (window.speechSynthesis.speaking) { window.speechSynthesis.cancel(); btn.textContent = '🔊 Listen'; return; }
   const msgEl = btn.closest('.glass').querySelector('.chat-msg');
   if (!msgEl) return;
   const utter = new SpeechSynthesisUtterance(msgEl.textContent);
   utter.lang = currentLanguage === 'hindi' ? 'hi-IN' : 'en-IN';
   utter.rate = 0.95;
   btn.textContent = '⏹️ Stop';
-  utter.onend = () => { btn.textContent = '🔊 Listen'; };
-  utter.onerror = () => { btn.textContent = '🔊 Listen'; };
+  utter.onend = utter.onerror = () => { btn.textContent = '🔊 Listen'; };
   window.speechSynthesis.speak(utter);
 }
 
 function setLanguage(lang) { currentLanguage = lang; }
-
-function handleChatKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-}
-
+function handleChatKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
 function autoResize(el) {
   el.style.height = 'auto';
   el.style.height = Math.min(el.scrollHeight, 120) + 'px';
   document.getElementById('send-btn').disabled = !el.value.trim();
 }
-
 function sendSuggested(text) {
   document.getElementById('chat-input').value = text;
   document.getElementById('send-btn').disabled = false;
   sendMessage();
+}
+
+function stopGeneration() {
+  if (activeAbortController) {
+    activeAbortController.abort();
+    activeAbortController = null;
+  }
 }
 
 async function sendMessage(customText = null) {
@@ -766,44 +910,72 @@ async function sendMessage(customText = null) {
   const msg = customText || input.value.trim();
   if (!msg || isLoading) return;
 
-  lastUserMessage = msg;
+  const conv = getActiveConv();
+  if (!conv.messages.length && conv.title === 'New Reflection') {
+    conv.title = msg.slice(0, 30) + (msg.length > 30 ? '…' : '');
+    renderConvList();
+    document.getElementById('active-conv-title').textContent = conv.title;
+  }
+
   if (!customText) {
     input.value = '';
     input.style.height = 'auto';
     document.getElementById('send-btn').disabled = true;
   }
 
-  appendMessage('user', msg);
+  conv.messages.push({ role: 'user', text: msg });
+  appendMessageDOM('user', msg);
+  persistConversations();
+
+  // P0: Immediate Crisis Safety Interception
+  if (isCrisisMessage(msg)) {
+    const crisisReply = getCrisisResponseText();
+    conv.messages.push({ role: 'assistant', text: crisisReply, isCrisis: true });
+    appendMessageDOM('assistant', crisisReply, false, true);
+    persistConversations();
+    return;
+  }
+
   isLoading = true;
   document.getElementById('typing-indicator').classList.remove('hidden');
-  document.getElementById('chat-status').textContent = "DARSHIL'S AI is thinking…";
+  document.getElementById('chat-status').textContent = 'AUREVIA is reflecting…';
+  activeAbortController = new AbortController();
+  const timeoutId = setTimeout(() => activeAbortController && activeAbortController.abort(), 60000);
 
   try {
-    const r = await fetchWithTimeout(API + '/api/chat', {
+    const r = await fetch(API + '/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: msg, sessionId, language: currentLanguage })
-    }, 60000);
+      body: JSON.stringify({ message: msg, sessionId: conv.id, language: currentLanguage }),
+      signal: activeAbortController.signal
+    });
+    clearTimeout(timeoutId);
     const d = await r.json();
 
     if (d.error) {
-      appendMessage('assistant', '⚠️ ' + d.error, true);
+      conv.messages.push({ role: 'assistant', text: '⚠️ ' + d.error, isError: true });
+      appendMessageDOM('assistant', '⚠️ ' + d.error, true);
     } else if (d.reply) {
-      appendMessage('assistant', d.reply, false, d.isCrisis);
+      conv.messages.push({ role: 'assistant', text: d.reply, isCrisis: !!d.isCrisis });
+      appendMessageDOM('assistant', d.reply, false, !!d.isCrisis);
     }
   } catch (err) {
+    clearTimeout(timeoutId);
     const friendly = err.name === 'AbortError'
-      ? "The server took too long to wake up. Please tap Regenerate once—it's awake now!"
+      ? 'Response stopped or timed out. Tap Retry whenever you are ready.'
       : 'Could not reach the server. Please try again in a moment.';
-    appendMessage('assistant', '⚠️ ' + friendly, true);
+    conv.messages.push({ role: 'assistant', text: '⚠️ ' + friendly, isError: true });
+    appendMessageDOM('assistant', '⚠️ ' + friendly, true);
   }
 
+  persistConversations();
   isLoading = false;
+  activeAbortController = null;
   document.getElementById('typing-indicator').classList.add('hidden');
-  document.getElementById('chat-status').textContent = 'Here to listen';
+  document.getElementById('chat-status').textContent = 'Here to reflect with you';
 }
 
-function appendMessage(role, text, isError = false, isCrisis = false) {
+function appendMessageDOM(role, text, isError = false, isCrisis = false) {
   const container = document.getElementById('chat-messages');
   const wrapper = document.createElement('div');
   wrapper.className = 'fade-in flex gap-3' + (role === 'user' ? ' justify-end' : '');
@@ -814,21 +986,42 @@ function appendMessage(role, text, isError = false, isCrisis = false) {
         <p class="text-sm text-cream whitespace-pre-wrap">${escapeHtml(text)}</p>
       </div>`;
   } else {
-    const borderClass = isCrisis ? 'border-red-500/40' : isError ? 'border-yellow-500/30' : '';
+    const borderClass = isCrisis ? 'border-red-500/50 bg-red-950/30' : isError ? 'border-yellow-500/30' : '';
     wrapper.innerHTML = `
-      <div class="w-8 h-8 shrink-0 rounded-lg bg-calm-600/80 flex items-center justify-center mt-1"><span class="text-sm">🌿</span></div>
+      <div class="w-8 h-8 shrink-0 rounded-lg bg-calm-600/80 flex items-center justify-center mt-1"><span class="text-sm">${isCrisis ? '🚨' : '🌿'}</span></div>
       <div class="glass ${borderClass} rounded-2xl rounded-tl-md px-4 py-3 max-w-[85%]">
         <div class="text-sm text-cream chat-msg leading-relaxed">${formatMarkdown(text)}</div>
-        <div class="flex gap-3 mt-2.5 pt-2 border-t border-calm-400/15">
+        <div class="flex flex-wrap items-center gap-3 mt-2.5 pt-2 border-t border-calm-400/15">
           <button onclick="speakMessage(this)" class="text-xs text-slate-400 hover:text-calm-300 transition">🔊 Listen</button>
           <button onclick="copyMessage(this)" class="text-xs text-slate-400 hover:text-calm-300 transition">📋 Copy</button>
-          <button onclick="regenerate()" class="text-xs text-slate-400 hover:text-calm-300 transition">🔄 Regenerate</button>
+          <button onclick="regenerate()" class="text-xs text-slate-400 hover:text-calm-300 transition">🔄 Retry</button>
+          <span class="flex-1"></span>
+          <button onclick="giveFeedback(this, 'up')" class="text-xs text-slate-400 hover:text-emerald-300 transition" title="Helpful">👍</button>
+          <button onclick="giveFeedback(this, 'down')" class="text-xs text-slate-400 hover:text-amber-300 transition" title="Not helpful">👎</button>
+          <button onclick="openReportModal()" class="text-xs text-slate-400 hover:text-red-300 transition" title="Report unsafe or inaccurate">🚩</button>
         </div>
       </div>`;
   }
-
   container.appendChild(wrapper);
   container.scrollTop = container.scrollHeight;
+}
+
+function giveFeedback(btn, type) {
+  btn.textContent = type === 'up' ? '✅ Helpful' : '📝 Noted';
+  btn.disabled = true;
+}
+
+function openReportModal() { document.getElementById('report-modal').classList.remove('hidden'); }
+function closeReportModal() { document.getElementById('report-modal').classList.add('hidden'); }
+function submitReport() {
+  const cat = document.getElementById('report-category').value;
+  const note = document.getElementById('report-note').value.trim();
+  const reports = JSON.parse(localStorage.getItem('aurevia-reports') || '[]');
+  reports.unshift({ category: cat, note, time: new Date().toISOString() });
+  localStorage.setItem('aurevia-reports', JSON.stringify(reports.slice(0, 30)));
+  document.getElementById('report-note').value = '';
+  closeReportModal();
+  alert('Thank you. Your feedback was recorded without including your private chat.');
 }
 
 function formatMarkdown(text) {
@@ -839,42 +1032,18 @@ function formatMarkdown(text) {
   html = html.replace(/\n/g, '<br>');
   return html;
 }
-
-function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
+function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 function copyMessage(btn) {
   const msg = btn.closest('.glass').querySelector('.chat-msg');
-  if (msg) {
-    navigator.clipboard.writeText(msg.textContent).then(() => {
-      btn.textContent = '✅ Copied';
-      setTimeout(() => btn.textContent = '📋 Copy', 1500);
-    });
-  }
+  if (msg) navigator.clipboard.writeText(msg.textContent).then(() => { btn.textContent = '✅ Copied'; setTimeout(() => btn.textContent = '📋 Copy', 1500); });
 }
-
 function regenerate() {
-  if (lastUserMessage && !isLoading) sendMessage(lastUserMessage);
+  const conv = getActiveConv();
+  const lastUser = [...conv.messages].reverse().find(m => m.role === 'user');
+  if (lastUser && !isLoading) sendMessage(lastUser.text);
 }
 
-function newChat() {
-  sessionId = 'session-' + Date.now();
-  const container = document.getElementById('chat-messages');
-  while (container.children.length > 1) container.removeChild(container.lastChild);
-  fetch(API + '/api/chat/clear', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ sessionId })
-  }).catch(() => {});
-}
-
-function clearChat() {
-  if (confirm('Clear this conversation?')) newChat();
-}
-
+// CLARITY FLOW
 function changeClaritySlide(dir) {
   clarityStep = Math.max(1, Math.min(4, clarityStep + dir));
   for (let i = 1; i <= 4; i++) {
@@ -883,115 +1052,90 @@ function changeClaritySlide(dir) {
   }
   document.getElementById('cf-prev-btn').classList.toggle('hidden', clarityStep === 1);
   document.getElementById('cf-next-btn').classList.toggle('hidden', clarityStep === 4);
+  document.getElementById('cf-skip-btn').classList.toggle('hidden', clarityStep === 4);
   document.getElementById('cf-submit-btn').classList.toggle('hidden', clarityStep !== 4);
 }
-
+function exitClarityFlow() { navigate('landing'); }
 function submitClarityFlow() {
-  const problem  = document.getElementById('cf-problem').value.trim();
+  const problem = document.getElementById('cf-problem').value.trim();
   const negative = document.getElementById('cf-negative').value.trim();
   const positive = document.getElementById('cf-positive').value.trim();
   const solution = document.getElementById('cf-solution').value.trim();
-
-  if (!problem && !negative) {
-    alert('Please write at least your problem or negative thought first.');
-    return;
+  if (!problem && !negative && !positive && !solution) {
+    alert('Write at least one short note before reflecting.'); return;
   }
+  const prompt = `4-Step Clarity Reflection:
+1. Situation: ${problem || '(skipped)'}
+2. Thoughts & Feelings: ${negative || '(skipped)'}
+3. Alternative Perspective: ${positive || '(skipped)'}
+4. Small Next Step: ${solution || '(skipped)'}
 
-  const prompt = `4-Slide Clarity Flow Entry:
-1. Main Problem: ${problem || 'Not specified'}
-2. Negative Thoughts: ${negative || 'Not specified'}
-3. Positive Side / Strength: ${positive || 'Not specified'}
-4. My Solution Idea: ${solution || 'Not specified'}
-
-Please help me untangle this calmly.`;
-
+Please help me reflect on this calmly without diagnosing.`;
   ['cf-problem', 'cf-negative', 'cf-positive', 'cf-solution'].forEach(id => document.getElementById(id).value = '');
-  clarityStep = 1;
-  changeClaritySlide(0);
-
+  clarityStep = 1; changeClaritySlide(0);
   navigate('chat');
   sendMessage(prompt);
 }
 
+// BREATHING (WITH GENTLE NO-HOLD DEFAULT)
 function selectBreathPattern(type, btn) {
   stopBreathing();
   breathingType = type;
+  const subs = {
+    'gentle': 'Gentle 4s Inhale • 6s Exhale (No Hold)',
+    '4-4-6': '4s Inhale • 4s Hold • 6s Exhale',
+    'box': '4s Inhale • 4s Hold • 4s Exhale • 4s Hold'
+  };
+  document.getElementById('breath-subtitle').textContent = subs[type];
   document.querySelectorAll('.breath-type-btn').forEach(b => {
     b.classList.remove('border-calm-300', 'bg-calm-600/30', 'text-cream');
     b.classList.add('border-calm-400/20', 'text-slate-300');
   });
   btn.classList.add('border-calm-300', 'bg-calm-600/30', 'text-cream');
 }
-
 function toggleBreathing() {
   if (breathingRunning) { stopBreathing(); return; }
   breathingRunning = true;
   document.getElementById('breath-start-btn').textContent = 'Pause';
   document.getElementById('breath-stop-btn').classList.remove('hidden');
-
   const circle = document.getElementById('breath-circle');
   const phaseEl = document.getElementById('breath-phase');
   const countEl = document.getElementById('breath-count');
-
   const patterns = {
-    '4-4-6': [
-      { phase: 'Inhale', duration: 4000, scale: 1.38 },
-      { phase: 'Hold',   duration: 4000, scale: 1.38 },
-      { phase: 'Exhale', duration: 6000, scale: 1.0 }
-    ],
-    'box': [
-      { phase: 'Inhale', duration: 4000, scale: 1.38 },
-      { phase: 'Hold',   duration: 4000, scale: 1.38 },
-      { phase: 'Exhale', duration: 4000, scale: 1.0 },
-      { phase: 'Hold',   duration: 4000, scale: 1.0 }
-    ]
+    'gentle': [{ phase: 'Inhale', duration: 4000, scale: 1.32 }, { phase: 'Exhale', duration: 6000, scale: 1.0 }],
+    '4-4-6': [{ phase: 'Inhale', duration: 4000, scale: 1.35 }, { phase: 'Hold', duration: 4000, scale: 1.35 }, { phase: 'Exhale', duration: 6000, scale: 1.0 }],
+    'box': [{ phase: 'Inhale', duration: 4000, scale: 1.35 }, { phase: 'Hold', duration: 4000, scale: 1.35 }, { phase: 'Exhale', duration: 4000, scale: 1.0 }, { phase: 'Hold', duration: 4000, scale: 1.0 }]
   };
-
-  const pattern = patterns[breathingType] || patterns['4-4-6'];
+  const pattern = patterns[breathingType] || patterns['gentle'];
   let idx = 0;
-
   function runStep() {
     if (!breathingRunning) return;
     const step = pattern[idx % pattern.length];
     phaseEl.textContent = step.phase;
     circle.style.transitionDuration = step.duration + 'ms';
     circle.style.transform = `scale(${step.scale})`;
-
     let sec = Math.ceil(step.duration / 1000);
     countEl.textContent = sec;
     clearInterval(breathingCountInterval);
-    breathingCountInterval = setInterval(() => {
-      sec--;
-      if (sec > 0) countEl.textContent = sec;
-    }, 1000);
-
-    breathingTimeout = setTimeout(() => {
-      idx++;
-      runStep();
-    }, step.duration);
+    breathingCountInterval = setInterval(() => { sec--; if (sec > 0) countEl.textContent = sec; }, 1000);
+    breathingTimeout = setTimeout(() => { idx++; runStep(); }, step.duration);
   }
   runStep();
 }
-
 function stopBreathing() {
   breathingRunning = false;
-  clearTimeout(breathingTimeout);
-  clearInterval(breathingCountInterval);
+  clearTimeout(breathingTimeout); clearInterval(breathingCountInterval);
   const circle = document.getElementById('breath-circle');
-  circle.style.transitionDuration = '500ms';
-  circle.style.transform = 'scale(1)';
+  circle.style.transitionDuration = '400ms'; circle.style.transform = 'scale(1)';
   document.getElementById('breath-phase').textContent = 'Ready';
   document.getElementById('breath-count').textContent = '';
   document.getElementById('breath-start-btn').textContent = 'Start Breathing';
   document.getElementById('breath-stop-btn').classList.add('hidden');
 }
+function completeGrounding() { document.getElementById('grounding-result').classList.remove('hidden'); }
 
-function completeGrounding() {
-  document.getElementById('grounding-result').classList.remove('hidden');
-}
-
+// MOOD CHECK-IN + SIMPLE TRENDS
 let selectedMood = null;
-
 function selectMood(btn, emoji, label) {
   document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('border-calm-300', 'bg-calm-600/30'));
   btn.classList.add('border-calm-300', 'bg-calm-600/30');
@@ -999,52 +1143,54 @@ function selectMood(btn, emoji, label) {
   document.getElementById('mood-extra').classList.remove('hidden');
   document.getElementById('mood-ai-tip').classList.add('hidden');
 }
-
-async function saveMood() {
+async function saveMood(withAI) {
   if (!selectedMood) return;
   const trigger = document.getElementById('mood-trigger').value.trim();
   const entry = { ...selectedMood, trigger, time: new Date().toLocaleString() };
-
-  const history = JSON.parse(localStorage.getItem('mm-moods') || '[]');
+  const history = JSON.parse(localStorage.getItem('aurevia-moods') || '[]');
   history.unshift(entry);
-  localStorage.setItem('mm-moods', JSON.stringify(history.slice(0, 50)));
+  localStorage.setItem('aurevia-moods', JSON.stringify(history.slice(0, 60)));
   renderMoodHistory();
+  document.getElementById('mood-trigger').value = '';
+  if (!withAI) return;
 
   const btn = document.getElementById('mood-save-btn');
   const tipBox = document.getElementById('mood-ai-tip');
   const tipText = document.getElementById('mood-ai-tip-text');
-  btn.textContent = "Getting a calm tip…";
-  btn.disabled = true;
-
+  btn.textContent = 'Reflecting…'; btn.disabled = true;
   try {
-    const prompt = `1-Tap Mood Check-In: I am feeling ${selectedMood.label}. ${trigger ? 'Reason: ' + trigger : ''} Give me a short, soothing 2-3 sentence response.`;
-    const r = await fetchWithTimeout(API + '/api/chat', {
+    const r = await fetch(API + '/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: prompt, sessionId: 'mood-' + Date.now(), language: currentLanguage })
-    }, 60000);
+      body: JSON.stringify({ message: `Mood Check-In: Feeling ${selectedMood.label}. ${trigger ? 'Note: ' + trigger : ''} Give a brief, non-clinical 2-sentence reflection.`, sessionId: 'mood-' + Date.now(), language: currentLanguage })
+    });
     const d = await r.json();
-    if (d.reply) {
-      tipText.innerHTML = formatMarkdown(d.reply);
-      tipBox.classList.remove('hidden');
-    }
+    tipText.innerHTML = formatMarkdown(d.reply || 'Thank you for checking in with yourself today.');
+    tipBox.classList.remove('hidden');
   } catch {
-    tipText.textContent = "Thank you for checking in with yourself. Take one slow breath—you're doing okay.";
+    tipText.textContent = 'Thank you for checking in with yourself. Take one gentle breath.';
     tipBox.classList.remove('hidden');
   }
-
-  btn.textContent = "Save & Get Quick AI Tip";
-  btn.disabled = false;
-  document.getElementById('mood-trigger').value = '';
+  btn.textContent = 'Save & Get AI Reflection'; btn.disabled = false;
 }
-
 function renderMoodHistory() {
   const container = document.getElementById('mood-history');
-  const history = JSON.parse(localStorage.getItem('mm-moods') || '[]');
+  const history = JSON.parse(localStorage.getItem('aurevia-moods') || '[]');
+  const trendBox = document.getElementById('mood-trends-box');
+  const trendEl = document.getElementById('mood-trends');
   if (!history.length) {
     container.innerHTML = '<p class="text-sm text-slate-500 text-center py-4">No check-ins yet.</p>';
+    trendBox.classList.add('hidden');
     return;
   }
+  const counts = {};
+  history.forEach(m => { counts[m.label] = (counts[m.label] || 0) + 1; });
+  trendBox.classList.remove('hidden');
+  trendEl.innerHTML = Object.entries(counts).map(([lbl, cnt]) => {
+    const pct = Math.round((cnt / history.length) * 100);
+    return `<div class="flex items-center gap-3 text-xs"><span class="w-24 text-slate-300">${lbl}</span><div class="flex-1 h-2 rounded-full bg-calm-900 overflow-hidden"><div class="h-full bg-calm-400" style="width:${pct}%"></div></div><span class="w-10 text-right text-slate-400">${cnt}x</span></div>`;
+  }).join('');
+
   container.innerHTML = history.map((m, i) => `
     <div class="flex items-center gap-3 p-3 rounded-lg bg-calm-900/50 border border-calm-400/15">
       <span class="text-2xl">${m.emoji}</span>
@@ -1053,177 +1199,120 @@ function renderMoodHistory() {
         ${m.trigger ? `<p class="text-xs text-slate-400 truncate">${escapeHtml(m.trigger)}</p>` : ''}
         <p class="text-[11px] text-slate-500">${m.time}</p>
       </div>
-      <button onclick="deleteMood(${i})" class="text-xs text-red-400/50 hover:text-red-400">✕</button>
-    </div>
-  `).join('');
+      <button onclick="deleteMood(${i})" class="text-xs text-red-400/50 hover:text-red-400" aria-label="Delete mood entry">✕</button>
+    </div>`).join('');
 }
+function deleteMood(i) { const h = JSON.parse(localStorage.getItem('aurevia-moods') || '[]'); h.splice(i, 1); localStorage.setItem('aurevia-moods', JSON.stringify(h)); renderMoodHistory(); }
+function clearMoodHistory() { if (confirm('Clear all mood entries?')) { localStorage.removeItem('aurevia-moods'); renderMoodHistory(); } }
 
-function deleteMood(i) {
-  const h = JSON.parse(localStorage.getItem('mm-moods') || '[]');
-  h.splice(i, 1);
-  localStorage.setItem('mm-moods', JSON.stringify(h));
-  renderMoodHistory();
-}
-
-function clearMoodHistory() {
-  if (confirm('Clear all mood entries?')) {
-    localStorage.removeItem('mm-moods');
-    renderMoodHistory();
-  }
-}
-
+// HABITS (EDIT, PAUSE, DELETE)
 function addHabit() {
   const input = document.getElementById('habit-input');
   const text = input.value.trim();
   if (!text) return;
-  const habits = JSON.parse(localStorage.getItem('mm-habits') || '[]');
-  habits.push({ text, done: false });
-  localStorage.setItem('mm-habits', JSON.stringify(habits));
-  input.value = '';
+  const habits = JSON.parse(localStorage.getItem('aurevia-habits') || '[]');
+  habits.push({ text, done: false, paused: false });
+  localStorage.setItem('aurevia-habits', JSON.stringify(habits));
+  input.value = ''; renderHabits();
+}
+function quickAddHabit(text) {
+  const habits = JSON.parse(localStorage.getItem('aurevia-habits') || '[]');
+  habits.push({ text, done: false, paused: false });
+  localStorage.setItem('aurevia-habits', JSON.stringify(habits));
   renderHabits();
 }
-
-function toggleHabit(i) {
-  const habits = JSON.parse(localStorage.getItem('mm-habits') || '[]');
-  habits[i].done = !habits[i].done;
-  localStorage.setItem('mm-habits', JSON.stringify(habits));
-  renderHabits();
+function toggleHabit(i) { const h = JSON.parse(localStorage.getItem('aurevia-habits') || '[]'); if (!h[i].paused) { h[i].done = !h[i].done; localStorage.setItem('aurevia-habits', JSON.stringify(h)); renderHabits(); } }
+function pauseHabit(i) { const h = JSON.parse(localStorage.getItem('aurevia-habits') || '[]'); h[i].paused = !h[i].paused; localStorage.setItem('aurevia-habits', JSON.stringify(h)); renderHabits(); }
+function editHabit(i) {
+  const h = JSON.parse(localStorage.getItem('aurevia-habits') || '[]');
+  const next = prompt('Edit habit:', h[i].text);
+  if (next && next.trim()) { h[i].text = next.trim(); localStorage.setItem('aurevia-habits', JSON.stringify(h)); renderHabits(); }
 }
-
-function deleteHabit(i) {
-  const habits = JSON.parse(localStorage.getItem('mm-habits') || '[]');
-  habits.splice(i, 1);
-  localStorage.setItem('mm-habits', JSON.stringify(habits));
-  renderHabits();
-}
-
+function deleteHabit(i) { const h = JSON.parse(localStorage.getItem('aurevia-habits') || '[]'); h.splice(i, 1); localStorage.setItem('aurevia-habits', JSON.stringify(h)); renderHabits(); }
 function renderHabits() {
   const container = document.getElementById('habits-list');
-  const habits = JSON.parse(localStorage.getItem('mm-habits') || '[]');
-  const done = habits.filter(h => h.done).length;
-  document.getElementById('habits-score').textContent = `${done}/${habits.length} done`;
-  if (!habits.length) {
-    container.innerHTML = '<p class="text-sm text-slate-500 text-center py-4">No habits yet. Add one tiny step above!</p>';
-    return;
-  }
+  const habits = JSON.parse(localStorage.getItem('aurevia-habits') || '[]');
+  const active = habits.filter(h => !h.paused);
+  const done = active.filter(h => h.done).length;
+  document.getElementById('habits-score').textContent = `${done}/${active.length} active done`;
+  if (!habits.length) { container.innerHTML = '<p class="text-sm text-slate-500 text-center py-4">No habits yet. Add one small step above!</p>'; return; }
   container.innerHTML = habits.map((h, i) => `
-    <div class="flex items-center gap-3 p-3 rounded-lg bg-calm-900/50 border border-calm-400/15">
+    <div class="flex items-center gap-3 p-3 rounded-lg bg-calm-900/50 border border-calm-400/15 ${h.paused ? 'opacity-50' : ''}">
       <button onclick="toggleHabit(${i})" class="w-6 h-6 rounded-md border ${h.done ? 'bg-calm-500 border-calm-400' : 'border-calm-400/30'} flex items-center justify-center transition">
         ${h.done ? '<span class="text-xs text-white">✓</span>' : ''}
       </button>
-      <span class="flex-1 text-sm ${h.done ? 'line-through text-slate-500' : 'text-cream'}">${escapeHtml(h.text)}</span>
-      <button onclick="deleteHabit(${i})" class="text-xs text-red-400/50 hover:text-red-400">✕</button>
-    </div>
-  `).join('');
+      <span class="flex-1 text-sm ${h.done ? 'line-through text-slate-500' : 'text-cream'}">${escapeHtml(h.text)} ${h.paused ? '<span class="text-[10px] text-amber-300">(Paused)</span>' : ''}</span>
+      <button onclick="editHabit(${i})" class="text-xs text-slate-400 hover:text-calm-300" title="Edit">✏️</button>
+      <button onclick="pauseHabit(${i})" class="text-xs text-slate-400 hover:text-amber-300" title="Pause/Resume">${h.paused ? '▶' : '⏸'}</button>
+      <button onclick="deleteHabit(${i})" class="text-xs text-red-400/50 hover:text-red-400" title="Delete">✕</button>
+    </div>`).join('');
+}
+
+// DATA EXPORT & FULL LOCAL DELETE
+function exportLocalData() {
+  const data = {
+    app: 'AUREVIA',
+    exportedAt: new Date().toISOString(),
+    conversations: JSON.parse(localStorage.getItem('aurevia-convs') || '[]'),
+    moods: JSON.parse(localStorage.getItem('aurevia-moods') || '[]'),
+    habits: JSON.parse(localStorage.getItem('aurevia-habits') || '[]')
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'aurevia-my-data.json';
+  a.click();
+}
+function deleteAllLocalData() {
+  if (!confirm('Permanently delete all local chats, moods, habits, and feedback from this browser?')) return;
+  ['aurevia-convs', 'aurevia-moods', 'aurevia-habits', 'aurevia-reports'].forEach(k => localStorage.removeItem(k));
+  loadConversations(); renderMoodHistory(); renderHabits();
+  alert('All local AUREVIA data has been deleted from this browser.');
 }
 
 (function init() {
-  if (localStorage.getItem('mm-theme') === 'light') document.documentElement.classList.remove('dark');
+  if (localStorage.getItem('aurevia-theme') === 'light') document.documentElement.classList.remove('dark');
+  loadConversations();
   checkAiStatus();
   setInterval(checkAiStatus, 30000);
 })();
 </script>
 
-<!-- UNFILTERED MODE — LEAF-BLOCK TRIGGER + CANVAS OCEAN RIPPLE ENGINE -->
+<!-- UNFILTERED MODE — OCEAN RIPPLE ENGINE -->
 <style>
   .unfiltered-leaf-btn {
-    position: fixed;
-    right: 20px;
-    bottom: 24px;
-    z-index: 40;
-    width: 54px;
-    height: 54px;
+    position: fixed; right: 20px; bottom: 24px; z-index: 40; width: 54px; height: 54px;
     border-radius: 6px 26px 26px 26px;
     background: linear-gradient(135deg, rgba(14, 116, 144, 0.92), rgba(15, 23, 42, 0.95));
     border: 1px solid rgba(103, 232, 249, 0.45);
     box-shadow: 0 8px 28px rgba(6, 182, 212, 0.35), inset 0 0 14px rgba(56, 189, 248, 0.25);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-    backdrop-filter: blur(10px);
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    transition: transform 0.25s ease, box-shadow 0.25s ease; backdrop-filter: blur(10px);
   }
-  .unfiltered-leaf-btn:hover {
-    transform: translateY(-3px) scale(1.06);
-    border-color: rgba(165, 243, 252, 0.85);
-    box-shadow: 0 12px 34px rgba(34, 211, 238, 0.5), inset 0 0 18px rgba(168, 85, 247, 0.3);
-  }
+  .unfiltered-leaf-btn:hover { transform: translateY(-3px) scale(1.06); }
   .unfiltered-leaf-tooltip {
-    position: absolute;
-    right: 64px;
-    white-space: nowrap;
-    background: rgba(2, 6, 23, 0.92);
-    color: #a5f3fc;
-    border: 1px solid rgba(34, 211, 238, 0.3);
-    padding: 5px 10px;
-    border-radius: 8px;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.03em;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateX(6px);
-    transition: opacity 0.2s ease, transform 0.2s ease;
+    position: absolute; right: 64px; white-space: nowrap; background: rgba(2, 6, 23, 0.92); color: #a5f3fc;
+    border: 1px solid rgba(34, 211, 238, 0.3); padding: 5px 10px; border-radius: 8px;
+    font-size: 11px; font-weight: 600; opacity: 0; pointer-events: none; transition: opacity 0.2s ease;
   }
-  .unfiltered-leaf-btn:hover .unfiltered-leaf-tooltip {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  #unfiltered-modal {
-    background: radial-gradient(circle at 50% 45%, #071936 0%, #030b1c 58%, #01040d 100%);
-  }
-  #ocean-ripple-canvas {
-    width: 100%;
-    max-width: 520px;
-    height: 300px;
-    display: block;
-    touch-action: none;
-  }
-  @media (max-width: 640px) {
-    #ocean-ripple-canvas { height: 240px; }
-    .unfiltered-leaf-btn { right: 16px; bottom: 18px; width: 50px; height: 50px; }
-  }
+  .unfiltered-leaf-btn:hover .unfiltered-leaf-tooltip { opacity: 1; }
+  #unfiltered-modal { background: radial-gradient(circle at 50% 45%, #071936 0%, #030b1c 58%, #01040d 100%); }
+  #ocean-ripple-canvas { width: 100%; max-width: 520px; height: 300px; display: block; touch-action: none; }
 </style>
 
-<button
-  onclick="openUnfilteredMode()"
-  class="unfiltered-leaf-btn"
-  aria-label="Open Unfiltered Mode Live Voice"
-  title="Unfiltered Mode"
->
+<button onclick="openUnfilteredMode()" class="unfiltered-leaf-btn" aria-label="Open Unfiltered Mode Live Voice" title="Unfiltered Mode">
   <span class="unfiltered-leaf-tooltip">Unfiltered Mode</span>
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-    <path
-      d="M8.5 5.6C7.6 5.05 6.5 5.7 6.5 6.75V17.25C6.5 18.3 7.6 18.95 8.5 18.4L17.6 13.15C18.5 12.63 18.5 11.37 17.6 10.85L8.5 5.6Z"
-      fill="url(#leafTriGrad)"
-      stroke="#cffafe"
-      stroke-width="1.2"
-    />
-    <defs>
-      <linearGradient id="leafTriGrad" x1="6" y1="5" x2="19" y2="19" gradientUnits="userSpaceOnUse">
-        <stop stop-color="#67e8f9" />
-        <stop offset="0.6" stop-color="#38bdf8" />
-        <stop offset="1" stop-color="#a855f7" />
-      </linearGradient>
-    </defs>
-  </svg>
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M8.5 5.6C7.6 5.05 6.5 5.7 6.5 6.75V17.25C6.5 18.3 7.6 18.95 8.5 18.4L17.6 13.15C18.5 12.63 18.5 11.37 17.6 10.85L8.5 5.6Z" fill="url(#leafTriGrad)" stroke="#cffafe" stroke-width="1.2"/><defs><linearGradient id="leafTriGrad" x1="6" y1="5" x2="19" y2="19" gradientUnits="userSpaceOnUse"><stop stop-color="#67e8f9"/><stop offset="0.6" stop-color="#38bdf8"/><stop offset="1" stop-color="#a855f7"/></linearGradient></defs></svg>
 </button>
 
 <div id="unfiltered-modal" class="fixed inset-0 z-50 hidden flex flex-col items-center justify-between p-5 sm:p-8 text-center">
   <div class="w-full max-w-xl flex items-center justify-between">
     <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-950/60 border border-cyan-400/25">
       <span id="unfiltered-state-dot" class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]"></span>
-      <span class="text-xs font-semibold tracking-wide text-cyan-200">Unfiltered Mode</span>
+      <span class="text-xs font-semibold tracking-wide text-cyan-200">AUREVIA • Unfiltered Mode</span>
     </div>
-    <button
-      onclick="closeUnfilteredMode()"
-      class="px-3.5 py-1.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 text-slate-300 text-xs transition"
-    >
-      ✕ Exit
-    </button>
+    <button onclick="closeUnfilteredMode()" class="px-3.5 py-1.5 rounded-lg bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 text-slate-300 text-xs transition">✕ Exit</button>
   </div>
-
   <div class="w-full flex flex-col items-center justify-center my-auto gap-3">
     <canvas id="ocean-ripple-canvas" aria-label="Ocean Ripple Voice Visualizer"></canvas>
     <div class="max-w-md px-2">
@@ -1231,21 +1320,9 @@ function renderHabits() {
       <p id="unfiltered-transcript" class="text-slate-400 text-sm mt-2 min-h-[44px] leading-relaxed"></p>
     </div>
   </div>
-
   <div class="flex items-center gap-3 pb-2">
-    <button
-      onclick="toggleUnfilteredMic()"
-      id="unfiltered-mic-btn"
-      class="px-6 py-3 rounded-full bg-gradient-to-r from-cyan-400 to-sky-500 hover:from-cyan-300 hover:to-sky-400 text-slate-950 font-semibold text-sm shadow-lg shadow-cyan-500/25 transition"
-    >
-      🎙️ Speak
-    </button>
-    <button
-      onclick="pauseUnfilteredMode()"
-      class="px-4 py-3 rounded-full bg-slate-900/80 hover:bg-slate-800 border border-slate-700/60 text-slate-300 text-sm transition"
-    >
-      ⏸ Pause
-    </button>
+    <button onclick="toggleUnfilteredMic()" id="unfiltered-mic-btn" class="px-6 py-3 rounded-full bg-gradient-to-r from-cyan-400 to-sky-500 text-slate-950 font-semibold text-sm shadow-lg transition">🎙️ Speak</button>
+    <button onclick="pauseUnfilteredMode()" class="px-4 py-3 rounded-full bg-slate-900/80 border border-slate-700/60 text-slate-300 text-sm transition">⏸ Pause</button>
   </div>
 </div>
 
@@ -1253,399 +1330,80 @@ function renderHabits() {
 (() => {
   const UNFILTERED_API = 'https://darshils-ai.onrender.com/api/chat';
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let modalOpen = false, voiceState = 'idle', recognition = null, history = [];
+  let audioCtx = null, analyser = null, micStream = null, freqData = null;
+  let targetAmp = 0, smoothAmp = 0, speechPulse = 0, canvas, ctx, width = 520, height = 300, dpr = 1, rafId = null, lastTime = 0, elapsed = 0, rings = [], particles = [], spawnTimer = 0;
 
-  let modalOpen = false;
-  let voiceState = 'idle';
-  let recognition = null;
-  let history = [];
-
-  let audioCtx = null;
-  let analyser = null;
-  let micStream = null;
-  let freqData = null;
-
-  let targetAmp = 0;
-  let smoothAmp = 0;
-  let speechPulse = 0;
-
-  let canvas, ctx, width = 520, height = 300, dpr = 1;
-  let rafId = null;
-  let lastTime = 0;
-  let elapsed = 0;
-  let rings = [];
-  let particles = [];
-  let spawnTimer = 0;
-
-  function initParticles() {
-    particles = Array.from({ length: 34 }, () => ({
-      x: Math.random(),
-      y: Math.random(),
-      r: 0.7 + Math.random() * 1.6,
-      vx: (Math.random() - 0.5) * 0.008,
-      vy: -0.004 - Math.random() * 0.01,
-      alpha: 0.15 + Math.random() * 0.45,
-      phase: Math.random() * Math.PI * 2,
-      hue: Math.random() > 0.75 ? '168, 85, 247' : '103, 232, 249',
-    }));
-  }
-
-  function resizeCanvas() {
-    if (!canvas) return;
-    const rect = canvas.getBoundingClientRect();
-    width = rect.width || 520;
-    height = rect.height || 300;
-    dpr = Math.min(window.devicePixelRatio || 1, 2);
-    canvas.width = Math.round(width * dpr);
-    canvas.height = Math.round(height * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  }
-
-  function spawnRing(initialRadius = 10, boost = 0) {
-    const isThinking = voiceState === 'thinking';
-    const isSpeaking = voiceState === 'speaking';
-    rings.push({
-      radius: initialRadius,
-      maxRadius: Math.min(width * 0.48, 245),
-      speed: isSpeaking ? 48 + boost * 32 : isThinking ? 38 : 26 + boost * 22,
-      lineWidth: 1.1 + boost * 1.4,
-      opacity: 0.85,
-      wobbleFreq: 3 + Math.floor(Math.random() * 3),
-      wobbleAmp: 1.2 + boost * 3.2,
-      phase: Math.random() * Math.PI * 2,
-      purpleMix: isThinking ? 0.55 : isSpeaking ? 0.42 : 0.15,
-    });
-  }
-
-  function setOceanVoiceState(nextState, statusText) {
-    voiceState = nextState;
-    const statusEl = document.getElementById('unfiltered-status');
-    const dotEl = document.getElementById('unfiltered-state-dot');
-    if (statusEl && statusText) statusEl.textContent = statusText;
-
-    if (dotEl) {
-      const colors = {
-        idle: '#38bdf8',
-        paused: '#64748b',
-        listening: '#22d3ee',
-        thinking: '#a855f7',
-        speaking: '#67e8f9',
-      };
-      dotEl.style.background = colors[nextState] || '#22d3ee';
-      dotEl.style.boxShadow = `0 0 10px ${colors[nextState] || '#22d3ee'}`;
-    }
-  }
-
-  async function startMicAnalyser() {
-    if (micStream) return;
-    try {
-      micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const AC = window.AudioContext || window.webkitAudioContext;
-      audioCtx = new AC();
-      const source = audioCtx.createMediaStreamSource(micStream);
-      analyser = audioCtx.createAnalyser();
-      analyser.fftSize = 256;
-      analyser.smoothingTimeConstant = 0.82;
-      source.connect(analyser);
-      freqData = new Uint8Array(analyser.frequencyBinCount);
-    } catch (e) {
-      analyser = null;
-    }
-  }
-
-  function stopMicAnalyser() {
-    if (micStream) {
-      micStream.getTracks().forEach(t => t.stop());
-      micStream = null;
-    }
-    if (audioCtx) {
-      audioCtx.close().catch(() => {});
-      audioCtx = null;
-    }
-    analyser = null;
-    freqData = null;
-  }
-
-  function sampleAudioAmplitude(dt) {
-    if (voiceState === 'listening' && analyser && freqData) {
-      analyser.getByteFrequencyData(freqData);
-      let sum = 0;
-      for (let i = 2; i < 48; i++) sum += freqData[i];
-      const avg = sum / (46 * 255);
-      targetAmp = Math.min(1, avg * 2.4);
-    } else if (voiceState === 'speaking') {
-      speechPulse = Math.max(0, speechPulse - dt * 2.2);
-      const cadence = 0.28 + 0.22 * Math.sin(elapsed * 5.2) + 0.14 * Math.sin(elapsed * 8.7);
-      targetAmp = Math.min(1, cadence + speechPulse * 0.55);
-    } else if (voiceState === 'thinking') {
-      targetAmp = 0.25 + 0.18 * (0.5 + 0.5 * Math.sin(elapsed * 2.8));
-    } else {
-      targetAmp = 0.05;
-    }
-    smoothAmp += (targetAmp - smoothAmp) * Math.min(1, dt * 7);
-  }
-
-  function drawEllipticalRipple(cx, cy, ring, perspectiveY) {
-    const progress = ring.radius / ring.maxRadius;
-    const fade = Math.sin(Math.min(1, progress) * Math.PI) * (1 - progress * 0.65);
-    const alpha = Math.max(0, fade * ring.opacity);
-    if (alpha <= 0.01) return;
-
-    const grad = ctx.createLinearGradient(cx - ring.radius, cy, cx + ring.radius, cy);
-    const pAlpha = (alpha * ring.purpleMix).toFixed(3);
-    const cAlpha = alpha.toFixed(3);
-    grad.addColorStop(0, `rgba(56, 189, 248, ${(alpha * 0.65).toFixed(3)})`);
-    grad.addColorStop(0.35, `rgba(34, 211, 238, ${cAlpha})`);
-    grad.addColorStop(0.65, `rgba(168, 85, 247, ${pAlpha})`);
-    grad.addColorStop(1, `rgba(59, 130, 246, ${(alpha * 0.65).toFixed(3)})`);
-
-    ctx.save();
-    ctx.beginPath();
-    const segments = 72;
-    const distortion = prefersReducedMotion ? 0 : ring.wobbleAmp * (0.4 + smoothAmp * 1.4);
-
-    for (let i = 0; i <= segments; i++) {
-      const angle = (i / segments) * Math.PI * 2;
-      const wave =
-        Math.sin(angle * ring.wobbleFreq + elapsed * 2.2 + ring.phase) * distortion +
-        Math.cos(angle * 2 - elapsed * 1.4) * (distortion * 0.45);
-      const rx = ring.radius + wave;
-      const ry = (ring.radius + wave * 0.6) * perspectiveY;
-      const x = cx + Math.cos(angle) * rx;
-      const y = cy + Math.sin(angle) * ry;
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    }
-    ctx.closePath();
-
-    ctx.strokeStyle = grad;
-    ctx.lineWidth = ring.lineWidth * (1 - progress * 0.35);
-    ctx.shadowColor = ring.purpleMix > 0.35 ? 'rgba(139, 92, 246, 0.55)' : 'rgba(34, 211, 238, 0.65)';
-    ctx.shadowBlur = 10 + smoothAmp * 14;
-    ctx.stroke();
-    ctx.restore();
-  }
+  function initParticles() { particles = Array.from({ length: 30 }, () => ({ x: Math.random(), y: Math.random(), r: 0.7 + Math.random() * 1.5, vx: (Math.random() - 0.5) * 0.008, vy: -0.004 - Math.random() * 0.01, alpha: 0.15 + Math.random() * 0.45, phase: Math.random() * Math.PI * 2, hue: Math.random() > 0.75 ? '168, 85, 247' : '103, 232, 249' })); }
+  function resizeCanvas() { if (!canvas) return; const rect = canvas.getBoundingClientRect(); width = rect.width || 520; height = rect.height || 300; dpr = Math.min(window.devicePixelRatio || 1, 2); canvas.width = Math.round(width * dpr); canvas.height = Math.round(height * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+  function spawnRing(r0 = 10, boost = 0) { rings.push({ radius: r0, maxRadius: Math.min(width * 0.48, 245), speed: voiceState === 'speaking' ? 48 + boost * 32 : 28 + boost * 20, lineWidth: 1.1 + boost * 1.4, opacity: 0.85, wobbleFreq: 3 + Math.floor(Math.random() * 3), wobbleAmp: 1.2 + boost * 3, phase: Math.random() * Math.PI * 2, purpleMix: voiceState === 'thinking' ? 0.55 : voiceState === 'speaking' ? 0.42 : 0.15 }); }
+  function setOceanVoiceState(s, txt) { voiceState = s; const el = document.getElementById('unfiltered-status'); if (el && txt) el.textContent = txt; }
+  async function startMicAnalyser() { if (micStream) return; try { micStream = await navigator.mediaDevices.getUserMedia({ audio: true }); const AC = window.AudioContext || window.webkitAudioContext; audioCtx = new AC(); const src = audioCtx.createMediaStreamSource(micStream); analyser = audioCtx.createAnalyser(); analyser.fftSize = 256; src.connect(analyser); freqData = new Uint8Array(analyser.frequencyBinCount); } catch { analyser = null; } }
+  function stopMicAnalyser() { if (micStream) { micStream.getTracks().forEach(t => t.stop()); micStream = null; } if (audioCtx) { audioCtx.close().catch(() => {}); audioCtx = null; } analyser = null; }
 
   function renderFrame(ts) {
     if (!modalOpen) return;
-    const dt = lastTime ? Math.min(0.05, (ts - lastTime) / 1000) : 0.016;
-    lastTime = ts;
-    elapsed += prefersReducedMotion ? dt * 0.25 : dt;
+    const dt = lastTime ? Math.min(0.05, (ts - lastTime) / 1000) : 0.016; lastTime = ts; elapsed += prefersReducedMotion ? dt * 0.25 : dt;
+    if (voiceState === 'listening' && analyser && freqData) { analyser.getByteFrequencyData(freqData); let s = 0; for (let i = 2; i < 48; i++) s += freqData[i]; targetAmp = Math.min(1, (s / (46 * 255)) * 2.4); }
+    else if (voiceState === 'speaking') { speechPulse = Math.max(0, speechPulse - dt * 2.2); targetAmp = Math.min(1, 0.3 + 0.2 * Math.sin(elapsed * 5) + speechPulse * 0.5); }
+    else targetAmp = voiceState === 'thinking' ? 0.3 : 0.05;
+    smoothAmp += (targetAmp - smoothAmp) * Math.min(1, dt * 7);
 
-    sampleAudioAmplitude(dt);
-
-    const cx = width / 2;
-    const cy = height * 0.54;
-    const perspectiveY = 0.34;
-
+    const cx = width / 2, cy = height * 0.54, pY = 0.34;
     ctx.clearRect(0, 0, width, height);
-
-    const scatterRadius = Math.min(width * 0.46, 220) * (1 + smoothAmp * 0.16);
-    const surfaceGrad = ctx.createRadialGradient(cx, cy, 4, cx, cy, scatterRadius);
-    if (voiceState === 'thinking') {
-      surfaceGrad.addColorStop(0, `rgba(129, 140, 248, ${(0.28 + smoothAmp * 0.25).toFixed(3)})`);
-      surfaceGrad.addColorStop(0.45, 'rgba(34, 211, 238, 0.12)');
-    } else if (voiceState === 'speaking') {
-      surfaceGrad.addColorStop(0, `rgba(103, 232, 249, ${(0.3 + smoothAmp * 0.3).toFixed(3)})`);
-      surfaceGrad.addColorStop(0.5, 'rgba(168, 85, 247, 0.12)');
-    } else {
-      surfaceGrad.addColorStop(0, `rgba(34, 211, 238, ${(0.2 + smoothAmp * 0.22).toFixed(3)})`);
-      surfaceGrad.addColorStop(0.5, 'rgba(37, 99, 235, 0.08)');
-    }
-    surfaceGrad.addColorStop(1, 'rgba(2, 6, 23, 0)');
-
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.scale(1, perspectiveY * 1.45);
-    ctx.beginPath();
-    ctx.arc(0, 0, scatterRadius, 0, Math.PI * 2);
-    ctx.fillStyle = surfaceGrad;
-    ctx.fill();
-    ctx.restore();
-
-    const spawnInterval =
-      voiceState === 'speaking' ? Math.max(0.28, 0.58 - smoothAmp * 0.3) :
-      voiceState === 'listening' ? Math.max(0.38, 0.78 - smoothAmp * 0.35) :
-      voiceState === 'thinking' ? 0.62 : 1.05;
-
-    spawnTimer += dt;
-    if (spawnTimer >= spawnInterval && rings.length < 11) {
-      spawnTimer = 0;
-      spawnRing(8, smoothAmp);
-    }
-
+    spawnTimer += dt; if (spawnTimer >= 0.65 && rings.length < 10) { spawnTimer = 0; spawnRing(8, smoothAmp); }
     for (let i = rings.length - 1; i >= 0; i--) {
-      const r = rings[i];
-      const speedMult = prefersReducedMotion ? 0.3 : 1 + smoothAmp * 0.75;
-      r.radius += r.speed * speedMult * dt;
-      if (r.radius >= r.maxRadius) {
-        rings.splice(i, 1);
-      } else {
-        drawEllipticalRipple(cx, cy, r, perspectiveY);
-      }
+      const r = rings[i]; r.radius += r.speed * (1 + smoothAmp * 0.7) * dt;
+      if (r.radius >= r.maxRadius) { rings.splice(i, 1); continue; }
+      const prog = r.radius / r.maxRadius, alpha = Math.max(0, Math.sin(Math.min(1, prog) * Math.PI) * (1 - prog * 0.65) * r.opacity);
+      ctx.beginPath(); ctx.ellipse(cx, cy, r.radius, r.radius * pY, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(34, 211, 238, ${alpha.toFixed(3)})`; ctx.lineWidth = r.lineWidth; ctx.stroke();
     }
-
-    const corePulse = 1 + 0.14 * Math.sin(elapsed * (voiceState === 'thinking' ? 4.2 : 2.2)) + smoothAmp * 0.42;
-    const coreRadius = 11 * corePulse;
-
-    const haloGrad = ctx.createRadialGradient(cx, cy, 1, cx, cy, coreRadius * 3.6);
-    haloGrad.addColorStop(0, 'rgba(224, 242, 254, 0.95)');
-    haloGrad.addColorStop(0.28, 'rgba(34, 211, 238, 0.75)');
-    haloGrad.addColorStop(0.6, voiceState === 'thinking' ? 'rgba(168, 85, 247, 0.32)' : 'rgba(59, 130, 246, 0.25)');
-    haloGrad.addColorStop(1, 'rgba(2, 6, 23, 0)');
-
-    ctx.save();
-    ctx.translate(cx, cy);
-    ctx.scale(1, 0.52);
-    ctx.beginPath();
-    ctx.arc(0, 0, coreRadius * 3.6, 0, Math.PI * 2);
-    ctx.fillStyle = haloGrad;
-    ctx.fill();
-    ctx.restore();
-
-    for (const p of particles) {
-      if (!prefersReducedMotion) {
-        p.x += p.vx * dt;
-        p.y += p.vy * dt * (1 + smoothAmp * 1.1);
-        if (p.y < 0.08) { p.y = 0.92; p.x = 0.1 + Math.random() * 0.8; }
-        if (p.x < 0.05) p.x = 0.95;
-        if (p.x > 0.95) p.x = 0.05;
-      }
-      const twinkle = 0.5 + 0.5 * Math.sin(elapsed * 2 + p.phase);
-      const px = p.x * width;
-      const py = p.y * height;
-      ctx.beginPath();
-      ctx.arc(px, py, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${p.hue}, ${(p.alpha * twinkle).toFixed(3)})`;
-      ctx.fill();
-    }
-
     rafId = requestAnimationFrame(renderFrame);
-  }
-
-  function pickIndianMaleVoice() {
-    const voices = window.speechSynthesis.getVoices();
-    return (
-      voices.find(v => /en-IN|hi-IN/i.test(v.lang) && /male|rishi|prabhat|madhur|ravi|google/i.test(v.name)) ||
-      voices.find(v => /en-IN|hi-IN/i.test(v.lang)) ||
-      voices.find(v => /male|david|daniel/i.test(v.name)) ||
-      voices[0]
-    );
   }
 
   function speakReply(text) {
     window.speechSynthesis.cancel();
-    const clean = text.replace(/[*#_`~]/g, '');
-    const utter = new SpeechSynthesisUtterance(clean);
-    utter.voice = pickIndianMaleVoice();
-    utter.lang = 'en-IN';
-    utter.rate = 0.9;
-    utter.pitch = 0.85;
-
-    utter.onstart = () => {
-      speechPulse = 0.8;
-      setOceanVoiceState('speaking', 'AI Speaking...');
-    };
-    utter.onboundary = () => {
-      speechPulse = 0.95;
-    };
-    utter.onend = () => {
-      speechPulse = 0;
-      if (modalOpen && voiceState !== 'paused') startListening();
-    };
-    utter.onerror = () => {
-      if (modalOpen) setOceanVoiceState('idle', 'Tap Speak to continue');
-    };
+    const utter = new SpeechSynthesisUtterance(text.replace(/[*#_`~]/g, ''));
+    utter.lang = 'en-IN'; utter.rate = 0.92;
+    utter.onstart = () => { speechPulse = 0.8; setOceanVoiceState('speaking', 'AUREVIA Speaking...'); };
+    utter.onend = () => { speechPulse = 0; if (modalOpen && voiceState !== 'paused') startListening(); };
     window.speechSynthesis.speak(utter);
   }
 
   async function startListening() {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SR) {
-      setOceanVoiceState('idle', 'Voice ke liye Chrome browser use karein');
-      return;
-    }
-    if (recognition) { try { recognition.abort(); } catch (e) {} }
-
+    if (!SR) { setOceanVoiceState('idle', 'Voice ke liye Chrome browser use karein'); return; }
+    if (recognition) { try { recognition.abort(); } catch {} }
     await startMicAnalyser();
-    recognition = new SR();
-    recognition.lang = 'en-IN';
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    setOceanVoiceState('listening', 'Listening... aaram se dil ki baat bolo');
-
+    recognition = new SR(); recognition.lang = 'en-IN';
+    setOceanVoiceState('listening', 'Listening... aaram se baat bolo');
     recognition.onresult = async (e) => {
       const userText = e.results[0][0].transcript;
       document.getElementById('unfiltered-transcript').textContent = `"${userText}"`;
-      setOceanVoiceState('thinking', 'Thinking...');
-
+      if (isCrisisMessage(userText)) {
+        const msg = 'Your safety matters. Please call 112 or Tele-MANAS 14416 right now.';
+        document.getElementById('unfiltered-transcript').textContent = msg;
+        speakReply(msg); return;
+      }
+      setOceanVoiceState('thinking', 'Reflecting...');
       try {
         history.push({ role: 'user', content: userText });
-        const res = await fetch(UNFILTERED_API, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: userText, history: history.slice(-6) }),
-        });
+        const res = await fetch(UNFILTERED_API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: userText, history: history.slice(-6) }) });
         const data = await res.json();
-        const reply = data.reply || data.response || data.message || 'Main sun raha hoon, ek baar phir bolo.';
+        const reply = data.reply || 'Main sun raha hoon, ek baar phir bolo.';
         history.push({ role: 'assistant', content: reply });
         document.getElementById('unfiltered-transcript').textContent = reply;
         if (modalOpen) speakReply(reply);
-      } catch (err) {
-        if (modalOpen) setOceanVoiceState('idle', 'Network issue — Tap Speak again');
-      }
+      } catch { if (modalOpen) setOceanVoiceState('idle', 'Network issue — Tap Speak again'); }
     };
-
-    recognition.onerror = () => {
-      if (modalOpen && voiceState === 'listening') {
-        setOceanVoiceState('idle', 'Paused — Tap Speak');
-      }
-    };
-
-    try { recognition.start(); } catch (e) {}
+    try { recognition.start(); } catch {}
   }
 
-  window.openUnfilteredMode = function () {
-    modalOpen = true;
-    const modal = document.getElementById('unfiltered-modal');
-    modal.classList.remove('hidden');
-
-    canvas = document.getElementById('ocean-ripple-canvas');
-    ctx = canvas.getContext('2d');
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    rings = [];
-    initParticles();
-    for (let i = 0; i < 4; i++) spawnRing(28 + i * 42, 0.1);
-
-    lastTime = 0;
-    window.speechSynthesis.getVoices();
-    setOceanVoiceState('idle', 'Connecting...');
-    rafId = requestAnimationFrame(renderFrame);
-    startListening();
-  };
-
-  window.toggleUnfilteredMic = function () {
-    window.speechSynthesis.cancel();
-    startListening();
-  };
-
-  window.pauseUnfilteredMode = function () {
-    window.speechSynthesis.cancel();
-    if (recognition) { try { recognition.abort(); } catch (e) {} }
-    setOceanVoiceState('paused', 'Paused — Tap Speak anytime');
-  };
-
-  window.closeUnfilteredMode = function () {
-    modalOpen = false;
-    window.speechSynthesis.cancel();
-    if (recognition) { try { recognition.abort(); } catch (e) {} }
-    stopMicAnalyser();
-    if (rafId) cancelAnimationFrame(rafId);
-    window.removeEventListener('resize', resizeCanvas);
-    document.getElementById('unfiltered-modal').classList.add('hidden');
-  };
+  window.openUnfilteredMode = function () { modalOpen = true; document.getElementById('unfiltered-modal').classList.remove('hidden'); canvas = document.getElementById('ocean-ripple-canvas'); ctx = canvas.getContext('2d'); resizeCanvas(); window.addEventListener('resize', resizeCanvas); rings = []; initParticles(); lastTime = 0; rafId = requestAnimationFrame(renderFrame); startListening(); };
+  window.toggleUnfilteredMic = function () { window.speechSynthesis.cancel(); startListening(); };
+  window.pauseUnfilteredMode = function () { window.speechSynthesis.cancel(); if (recognition) { try { recognition.abort(); } catch {} } setOceanVoiceState('paused', 'Paused — Tap Speak anytime'); };
+  window.closeUnfilteredMode = function () { modalOpen = false; window.speechSynthesis.cancel(); if (recognition) { try { recognition.abort(); } catch {} } stopMicAnalyser(); if (rafId) cancelAnimationFrame(rafId); window.removeEventListener('resize', resizeCanvas); document.getElementById('unfiltered-modal').classList.add('hidden'); };
 })();
 </script>
 
@@ -1693,8 +1451,7 @@ function renderHabits() {
             </div>
           </div>
         </div>
-      </div>
-    `).join('');
+      </div>`).join('');
   }
 
   window.matchFrequencyFromChart = function() {
@@ -1702,182 +1459,81 @@ function renderHabits() {
     const item = FREQ_DATA.find(f => f.id === cond) || FREQ_DATA[0];
     document.querySelectorAll('.freq-card-wrap .freq-face').forEach(el => el.classList.remove('freq-recommended'));
     const card = document.getElementById('fcard-' + item.id);
-    if (card) {
-      card.classList.add('flipped');
-      card.querySelector('.freq-back').classList.add('freq-recommended');
-      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-    const box = document.getElementById('fc-match-result');
+    if (card) { card.classList.add('flipped'); card.querySelector('.freq-back').classList.add('freq-recommended'); card.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
     document.getElementById('fc-match-text').innerHTML = `${item.emoji} Best Match: <strong>${item.title} (${item.hzLabel})</strong> — ${item.mins} min`;
     document.getElementById('fc-match-play').onclick = () => playFrequency(item.id);
-    box.classList.remove('hidden');
+    document.getElementById('fc-match-result').classList.remove('hidden');
   };
 
   function createNoiseSource(type) {
     if (!fCtx || type === 'none') return null;
-    const bufferSize = fCtx.sampleRate * 2;
-    const buffer = fCtx.createBuffer(1, bufferSize, fCtx.sampleRate);
-    const data = buffer.getChannelData(0);
+    const bufferSize = fCtx.sampleRate * 2, buffer = fCtx.createBuffer(1, bufferSize, fCtx.sampleRate), data = buffer.getChannelData(0);
     let lastOut = 0;
     for (let i = 0; i < bufferSize; i++) {
       const white = Math.random() * 2 - 1;
-      if (type === 'brown' || type === 'ocean') {
-        data[i] = (lastOut + 0.02 * white) / 1.02;
-        lastOut = data[i];
-        data[i] *= 3.2;
-      } else {
-        data[i] = white * 0.25;
-      }
+      if (type === 'brown' || type === 'ocean') { data[i] = (lastOut + 0.02 * white) / 1.02; lastOut = data[i]; data[i] *= 3.2; }
+      else data[i] = white * 0.25;
     }
-    const src = fCtx.createBufferSource();
-    src.buffer = buffer;
-    src.loop = true;
-    const filter = fCtx.createBiquadFilter();
-    filter.type = 'lowpass';
+    const src = fCtx.createBufferSource(); src.buffer = buffer; src.loop = true;
+    const filter = fCtx.createBiquadFilter(); filter.type = 'lowpass';
     filter.frequency.value = type === 'rain' ? 1400 : type === 'ocean' ? 420 : 280;
-    src.connect(filter);
-    filter.connect(ambGain);
-    src.start();
-    return src;
+    src.connect(filter); filter.connect(ambGain); src.start(); return src;
   }
 
   function startAudioNodes(item) {
     stopAudioNodes();
-    const AC = window.AudioContext || window.webkitAudioContext;
-    fCtx = new AC();
+    const AC = window.AudioContext || window.webkitAudioContext; fCtx = new AC();
     masterGain = fCtx.createGain();
     const vol = (document.getElementById('fp-vol').value || 35) / 100 * 0.35;
     masterGain.gain.setValueAtTime(0.001, fCtx.currentTime);
     masterGain.gain.linearRampToValueAtTime(vol, fCtx.currentTime + 1.2);
     masterGain.connect(fCtx.destination);
-
     oscL = fCtx.createOscillator(); oscR = fCtx.createOscillator();
-    const panL = fCtx.createStereoPanner(); const panR = fCtx.createStereoPanner();
-    oscL.type = 'sine'; oscR.type = 'sine';
-    oscL.frequency.value = item.base;
-    oscR.frequency.value = item.base + item.beat;
+    const panL = fCtx.createStereoPanner(), panR = fCtx.createStereoPanner();
+    oscL.type = 'sine'; oscR.type = 'sine'; oscL.frequency.value = item.base; oscR.frequency.value = item.base + item.beat;
     panL.pan.value = -1; panR.pan.value = 1;
-    oscL.connect(panL).connect(masterGain);
-    oscR.connect(panR).connect(masterGain);
+    oscL.connect(panL).connect(masterGain); oscR.connect(panR).connect(masterGain);
     oscL.start(); oscR.start();
-
-    ambGain = fCtx.createGain();
-    const aVol = (document.getElementById('fp-amb').value || 25) / 100 * 0.25;
-    ambGain.gain.value = aVol;
-    ambGain.connect(fCtx.destination);
-    ambNode = createNoiseSource(document.getElementById('fp-ambient-type').value);
+    ambGain = fCtx.createGain(); ambGain.gain.value = (document.getElementById('fp-amb').value || 25) / 100 * 0.25;
+    ambGain.connect(fCtx.destination); ambNode = createNoiseSource(document.getElementById('fp-ambient-type').value);
   }
-
-  function stopAudioNodes() {
-    try { if (oscL) oscL.stop(); if (oscR) oscR.stop(); if (ambNode) ambNode.stop(); } catch (e) {}
-    if (fCtx) { fCtx.close().catch(() => {}); fCtx = null; }
-    oscL = oscR = ambNode = masterGain = ambGain = null;
-  }
-
+  function stopAudioNodes() { try { if (oscL) oscL.stop(); if (oscR) oscR.stop(); if (ambNode) ambNode.stop(); } catch {} if (fCtx) { fCtx.close().catch(() => {}); fCtx = null; } oscL = oscR = ambNode = masterGain = ambGain = null; }
   function drawWave() {
     if (!isPlaying) return;
-    const c = document.getElementById('freq-wave-canvas');
-    if (!c) return;
-    const ctx = c.getContext('2d');
-    ctx.clearRect(0, 0, 160, 160);
-    wavePhase += 0.06;
-    ctx.beginPath();
-    for (let x = 16; x <= 144; x++) {
-      const y = 80 + Math.sin((x * 0.08) + wavePhase) * 14 * Math.sin(((x - 16) / 128) * Math.PI);
-      if (x === 16) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-    }
-    ctx.strokeStyle = 'rgba(103, 232, 249, 0.85)';
-    ctx.lineWidth = 2.5;
-    ctx.shadowColor = '#22d3ee';
-    ctx.shadowBlur = 10;
-    ctx.stroke();
+    const c = document.getElementById('freq-wave-canvas'); if (!c) return;
+    const ctx = c.getContext('2d'); ctx.clearRect(0, 0, 160, 160); wavePhase += 0.06; ctx.beginPath();
+    for (let x = 16; x <= 144; x++) { const y = 80 + Math.sin((x * 0.08) + wavePhase) * 14 * Math.sin(((x - 16) / 128) * Math.PI); if (x === 16) ctx.moveTo(x, y); else ctx.lineTo(x, y); }
+    ctx.strokeStyle = 'rgba(103, 232, 249, 0.85)'; ctx.lineWidth = 2.5; ctx.shadowColor = '#22d3ee'; ctx.shadowBlur = 10; ctx.stroke();
     waveRaf = requestAnimationFrame(drawWave);
   }
-
-  function updateTimerDisplay() {
-    const m = String(Math.floor(remainingSec / 60)).padStart(2, '0');
-    const s = String(remainingSec % 60).padStart(2, '0');
-    document.getElementById('fp-timer').textContent = `${m}:${s}`;
-  }
+  function updateTimerDisplay() { document.getElementById('fp-timer').textContent = `${String(Math.floor(remainingSec / 60)).padStart(2, '0')}:${String(remainingSec % 60).padStart(2, '0')}`; }
 
   window.playFrequency = function(id) {
-    const item = FREQ_DATA.find(f => f.id === id);
-    if (!item) return;
-    activeItem = item;
-    remainingSec = item.mins * 60;
+    const item = FREQ_DATA.find(f => f.id === id); if (!item) return;
+    activeItem = item; remainingSec = item.mins * 60;
     document.getElementById('freq-player').classList.remove('hidden');
-    document.getElementById('fp-emoji').textContent = item.emoji;
-    document.getElementById('fp-hz').textContent = item.hzLabel;
-    document.getElementById('fp-title').textContent = item.title;
-    document.getElementById('fp-desc').textContent = item.desc;
-    document.getElementById('fp-toggle-btn').textContent = '⏸ Pause';
-    document.getElementById('freq-breath-ring').classList.add('freq-breathing');
-    updateTimerDisplay();
-
-    startAudioNodes(item);
-    isPlaying = true;
-    cancelAnimationFrame(waveRaf);
-    drawWave();
-
+    document.getElementById('fp-emoji').textContent = item.emoji; document.getElementById('fp-hz').textContent = item.hzLabel;
+    document.getElementById('fp-title').textContent = item.title; document.getElementById('fp-desc').textContent = item.desc;
+    document.getElementById('fp-toggle-btn').textContent = '⏸ Pause'; document.getElementById('freq-breath-ring').classList.add('freq-breathing');
+    updateTimerDisplay(); startAudioNodes(item); isPlaying = true; cancelAnimationFrame(waveRaf); drawWave();
     clearInterval(timerInt);
     timerInt = setInterval(() => {
-      if (!isPlaying) return;
-      remainingSec--;
-      updateTimerDisplay();
-      if (remainingSec === 10 && fCtx && masterGain) {
-        masterGain.gain.linearRampToValueAtTime(0.0001, fCtx.currentTime + 10);
-        if (ambGain) ambGain.gain.linearRampToValueAtTime(0.0001, fCtx.currentTime + 10);
-      }
+      if (!isPlaying) return; remainingSec--; updateTimerDisplay();
+      if (remainingSec === 10 && fCtx && masterGain) { masterGain.gain.linearRampToValueAtTime(0.0001, fCtx.currentTime + 10); if (ambGain) ambGain.gain.linearRampToValueAtTime(0.0001, fCtx.currentTime + 10); }
       if (remainingSec <= 0) stopFrequency(true);
     }, 1000);
-
     document.getElementById('freq-player').scrollIntoView({ behavior: 'smooth', block: 'center' });
   };
-
   window.toggleFreqPlay = function() {
     if (!activeItem || !fCtx) return;
-    if (isPlaying) {
-      fCtx.suspend();
-      isPlaying = false;
-      document.getElementById('fp-toggle-btn').textContent = '▶ Resume';
-      document.getElementById('freq-breath-ring').classList.remove('freq-breathing');
-    } else {
-      fCtx.resume();
-      isPlaying = true;
-      document.getElementById('fp-toggle-btn').textContent = '⏸ Pause';
-      document.getElementById('freq-breath-ring').classList.add('freq-breathing');
-      drawWave();
-    }
+    if (isPlaying) { fCtx.suspend(); isPlaying = false; document.getElementById('fp-toggle-btn').textContent = '▶ Resume'; document.getElementById('freq-breath-ring').classList.remove('freq-breathing'); }
+    else { fCtx.resume(); isPlaying = true; document.getElementById('fp-toggle-btn').textContent = '⏸ Pause'; document.getElementById('freq-breath-ring').classList.add('freq-breathing'); drawWave(); }
   };
-
-  window.stopFrequency = function(finished) {
-    isPlaying = false;
-    clearInterval(timerInt);
-    cancelAnimationFrame(waveRaf);
-    stopAudioNodes();
-    document.getElementById('freq-player').classList.add('hidden');
-    if (finished) alert('🌿 Session complete. Take a slow breath—hope your mind feels lighter.');
-  };
-
-  window.setFreqTimer = function(mins) {
-    remainingSec = mins * 60;
-    updateTimerDisplay();
-  };
-
-  window.updateFreqVolume = function(val) {
-    document.getElementById('fp-vol-val').textContent = val + '%';
-    if (masterGain && fCtx) masterGain.gain.setTargetAtTime((val / 100) * 0.35, fCtx.currentTime, 0.1);
-  };
-
-  window.updateAmbientType = function(type) {
-    try { if (ambNode) ambNode.stop(); } catch (e) {}
-    ambNode = createNoiseSource(type);
-  };
-
-  window.updateAmbientVol = function(val) {
-    document.getElementById('fp-amb-val').textContent = val + '%';
-    if (ambGain && fCtx) ambGain.gain.setTargetAtTime((val / 100) * 0.25, fCtx.currentTime, 0.1);
-  };
+  window.stopFrequency = function(finished) { isPlaying = false; clearInterval(timerInt); cancelAnimationFrame(waveRaf); stopAudioNodes(); document.getElementById('freq-player').classList.add('hidden'); if (finished) alert('🌿 Session complete. Hope your mind feels lighter.'); };
+  window.setFreqTimer = function(mins) { remainingSec = mins * 60; updateTimerDisplay(); };
+  window.updateFreqVolume = function(val) { document.getElementById('fp-vol-val').textContent = val + '%'; if (masterGain && fCtx) masterGain.gain.setTargetAtTime((val / 100) * 0.35, fCtx.currentTime, 0.1); };
+  window.updateAmbientType = function(type) { try { if (ambNode) ambNode.stop(); } catch {} ambNode = createNoiseSource(type); };
+  window.updateAmbientVol = function(val) { document.getElementById('fp-amb-val').textContent = val + '%'; if (ambGain && fCtx) ambGain.gain.setTargetAtTime((val / 100) * 0.25, fCtx.currentTime, 0.1); };
 
   renderFreqCards();
 })();
